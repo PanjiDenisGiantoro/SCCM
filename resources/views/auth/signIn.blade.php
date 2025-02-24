@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wowdash - Bootstrap 5 Admin Dashboard HTML Template</title>
+    <title>CMMS </title>
     <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}" sizes="16x16">
     <!-- remix icon font css  -->
     <link rel="stylesheet" href="{{ asset('assets/css/remixicon.css') }}">
@@ -44,7 +44,7 @@
     <section class="auth bg-base d-flex flex-wrap">
         <div class="auth-left d-lg-block d-none">
             <div class="d-flex align-items-center flex-column h-100 justify-content-center">
-                <img src="{{ asset('assets/images/auth/banner.jpg') }}" alt="">
+                <img src="{{ asset('assets/images/auth/auth.jpg') }}" alt="">
             </div>
         </div>
         <div class="auth-right py-32 px-24 d-flex flex-column justify-content-center">
@@ -56,7 +56,8 @@
                     <h4 class="mb-12">Sign In to your Account</h4>
                     <p class="mb-32 text-secondary-light text-lg">Welcome back! please enter your detail</p>
                 </div>
-                <form action="{{ url('api/V1/login/process') }}" method="post">
+                <form action="{{ route('login.process') }}" method="post">
+                    @csrf
                     <div class="icon-field mb-16">
                         <span class="icon top-50 translate-middle-y">
                             <iconify-icon icon="mage:email"></iconify-icon>
@@ -142,39 +143,39 @@
     }
     initializePasswordToggle('.toggle-password');
 
-    $(document).ready(function() {
-        $('form').submit(function(e) {
-            e.preventDefault();
-            $.ajax({
-                type: "POST",
-                url: "{{ url('api/login/process') }}",
-                data: new FormData(this),
-                dataType: 'json',
-                contentType: false,
-                cache: false,
-                processData: false,
-                success: function (response) {
-                    if (response.success == true) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Login Successful',
-                            text: 'Welcome back!',
-                            showConfirmButton: false
-                        }).then(() => {
-                            window.location.href = "{{ url('/home') }}"; // Ganti dengan URL dashboard
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Login Failed',
-                            text: 'Invalid email or password',
-                            showConfirmButton: false
-                        });
-                    }
-                }
-            });
-        });
-    });
+    {{--$(document).ready(function() {--}}
+    {{--    $('form').submit(function(e) {--}}
+    {{--        e.preventDefault();--}}
+    {{--        $.ajax({--}}
+    {{--            type: "POST",--}}
+    {{--            url: "{{ url('api/login/process') }}",--}}
+    {{--            data: new FormData(this),--}}
+    {{--            dataType: 'json',--}}
+    {{--            contentType: false,--}}
+    {{--            cache: false,--}}
+    {{--            processData: false,--}}
+    {{--            success: function (response) {--}}
+    {{--                if (response.success == true) {--}}
+    {{--                    Swal.fire({--}}
+    {{--                        icon: 'success',--}}
+    {{--                        title: 'Login Successful',--}}
+    {{--                        text: 'Welcome back!',--}}
+    {{--                        showConfirmButton: false--}}
+    {{--                    }).then(() => {--}}
+    {{--                        window.location.href = "{{ url('/home') }}"; // Ganti dengan URL dashboard--}}
+    {{--                    });--}}
+    {{--                } else {--}}
+    {{--                    Swal.fire({--}}
+    {{--                        icon: 'error',--}}
+    {{--                        title: 'Login Failed',--}}
+    {{--                        text: 'Invalid email or password',--}}
+    {{--                        showConfirmButton: false--}}
+    {{--                    });--}}
+    {{--                }--}}
+    {{--            }--}}
+    {{--        });--}}
+    {{--    });--}}
+    {{--});--}}
     </script>
 
 </body>

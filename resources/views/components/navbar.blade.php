@@ -43,71 +43,13 @@
                             <div class="form-check style-check d-flex align-items-center justify-content-between mb-16">
                                 <label class="form-check-label line-height-1 fw-medium text-secondary-light" for="japan">
                                     <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                        <img src="{{ asset('assets/images/flags/flag2.png') }}" alt="" class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0">
-                                        <span class="text-md fw-semibold mb-0">Japan</span>
+                                        <img src="{{ asset('assets/images/flags/id.png') }}" alt="" class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0">
+                                        <span class="text-md fw-semibold mb-0">Indonesian</span>
                                     </span>
                                 </label>
                                 <input class="form-check-input" type="radio" name="crypto" id="japan">
                             </div>
 
-                            <div class="form-check style-check d-flex align-items-center justify-content-between mb-16">
-                                <label class="form-check-label line-height-1 fw-medium text-secondary-light" for="france">
-                                    <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                        <img src="{{ asset('assets/images/flags/flag3.png') }}" alt="" class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0">
-                                        <span class="text-md fw-semibold mb-0">France</span>
-                                    </span>
-                                </label>
-                                <input class="form-check-input" type="radio" name="crypto" id="france">
-                            </div>
-
-                            <div class="form-check style-check d-flex align-items-center justify-content-between mb-16">
-                                <label class="form-check-label line-height-1 fw-medium text-secondary-light" for="germany">
-                                    <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                        <img src="{{ asset('assets/images/flags/flag4.png') }}" alt="" class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0">
-                                        <span class="text-md fw-semibold mb-0">Germany</span>
-                                    </span>
-                                </label>
-                                <input class="form-check-input" type="radio" name="crypto" id="germany">
-                            </div>
-
-                            <div class="form-check style-check d-flex align-items-center justify-content-between mb-16">
-                                <label class="form-check-label line-height-1 fw-medium text-secondary-light" for="korea">
-                                    <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                        <img src="{{ asset('assets/images/flags/flag5.png') }}" alt="" class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0">
-                                        <span class="text-md fw-semibold mb-0">South Korea</span>
-                                    </span>
-                                </label>
-                                <input class="form-check-input" type="radio" name="crypto" id="korea">
-                            </div>
-
-                            <div class="form-check style-check d-flex align-items-center justify-content-between mb-16">
-                                <label class="form-check-label line-height-1 fw-medium text-secondary-light" for="bangladesh">
-                                    <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                        <img src="{{ asset('assets/images/flags/flag6.png') }}" alt="" class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0">
-                                        <span class="text-md fw-semibold mb-0">Bangladesh</span>
-                                    </span>
-                                </label>
-                                <input class="form-check-input" type="radio" name="crypto" id="bangladesh">
-                            </div>
-
-                            <div class="form-check style-check d-flex align-items-center justify-content-between mb-16">
-                                <label class="form-check-label line-height-1 fw-medium text-secondary-light" for="india">
-                                    <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                        <img src="{{ asset('assets/images/flags/flag7.png') }}" alt="" class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0">
-                                        <span class="text-md fw-semibold mb-0">India</span>
-                                    </span>
-                                </label>
-                                <input class="form-check-input" type="radio" name="crypto" id="india">
-                            </div>
-                            <div class="form-check style-check d-flex align-items-center justify-content-between">
-                                <label class="form-check-label line-height-1 fw-medium text-secondary-light" for="canada">
-                                    <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                        <img src="{{ asset('assets/images/flags/flag8.png') }}" alt="" class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0">
-                                        <span class="text-md fw-semibold mb-0">Canada</span>
-                                    </span>
-                                </label>
-                                <input class="form-check-input" type="radio" name="crypto" id="canada">
-                            </div>
                         </div>
                     </div>
                 </div><!-- Language dropdown end -->
@@ -306,13 +248,13 @@
 
                 <div class="dropdown">
                     <button class="d-flex justify-content-center align-items-center rounded-circle" type="button" data-bs-toggle="dropdown">
-                        <img src="{{ asset('assets/images/user.png') }}" alt="image" class="w-40-px h-40-px object-fit-cover rounded-circle">
+                        <img src="{{ asset('storage/' .  \Illuminate\Support\Facades\Auth::user()->profile_photo_path) }}" alt="image" class="w-40-px h-40-px object-fit-cover rounded-circle">
                     </button>
                     <div class="dropdown-menu to-top dropdown-menu-sm">
                         <div class="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
                             <div>
-                                <h6 class="text-lg text-primary-light fw-semibold mb-2">Shaidul Islam</h6>
-                                <span class="text-secondary-light fw-medium text-sm">Admin</span>
+                                <h6 class="text-lg text-primary-light fw-semibold mb-2">{{ \Illuminate\Support\Facades\Auth::user()->name ?? '' }}</h6>
+                                <span class="text-secondary-light fw-medium text-sm">{{ \Illuminate\Support\Facades\Auth::user()->email ?? '-' }}</span>
                             </div>
                             <button type="button" class="hover-text-danger">
                                 <iconify-icon icon="radix-icons:cross-1" class="icon text-xl"></iconify-icon>
@@ -320,7 +262,7 @@
                         </div>
                         <ul class="to-top-list">
                             <li>
-                                <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3" href="{{ route('viewProfile') }}">
+                                <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3" href="{{ route('user.show', \Illuminate\Support\Facades\Auth::user()->id) }}">
                                     <iconify-icon icon="solar:user-linear" class="icon text-xl"></iconify-icon> My Profile
                                 </a>
                             </li>

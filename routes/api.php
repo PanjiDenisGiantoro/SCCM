@@ -14,3 +14,5 @@ Route::controller(\App\Http\Controllers\LoginController::class)->group(function 
     });
 });
 
+Route::apiResource('organizations', \App\Http\Controllers\OrganizationController::class);
+

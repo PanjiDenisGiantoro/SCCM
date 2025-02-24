@@ -34,7 +34,14 @@
 
     <x-scripts script="{{ isset($script) ? $script : '' }}" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.all.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+            $(".select2").select2(
+                {
+                    width: 'resolve',
+                }
+            );
+    </script>
     @include('sweetalert::alert')
 
     <!-- ..::  scripts  end ::.. -->

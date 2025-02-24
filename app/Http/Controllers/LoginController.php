@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class LoginController extends Controller
 {
@@ -16,23 +17,20 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
         try {
             if (Auth::attempt($credentials)) {
+                $request->session()->regenerate();
 
                 activity()
                     ->causedBy(Auth::user())
                     ->log('Login');
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Login Berhasil',
-                    'data' => Auth::user()
-                ]);
+
+                return redirect()->route('home');
+
             }else{
                 activity()
                     ->causedBy(Auth::user())
                     ->log('Login Gagal');
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Login Gagal'
-                ]);
+                Alert::error('Error', 'Login Gagal');
+                return redirect()->route('login');
             }
 
         }catch (\Exception $e){

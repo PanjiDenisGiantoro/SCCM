@@ -33,7 +33,7 @@ class ClientController extends Controller
             $user = User::create([
                 'name' => $request->nameClient,
                 'email' => $request->emailClient,
-                'password' => bcrypt('12345678')
+                'password' => bcrypt('12345678'),
             ]);
             $client = Client::create([
                 'nameClient' => $request->nameClient,
@@ -50,6 +50,9 @@ class ClientController extends Controller
             ]);
 
             $user->assignRole('admin');
+            $user->update([
+                'created_user' =>$client->id
+            ]);
 
             activity()
                 ->causedBy(Auth::user())

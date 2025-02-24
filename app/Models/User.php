@@ -33,6 +33,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'profile_photo_path',
+        'status',
+        'organization_id',
+        'created_user',
+        'division_id',
     ];
 
 
@@ -69,4 +74,25 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function userOrganitations()
+    {
+        return $this->hasOne(Organization::class, 'id', 'organization_id');
+    }
+
+    public function divisions()
+    {
+        return $this->hasOne(Division::class, 'id', 'division_id');
+    }
+    public function companies(){
+        return $this->hasOne(Client::class,'id_user','id');
+    }
+    public function company_child()
+    {
+        return $this->hasOne(Client::class, 'id', 'created_user');
+
+
+    }
+
+
 }
