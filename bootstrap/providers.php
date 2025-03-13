@@ -6,4 +6,5 @@ return [
     App\Providers\JetstreamServiceProvider::class,
     RealRashid\SweetAlert\SweetAlertServiceProvider::class,
     Yajra\DataTables\DataTablesServiceProvider::class,
+    Milon\Barcode\BarcodeServiceProvider::class,
 ];

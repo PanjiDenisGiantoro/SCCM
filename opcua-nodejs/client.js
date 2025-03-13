@@ -6,7 +6,7 @@ const dataQueue = new Queue("sensorData", { redis: { port: 6379, host: "127.0.0.
 
 // OPC UA Client Setup
 const client = opcua.OPCUAClient.create({ endpointMustExist: false });
-const endpointUrl = "opc.tcp://localhost:4840/UA/MyServer"; // Ganti jika beda
+const endpointUrl = "opc.tcp://localhost:4842/UA/MyServer"; // Ganti jika beda
 const temperatureNodeId = "ns=1;s=Temperature"; // Ganti sesuai NodeId
 
 let countOverTemp = 0; // Counter over 29

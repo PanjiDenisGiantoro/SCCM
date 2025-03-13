@@ -10,7 +10,7 @@
 
     <div class="card basic-data-table">
         <div class="card-header d-flex justify-content-end">
-            <a href="{{ route('groups.create') }}" class="btn-sm  d-flex align-items-center btn btn-primary">
+            <a href="{{ route('groups.create') }}" class="btn-sm  d-flex align-items-center btn btn-outline-success">
                 <iconify-icon icon="fa6-regular:square-plus" class="icon text-lg line-height-1"></iconify-icon>Add Organization
             </a>
         </div>
@@ -91,8 +91,8 @@
                             <th>Division Name</th>
                             <th>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="me-2">Users</span>
-                                    <a href="{{ route('division.list') }}" class="btn-sm d-flex align-items-center btn btn-primary">
+                                    <span class="me-2">Description</span>
+                                    <a href="{{ route('division.list') }}" class="btn-sm d-flex align-items-center btn btn-outline-primary">
                                         <iconify-icon icon="fa6-regular:square-plus" class="icon text-lg line-height-1"></iconify-icon> Add Division
                                     </a>
                                 </div>
@@ -122,7 +122,7 @@
                          <th>
     <div class="d-flex justify-content-between align-items-center">
         <span class="me-2">Role</span>
-        <a href="{{ route('user.list') }}" class="btn btn-primary btn-sm d-flex align-items-center">
+        <a href="{{ route('user.list') }}" class="btn btn-outline-primary btn-sm d-flex align-items-center">
             <iconify-icon icon="fa6-regular:square-plus" class="icon text-lg me-1"></iconify-icon>
             Add User
         </a>

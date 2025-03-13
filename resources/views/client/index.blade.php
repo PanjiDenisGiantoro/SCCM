@@ -15,11 +15,11 @@
                 </div>
                 <div class="card-body">
                     @if(!empty($data))
-                        <form action="{{ route('client.update', $data->id) }}" method="post" id="clientForm">
+                        <form action="{{ route('client.update', $data->id) }}" method="post" id="clientForm" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             @else
-                                <form action="{{ route('client.store') }}" method="post" id="clientForm">
+                                <form action="{{ route('client.store') }}" method="post" id="clientForm" enctype="multipart/form-data">
                                     @csrf
                                     @endif
                                     <div class="row g-2">
@@ -121,6 +121,26 @@
                                                     Cloud
                                                 </option>
                                             </select>
+                                        </div>
+                                        <div class="col-md-6">
+{{--                                            logo--}}
+                                            <label class="form-label">Logo Client</label>
+                                            <input type="file" name="logo"
+                                                   @if(!empty($data)) value="{{ $data->logo }}" @else value="{{ old('logo') }}" @endif
+                                                   class="form-control @error('logo') is-invalid @enderror">
+                                            <div class="col-12 mt-24 d-flex justify-content-end">
+                                                @if(!empty($data))
+                                                    <img src="{{ asset('storage/' . $data->logo) }}"
+                                                         style="width: 100px; height: 100px; object-fit: cover">
+                                                @endif
+                                            </div>
+                                            <div class="col-12 mt-24 d-flex justify-content-end">
+                                                @if(!empty($data))
+                                                    <a href="{{ asset('storage/' . $data->logo) }}"
+                                                       class="btn btn-primary">Download</a>
+                                                @endif
+                                            </div>
+
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Address Client</label>

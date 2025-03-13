@@ -14,9 +14,12 @@ use App\Http\Controllers\TableController;
 use App\Http\Controllers\UsersController;
 
 
-Route::controller(DashboardController::class)->group(function () {
-    Route::get('/', 'index')->name('index');
+Route::middleware(['auth'])->group(function () {
+    Route::controller(DashboardController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+    });
 });
+
 
 Route::controller(\App\Http\Controllers\LoginController::class)->group(function (){
     Route::get('login','login')->name('login');
@@ -26,15 +29,17 @@ Route::controller(\App\Http\Controllers\DashboardController::class)->group(funct
     Route::get('home','home')->name('home');
 });
 
-Route::controller(\App\Http\Controllers\ClientController::class)->group(function (){
-    Route::get('client','index')->name('client.index');
-    Route::post('client','store')->name('client.store');
-    Route::get('client/list','list')->name('client.list');
-    Route::get('client/edit/{id}','edit')->name('client.edit');
-    Route::put('client/update/{id}','update')->name('client.update');
-    Route::get('client/status/{id}','status')->name('client.status');
-    Route::get('client/show/{id}','show')->name('client.show');
-    Route::get('client/getData','getData')->name('client.getData');
+Route::middleware(['auth'])->group(function () {
+    Route::controller(\App\Http\Controllers\ClientController::class)->group(function () {
+        Route::get('client', 'index')->name('client.index');
+        Route::post('client', 'store')->name('client.store');
+        Route::get('client/list', 'list')->name('client.list');
+        Route::get('client/edit/{id}', 'edit')->name('client.edit');
+        Route::put('client/update/{id}', 'update')->name('client.update');
+        Route::get('client/status/{id}', 'status')->name('client.status');
+        Route::get('client/show/{id}', 'show')->name('client.show');
+        Route::get('client/getData', 'getData')->name('client.getData');
+    });
 });
 
 Route::controller(\App\Http\Controllers\ActivityControlller::class)->group(function () {
@@ -188,6 +193,7 @@ Route::prefix('users')->group(function () {
 Route::prefix('user')->group(function () {
     Route::controller(\App\Http\Controllers\UserController::class)->group(function () {
         Route::get('/list', 'index')->name('user.list');
+        Route::get('create','create')->name('user.create');
         Route::get('/getData','getData')->name('user.getData');
         Route::get('/edit/{id}','edit')->name('user.edit');
         Route::put('/update/{id}','update')->name('user.update');
@@ -196,9 +202,7 @@ Route::prefix('user')->group(function () {
         Route::post('user','store')->name('user.store');
         Route::put('userupdate/{id}','updatePassword')->name('user.password');
         Route::put('user.update_profile/{id}','update_profile')->name('user.update_profile');
-        Route::get('create','create')->name('user.create');
-
-
+        Route::get('getalluser','getalluser')->name('user.getalluser');
     });
 });
 
@@ -272,6 +276,13 @@ Route::prefix('asset')->group(function () {
         Route::post('asset','store')->name('asset.store');
         Route::get('/destroy/{id}','destroy')->name('asset.destroy');
         Route::get('create','create')->name('asset.create');
+        Route::get('facility','facility')->name('asset.facility');
+        Route::get('getDataFacility','getDataFacility')->name('asset.getDataFacility');
+        Route::get('getDataPart/{code}','getDataPart')->name('asset.getDataPart');
+        Route::get('/listBom','listBom')->name('asset.listBom');
+        Route::get('/getpartBom','getpartBom')->name('asset.getpartBom');
+        Route::get('/getFacilities','getFacilities')->name('asset.getFacilities');
+        Route::get('/getLocationDetails','getLocationDetails')->name('asset.getLocationDetails');
     });
 });
 
@@ -366,6 +377,11 @@ Route::prefix('part')->group(function () {
         Route::post('part','store')->name('part.store');
         Route::get('/destroy/{id}','destroy')->name('part.destroy');
         Route::get('create','create')->name('part.create');
+        Route::get('/categories','getCategories')->name('categories.get');
+        Route::get('/getFacility','getFacility')->name('categories.getFacility');
+        Route::post('/categories','storecategories')->name('categories.store');
+
+
     });
 });
 Route::prefix('business')->group(function () {
@@ -379,6 +395,7 @@ Route::prefix('business')->group(function () {
         Route::post('business','store')->name('business.store');
         Route::get('/destroy/{id}','destroy')->name('business.destroy');
         Route::get('create','create')->name('business.create');
+        Route::get('getDataMeterReading','getDataMeterReading')->name('business.getDataMeterReading');
     });
 });
 
@@ -393,6 +410,9 @@ Route::prefix('bom')->group(function () {
         Route::post('bom','store')->name('bom.store');
         Route::get('/destroy/{id}','destroy')->name('bom.destroy');
         Route::get('create','create')->name('bom.create');
+        Route::get('getDataAsset','getDataAsset')->name('bom.getDataAsset');
+        Route::get('getDataBom','getDataBom')->name('bom.getDataBom');
+        Route::get('getlistBom','getlistBom')->name('bom.getlistBom');
     });
 });
 Route::prefix('permit')->group(function () {
@@ -465,6 +485,27 @@ Route::prefix('contractor')->group(function () {
 });
 
 
+Route::prefix('account')->group(function (){
+    Route::controller(\App\Http\Controllers\AssetController::class)->group(function () {
+        Route::get('/list', 'list_account')->name('account.list');
+        Route::post('/store_account', 'store_account')->name('account.store');
+        Route::get('/destroy_account/{id}', 'destroy_account')->name('account.destroy');
+        Route::get('/charge_list/', 'charge_list')->name('account.charge_list');
+        Route::post('/charge_store/', 'charge_store')->name('account.charge_store');
+        Route::get('/charge_destroy/{id}', 'charge_delete')->name('account.charge_delete');
+    });
+});
+
+
+Route::get('/socket/list', [\App\Http\Controllers\RestController::class, 'index'])->name('socket.list');
+Route::post('/socket/store', [\App\Http\Controllers\RestController::class, 'store'])->name('socket.store');
+Route::post('/socket/store_alarm', [\App\Http\Controllers\RestController::class, 'store_alarm'])->name('socket.store_alarm');
+Route::get('/socket/edit/{id}', [\App\Http\Controllers\RestController::class, 'edit'])->name('socket.edit');
+Route::put('/socket/update/{id}', [\App\Http\Controllers\RestController::class, 'update'])->name('socket.update');
+Route::get('/socket/delete/{id}', [\App\Http\Controllers\RestController::class, 'destroy'])->name('socket.delete');
+Route::get('socket/test/{id}', [\App\Http\Controllers\RestController::class, 'test'])->name('socket.test');
+Route::get('socket/show/{id}', [\App\Http\Controllers\RestController::class, 'show'])->name('socket.show');
+Route::get('/error-log', [\App\Http\Controllers\RestController::class, 'error'])->name('error.log');
 
 Route::middleware([
     'auth:sanctum',

@@ -1,5 +1,7 @@
 const Queue = require("bull");
 const { Client } = require("pg");
+const axios = require("axios");
+const moment = require("moment");
 
 // Setup Redis Queue
 const dataQueue = new Queue("sensorData", { redis: { port: 6379, host: "127.0.0.1" } });
@@ -37,8 +39,16 @@ dataQueue.process(async (job) => {
         `;
         const values = [name, value, node_id, status, count, datetime];
 
-        // Eksekusi query insert
         await dbClient.query(query, values);
+
+        if (status === 1) {
+            const phoneNumber = "6289522900800";  // Ganti dengan nomor tujuan
+            const formattedDate = moment(datetime).format("DD-MM-YYYY HH:mm:ss");
+            const message = `🚨 ALARM! Sensor ${name} mendeteksi suhu ${value}°C pada node ${node_id}.\nWaktu: ${formattedDate}`;
+
+            await sendWhatsAppMessage(phoneNumber, message);
+        }
+
         console.log(`✅ Data inserted at ${datetime}`);
 
     } catch (err) {
@@ -46,6 +56,16 @@ dataQueue.process(async (job) => {
         console.error("Full Error:", err.stack);
     }
 });
+async function sendWhatsAppMessage(to, text) {
+    try {
+        const url = `http://localhost:5001/message/send-text?session=mysession&to=${to}&text=${encodeURIComponent(text)}`;
+        const response = await axios.get(url);
+        console.log(`📨 WhatsApp Message Sent to ${to}: ${response.data}`);
+    } catch (err) {
+        console.error("❌ WhatsApp Send Error:", err.message);
+    }
+}
+
 
 // Graceful Shutdown untuk koneksi DB
 process.on("SIGINT", async () => {

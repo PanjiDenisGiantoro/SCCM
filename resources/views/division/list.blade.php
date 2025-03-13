@@ -11,7 +11,7 @@
 
     <div class="card basic-data-table">
         <div class="card-header d-flex justify-content-end">
-            <a href="{{ route('division.create') }}" class="btn btn-primary btn-sm">
+            <a href="{{ route('division.create') }}" class="btn btn-outline-success btn-sm">
                 <iconify-icon icon="fa6-regular:square-plus" class="icon text-lg line-height-1"></iconify-icon>
             </a>
         </div>

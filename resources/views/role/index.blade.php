@@ -36,9 +36,9 @@
                                         </div>
                                         <div class="col-12 mt-24 d-flex justify-content-end">
                                             @if(!empty($data) && empty($disable))
-                                                <button type="submit" class="btn btn-primary">Update</button>
+                                                <button type="submit" class="btn btn-outline-success">Update</button>
                                             @elseif(empty($data) && empty($disable))
-                                                <button type="submit" id="submit" class="btn btn-primary">Submit
+                                                <button type="submit" id="submit" class="btn btn-outline-success">Submit
                                                 </button>
                                             @else
                                                 <div class="col-12 mt-24 d-flex justify-content-end">

@@ -153,5 +153,11 @@ class OrganizationController extends Controller
 
         return response()->json($data);
     }
+    public function dataStructure(Request $request){
+
+
+
+    }
+
 
 }

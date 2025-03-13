@@ -11,7 +11,7 @@
 
     <div class="card basic-data-table">
         <div class="card-header d-flex justify-content-end">
-            <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createUserModal">
+            <a href="#" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createUserModal">
                 <iconify-icon icon="fa6-solid:square-plus" class="icon text-lg line-height-1"></iconify-icon>
             </a>
 

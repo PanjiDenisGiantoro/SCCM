@@ -11,7 +11,7 @@
 
     <div class="card basic-data-table">
         <div class="card-header d-flex justify-content-end">
-          <a href="{{ route('business.create') }}" class="btn btn-primary btn-sm">
+          <a href="{{ route('business.create') }}" class="btn btn-outline-success btn-sm">
             <iconify-icon icon="fa6-regular:square-plus" class="icon text-lg line-height-1"></iconify-icon>
           </a>
 
@@ -30,15 +30,50 @@
                             </div>
                         </th>
                        <th scope="col">Code</th>
+                       <th scope="col">Qrcode</th>
                         <th scope="col">Name</th>
                         <th scope="col">Address</th>
                         <th scope="col">City</th>
-                        <th scope="col">Province</th>
                         <th scope="col">Country</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
                     </tr>
                     </thead>
                     <tbody>
+                    @foreach($business as $key => $value)
 
+                        <tr>
+                            <th scope="row">
+                                        {{ $key+1 }}
+                            </th>
+                            <td>
+                                {{ $value->code }}
+                            </td>
+                            <td>
+                                {{ \SimpleSoftwareIO\QrCode\Facades\QrCode::size(100)->generate($value->code) }}
+                            </td>
+                            <td>{{ $value->business_name ?? '' }}</td>
+                            <td>{{ $value->address ?? ''}}</td>
+                            <td>{{ $value->city ?? ''}}</td>
+                            <td>{{ $value->country ?? ''}}</td>
+                            <td>
+                                @if($value->status == 1)
+                                    <span class="text-success">Active</span>
+                                @else
+                                    <span class="text-danger">Inactive</span>
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{  route('business.edit', $value->id) }}" class="w-32-px h-32-px bg-success-focus text-success-main rounded-circle d-inline-flex align-items-center justify-content-center">
+                                    <iconify-icon icon="lucide:edit"></iconify-icon>
+                                </a>
+                                <a href="{{ route('business.destroy', $value->id) }}" class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center">
+                                    <iconify-icon icon="lucide:trash-2"></iconify-icon>
+                                </a>
+                            </td>
+                        </tr>
+
+                    @endforeach
                     </tbody>
                 </table>
             </div>
@@ -56,6 +91,8 @@
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 <script>
     $(document).ready(function () {
+    //     dataTable
+        $('#dataTable').DataTable();
 
     });
 </script>

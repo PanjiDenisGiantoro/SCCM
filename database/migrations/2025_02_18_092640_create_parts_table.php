@@ -16,8 +16,6 @@ return new class extends Migration
             $table->string('nameParts')->nullable();
             $table->text('descriptionParts')->nullable();
             $table->string('category')->nullable();
-            $table->bigInteger('bom_id')->unsigned()->nullable();
-            $table->foreign('bom_id')->references('id')->on('boms')->onDelete('cascade');
             $table->text('file')->nullable();
             $table->timestamps();
         });

@@ -248,7 +248,14 @@
 
                 <div class="dropdown">
                     <button class="d-flex justify-content-center align-items-center rounded-circle" type="button" data-bs-toggle="dropdown">
-                        <img src="{{ asset('storage/' .  \Illuminate\Support\Facades\Auth::user()->profile_photo_path) }}" alt="image" class="w-40-px h-40-px object-fit-cover rounded-circle">
+                        @php
+                        $client =  \App\Models\Client::where('id_user', \Illuminate\Support\Facades\Auth::user()->id)->first();
+                        if(!$client){
+                            echo '<img src="' . asset('storage/' .  \Illuminate\Support\Facades\Auth::user()->profile_photo_path) . '" alt="image" class="w-40-px h-40-px object-fit-cover rounded-circle">';
+                        }else{
+                            echo '<img src="' . asset('storage/' . $client->logo) . '" alt="image" class="w-40-px h-40-px object-fit-cover rounded-circle">';
+                        }
+                        @endphp
                     </button>
                     <div class="dropdown-menu to-top dropdown-menu-sm">
                         <div class="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
@@ -277,10 +284,14 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3" href="javascript:void(0)">
-                                    <iconify-icon icon="lucide:power" class="icon text-xl"></iconify-icon> Log Out
-                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3">
+                                        <iconify-icon icon="lucide:power" class="icon text-xl"></iconify-icon> Log Out
+                                    </button>
+                                </form>
                             </li>
+
                         </ul>
                     </div>
                 </div><!-- Profile dropdown end -->

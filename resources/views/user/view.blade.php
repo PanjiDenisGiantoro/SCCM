@@ -241,7 +241,7 @@
                                         Back
                                     </a>
                                     <button type="submit"
-                                            class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                                            class="btn btn-outline-success border border-primary-600 text-md px-56 py-12 radius-8">
                                         Save
                                     </button>
                                 </div>
@@ -283,7 +283,7 @@
                                         Cancel
                                     </button>
                                     <button type="submit"
-                                            class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                                            class="btn btn-outline-success border border-primary-600 text-md px-56 py-12 radius-8">
                                         Save
                                     </button>
                                 </div>

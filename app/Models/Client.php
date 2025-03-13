@@ -11,4 +11,8 @@ class Client extends Model
     protected $table = 'clients';
     protected $guarded = [];
 
+    public function users()
+    {
+        return $this->hasOne(User::class, 'id', 'id_user');
+    }
 }

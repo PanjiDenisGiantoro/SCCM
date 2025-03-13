@@ -129,7 +129,7 @@ $subTitle = 'Code Generator';
                 &lt;/tr&gt;
                 &lt;/thead&gt;
                 &lt;tbody&gt;
-                &lt;!-- Table content goes here --&gt;            
+                &lt;!-- Table content goes here --&gt;
                 &lt;/tbody&gt;
             &lt;/table&gt;
         &lt;/div&gt;

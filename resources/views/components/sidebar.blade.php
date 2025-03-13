@@ -2,10 +2,10 @@
     <button type="button" class="sidebar-close-btn">
         <iconify-icon icon="radix-icons:cross-2"></iconify-icon>
     </button>
-    <div>
-        <a href="{{ route('index') }}" class="sidebar-logo">
-            <img src="{{ asset('assets/images/logo.png') }}" alt="site logo" class="light-logo">
-            <img src="{{ asset('assets/images/logo-light.png') }}" alt="site logo" class="dark-logo">
+    <div class="d-flex align-items-center ">
+        <a href="{{ route('index') }}" class="sidebar-logo ">
+            <img src="{{ asset('assets/images/logo7.png') }}" alt="site logo" class="light-logo w-100 object-fit-cover">
+            <img src="{{ asset('assets/images/logo9.png') }}" alt="site logo" class="dark-logo">
             <img src="{{ asset('assets/images/logo-icon.png') }}" alt="site logo" class="logo-icon">
         </a>
     </div>
@@ -38,7 +38,7 @@
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon>
-                    <span class="text-red">Client</span>
+                    <span>Client</span>
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
@@ -93,7 +93,7 @@
                         <a href="{{ route('asset.list') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i>All Assets</a>
                     </li>
                     <li>
-                        <a href="{{ route('asset.create') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>Facilites</a>
+                        <a href="{{ route('asset.facility') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>Facilites</a>
                     </li>
 
                     <li>
@@ -109,7 +109,7 @@
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon>
-                    <span class="text-red">Inventory & Spare Parts Management</span>
+                    <span>Inventory & Spare Parts Management</span>
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
@@ -180,7 +180,7 @@
                 <ul class="sidebar-submenu">
 
                     <li>
-                        <a href=""><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>Configuration API Connection Monitoring</a>
+                        <a href="{{ url('socket/list') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>Configuration API Connection Monitoring</a>
                     </li>
 
                     <li>

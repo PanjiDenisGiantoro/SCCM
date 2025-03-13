@@ -90,9 +90,12 @@ class User extends Authenticatable
     public function company_child()
     {
         return $this->hasOne(Client::class, 'id', 'created_user');
-
-
     }
+
+    public function role() {
+        return $this->belongsTo(RoleUser::class, 'role_id');
+    }
+
 
 
 }

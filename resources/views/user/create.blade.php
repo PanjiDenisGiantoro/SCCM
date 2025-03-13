@@ -126,11 +126,11 @@
 
                                         <div class="col-12 mt-4 d-flex justify-content-end">
                                             @if(!empty($user))
-                                                <button type="submit" class="btn btn-primary">Update</button>
+                                                <button type="submit" class="btn btn-outline-success">Update</button>
                                             @else
-                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                                <button type="submit" class="btn btn-outline-success">Submit</button>
                                             @endif
-                                            <a href="{{ route('user.list') }}" class="btn btn-secondary ms-2">Back</a>
+                                            <a href="{{ route('user.list') }}" class="btn btn-outline-secondary ms-2">Back</a>
                                         </div>
                                     </div>
                                 </form>

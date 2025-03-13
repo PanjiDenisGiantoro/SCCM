@@ -2,7 +2,7 @@ const opcua = require("node-opcua");
 
 // Buat OPC UA Server
 const server = new opcua.OPCUAServer({
-    port: 4840, // Port default OPC UA
+    port: 4842, // Port default OPC UA
     resourcePath: "/UA/MyServer", // Endpoint URL
     buildInfo: {
         productName: "TemperatureServer",

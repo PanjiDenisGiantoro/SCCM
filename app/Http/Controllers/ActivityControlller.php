@@ -12,6 +12,9 @@ class ActivityControlller extends Controller
     public function index()
     {
 
+        $activity = Activity::with('users')
+            ->latest()->get();
+
         return view('activityLogs.index');
 
     }

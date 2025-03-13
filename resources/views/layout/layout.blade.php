@@ -1,6 +1,7 @@
 <!-- meta tags and other links -->
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <x-head />
 

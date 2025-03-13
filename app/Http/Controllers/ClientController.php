@@ -27,8 +27,12 @@ class ClientController extends Controller
     public function store(Request $request)
     {
 
-
         try {
+
+            $photoPath = null;
+            if ($request->hasFile('logo')) {
+                $photoPath = $request->file('logo')->store('logo', 'public');
+            }
 
             $user = User::create([
                 'name' => $request->nameClient,
@@ -46,7 +50,8 @@ class ClientController extends Controller
                 'addressClient' => $request->addressClient,
                 'codeClient' => $request->codeClient,
                 'license' => 'l-alfasolutions-'.Str::random(8),
-                'id_user' => $user->id
+                'id_user' => $user->id,
+                'logo' => $photoPath
             ]);
 
             $user->assignRole('admin');
@@ -114,6 +119,13 @@ class ClientController extends Controller
     public function update(Request $request,$id){
 
         try {
+
+
+            $photopath = null;
+            if ($request->hasFile('logo')) {
+                $photopath = $request->file('logo')->store('logo', 'public');
+            }
+
             $client = Client::find($id);
             $client->nameClient = $request->nameClient;
             $client->emailClient = $request->emailClient;
@@ -124,6 +136,15 @@ class ClientController extends Controller
             $client->statusClient = $request->statusClient;
             $client->save();
 
+            $oldPhotoPath = public_path('storage/logo/' . $client->logo);
+            if (!empty($client->logo) && file_exists($oldPhotoPath) && is_file($oldPhotoPath)) {
+                unlink($oldPhotoPath);
+            }
+
+            if (!empty($photopath)) {
+                $client->logo = $photopath;
+                $client->save();
+            }
             $user = User::find($client->id_user);
             $user->name = $request->nameClient;
             $user->email = $request->emailClient;

@@ -6,7 +6,7 @@ $subTitle = 'Components / Calendar';
 $script = '<script src="' . asset('assets/js/full-calendar.js') . '"></script>
            <script src="' . asset('assets/js/flatpickr.js.js') . '"></script>
                     <script>
-                    // Flat pickr or date picker js 
+                    // Flat pickr or date picker js
                     function getDatePicker(receiveID) {
                         flatpickr(receiveID, {
                             enableTime: true,

@@ -1,17 +1,17 @@
 @extends('layout.layout')
 
 @php
-    $title = 'List Part and Supplier';
-    $subTitle = 'List Part and Supplier';
+    $title = 'List Permit Building';
+    $subTitle = 'List Permit Building';
 
 @endphp
 
 @section('content')
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <div class="card basic-data-table">
         <div class="card-header d-flex justify-content-end">
-            <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#addPermitModal">Add New Permit</button>
+            <button class="btn btn-info mb-3" data-toggle="modal" data-target="#addPermitModal">Add New Permit</button>
 
         </div>
         <div class="card-body">
@@ -52,7 +52,7 @@
                     <form id="addPermitForm">
                         <div class="form-group">
                             <label for="permitType">Permit Type</label>
-                            <select class="form-control" id="permitType" required>
+                            <select class="form-select select2" id="permitType" required>
                                 <option value="Construction">Construction</option>
                                 <option value="Renovation">Renovation</option>
                                 <option value="Safety">Safety</option>
@@ -72,7 +72,7 @@
                         </div>
                         <div class="form-group">
                             <label for="status">Status</label>
-                            <select class="form-control" id="status" required>
+                            <select class="form-select" id="status" required>
                                 <option value="Pending">Pending</option>
                                 <option value="Approved">Approved</option>
                                 <option value="Expired">Expired</option>
@@ -92,16 +92,20 @@
     <!-- Modal -->
 @endsection
 <script src="{{ asset('assets/js/lib/jquery-3.7.1.min.js') }}"></script>
+
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
+    $(document).ready(function() {
+        $('.select2').select2();
+    });
     // Sample data for demonstration
     let permits = [];
 

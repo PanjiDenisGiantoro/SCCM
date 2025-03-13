@@ -17,6 +17,8 @@ class UserController extends Controller
 {
     public function index()
     {
+
+
         $users = User::with('roles.permissions', 'userOrganitations')->latest()->get();
         return view('user.index');
     }
@@ -31,10 +33,18 @@ class UserController extends Controller
             ->get();
         return view('user.create', compact('departments', 'roles', 'divisions'));
     }
-
     public function getData()
     {
-        $users = User::with('roles.permissions', 'userOrganitations', 'divisions')->latest()->get();
+        $client = Client::with('users')->where('id_user', Auth::user()->id)->first();
+
+        if(!empty($client) || !empty($client->users)){
+            $users = User::with('roles.permissions', 'userOrganitations', 'divisions')
+                ->where('created_user', $client->id)
+                ->latest()->get();
+        }else{
+            $users = User::with('roles.permissions', 'userOrganitations', 'divisions')->latest()->get();
+        }
+
 
         return datatables()->of($users)
             ->addColumn('name', function ($users) {
@@ -105,26 +115,6 @@ class UserController extends Controller
                 $userexist = User::where('created_user', Auth::user()->id)->first();
                 $idCompany = $userexist->created_user;
             }
-            // If there's an existing user, update them. Otherwise, create a new user.
-            if ($request->has('id')) {
-                $user = User::findOrFail($request->id);
-                $user->update([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => $request->password ? Hash::make($request->password) : $user->password,
-                    'profile_photo_path' => $photoPath ?: $user->profile_photo_path,
-                    'status' => $request->status,
-                    'organization_id' => $request->organization_id,
-                    'division_id' => $request->division_id,
-                    'created_user' => $idCompany
-
-                ]);
-                $roleId = DB::table('roles')->where('id', $request->role)->first();
-                $user->assignRole($roleId->name);
-//                $user->userOrganitations()->sync($request->organization_id);
-                Alert::success('Success', 'User updated successfully');
-                return redirect()->route('user.list');
-            } else {
                 $user = User::create([
                     'name' => $request->name,
                     'email' => $request->email,
@@ -137,13 +127,10 @@ class UserController extends Controller
 
 
                 ]);
-//                $user->userOrganitations()->sync($request->organization_id);  // Sync departments for the user
                 $roleId = DB::table('roles')->where('id', $request->role)->first();
                 $user->assignRole($roleId->name);
-
                 Alert::success('Success', 'User created successfully');
                 return redirect()->route('user.list');
-            }
         } catch (\Exception $e) {
             Alert::error('Error', $e->getMessage());
             return redirect()->back()->withInput();
@@ -215,6 +202,7 @@ class UserController extends Controller
         Alert::success('Success', 'Profile updated successfully');
         return redirect()->route('user.show', $id);
     }
+
 
 
 }

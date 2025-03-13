@@ -80,7 +80,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary text-sm btn-sm px-12 py-16 w-100 radius-12 mt-32"> Sign In</button>
+                    <button type="submit" class="btn btn-info text-sm btn-sm px-12 py-16 w-100 radius-12 mt-32"> Sign In</button>
 
                     <div class="mt-32 center-border-horizontal text-center">
                         <span class="bg-base z-1 px-4">Or sign in with</span>
