@@ -251,9 +251,17 @@
                         @php
                         $client =  \App\Models\Client::where('id_user', \Illuminate\Support\Facades\Auth::user()->id)->first();
                         if(!$client){
+                            if(!empty(\Illuminate\Support\Facades\Auth::user()->profile_photo_path)){
                             echo '<img src="' . asset('storage/' .  \Illuminate\Support\Facades\Auth::user()->profile_photo_path) . '" alt="image" class="w-40-px h-40-px object-fit-cover rounded-circle">';
+                            }else{
+                                echo '<img src="' . asset('assets/images/avatar/avatar1.png') . '" alt="image" class="w-40-px h-40-px object-fit-cover rounded-circle">';
+                            }
                         }else{
+                            if(!empty($client->logo)){
                             echo '<img src="' . asset('storage/' . $client->logo) . '" alt="image" class="w-40-px h-40-px object-fit-cover rounded-circle">';
+                        }else{
+                            echo '<img src="' . asset('assets/images/avatar/avatar1.png') . '" alt="image" class="w-40-px h-40-px object-fit-cover rounded-circle">';
+                            }
                         }
                         @endphp
                     </button>
