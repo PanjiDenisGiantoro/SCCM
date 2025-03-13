@@ -53,7 +53,7 @@
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon>
-                    <span class="text-red">Maintenance</span>
+                    <span >Maintenance</span>
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
@@ -70,7 +70,7 @@
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon>
-                    <span class="text-red">Project Management</span>
+                    <span >Project Management</span>
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
@@ -86,7 +86,7 @@
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon>
-                    <span class="text-red">Assets Management</span>
+                    <span >Assets Management</span>
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
@@ -128,7 +128,7 @@
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon>
-                    <span class="text-red">Building Permit Management</span>
+                    <span >Building Permit Management</span>
                 </a>
                 <ul class="sidebar-submenu">
 
@@ -227,7 +227,7 @@
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon>
-                    <span class="text-red">Setting</span>
+                    <span >Setting</span>
                 </a>
                 <ul class="sidebar-submenu">
 

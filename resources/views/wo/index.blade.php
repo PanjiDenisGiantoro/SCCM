@@ -11,7 +11,7 @@
 
     <div class="card basic-data-table">
         <div class="card-header d-flex justify-content-end">
-          <a href="{{ route('wo.create') }}" class="btn btn-primary btn-sm">
+          <a href="{{ route('wo.create') }}" class="btn btn-info btn-sm">
             <iconify-icon icon="fa6-regular:square-plus" class="icon text-lg line-height-1"></iconify-icon>
           </a>
 

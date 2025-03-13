@@ -138,6 +138,11 @@
                         <span class="badge bg-gray-200 text-gray-700">2</span></button>
                 </li>
                 <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="labor-tab" data-bs-toggle="tab" data-bs-target="#labor"
+                            type="button" role="tab" aria-controls="labor" aria-selected="false">Labor Task
+                        <span class="badge bg-gray-200 text-gray-700">2</span></button>
+                </li>
+                <li class="nav-item" role="presentation">
                     <button class="nav-link" id="meterReading-tab" data-bs-toggle="tab" data-bs-target="#meterReading"
                             type="button" role="tab" aria-controls="meterReading" aria-selected="false">Meter Reading <span
                             class="badge bg-gray-200 text-gray-700">3</span></button>
@@ -176,6 +181,20 @@
     <div class="card">
         <div class="card-body">
             <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade " id="general" role="tabpanel" aria-labelledby="labor-tab">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="customer">Customer</label>
+                                <select class="form-control" id="customer">
+                                    <option value="option1">option 1</option>
+                                    <option value="option2">option 2</option>
+                                    <option value="option3">option 3</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
                     <div class="row">
                         <div class="col-md-6">
