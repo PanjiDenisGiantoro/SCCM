@@ -3,7 +3,6 @@
 @php
 $title = 'Dashboard';
 $subTitle = 'CRM';
-$script = '<script src="' . asset('assets/js/homeTwoChart.js') . '"></script>';
 @endphp
 
 @section('content')
@@ -925,3 +924,4 @@ $script = '<script src="' . asset('assets/js/homeTwoChart.js') . '"></script>';
     </div>
 
 @endsection
+<script src="asset('assets/js/homeTwoChart.js')"></script>

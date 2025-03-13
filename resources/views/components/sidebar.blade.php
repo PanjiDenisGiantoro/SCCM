@@ -18,20 +18,20 @@
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
-                        <a href="{{ route('index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Dashboard Technician</a>
+                        <a href="{{ route('index') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Dashboard </a>
                     </li>
-                    <li>
-                        <a href="{{ route('index2') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Dashboard Manager</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('index3') }}"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Dashboard Admin</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('index4') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Dashboard Superadmin</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('index5') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Dashboard Operator</a>
-                    </li>
+{{--                    <li>--}}
+{{--                        <a href="{{ route('index2') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Dashboard Manager</a>--}}
+{{--                    </li>--}}
+{{--                    <li>--}}
+{{--                        <a href="{{ route('index3') }}"><i class="ri-circle-fill circle-icon text-info-main w-auto"></i> Dashboard Admin</a>--}}
+{{--                    </li>--}}
+{{--                    <li>--}}
+{{--                        <a href="{{ route('index4') }}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Dashboard Superadmin</a>--}}
+{{--                    </li>--}}
+{{--                    <li>--}}
+{{--                        <a href="{{ route('index5') }}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Dashboard Operator</a>--}}
+{{--                    </li>--}}
                 </ul>
             </li>
             <li class="sidebar-menu-group-title">Application</li>
