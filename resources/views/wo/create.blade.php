@@ -10,11 +10,19 @@
         <div class="card-header">
             <div class="d-flex justify-content-end">
                 <button class="btn btn-dark m-2">Back</button>
-                <button class="btn btn-primary m-2">Submit</button>
-                <button class="btn btn-primary-500 m-2">Create Schedule</button>
-                <button class="btn btn-primary-400 m-2">Submit Request for Approval</button>
+                <div class="dropdown">
+                    <button class="btn btn-outline-info dropdown-toggle m-2" type="button" id="actionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Actions
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="actionDropdown">
+                        <li><a class="dropdown-item" href="#">Submit</a></li>
+                        <li><a class="dropdown-item" href="#">Create Schedule</a></li>
+                        <li><a class="dropdown-item" href="#">Submit Request for Approval</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
+
         <div class="card-body">
             <div class="row">
                 <div class="col-md-3">
