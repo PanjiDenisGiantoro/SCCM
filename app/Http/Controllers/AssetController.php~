@@ -356,7 +356,7 @@ class AssetController extends Controller
                 return $facility->name;
             })
             ->editColumn('status', function ($facility) {
-                if ($facility->status == 1) {
+                if ($facility->status == '1') {
                     return '<span class="badge bg-success">Active</span>';
                 } else {
                     return '<span class="badge bg-danger">Inactive</span>';

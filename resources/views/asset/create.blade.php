@@ -149,6 +149,11 @@
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="deprec-tab" data-bs-toggle="tab" data-bs-target="#deprec"
+                                        type="button" role="tab" aria-controls="deprec" aria-selected="false">Asset Depreciation
+                                   </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="parts-tab" data-bs-toggle="tab" data-bs-target="#parts"
                                         type="button" role="tab" aria-controls="parts" aria-selected="false">Parts/BOM
                                    </button>
@@ -500,6 +505,8 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="tab-pane fade" id="deprec" role="tabpanel" aria-labelledby="deprec-tab">
                             </div>
                             <div class="tab-pane fade" id="metering" role="tabpanel" aria-labelledby="metering-tab">
                                 <div class="row">

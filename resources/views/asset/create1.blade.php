@@ -154,6 +154,11 @@
                                    </button>
                             </li>
                             <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="deprec-tab" data-bs-toggle="tab" data-bs-target="#deprec"
+                                        type="button" role="tab" aria-controls="deprec" aria-selected="false">Asset Depreciation
+                                   </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="metering-tab" data-bs-toggle="tab"
                                         data-bs-target="#metering" type="button" role="tab" aria-controls="metering"
                                         aria-selected="false">Metering/Events
@@ -182,6 +187,52 @@
                         </ul>
 
                         <div class="tab-content" id="myTabContent">
+
+                            <div class="tab-pane fade" id="deprec" role="tabpanel" aria-labelledby="deprec-tab">
+                                <div class="mb-4">
+                                    <h2 class="h6 font-weight-bold mb-2">Depreciation Details</h2>
+
+
+                                    <div class="d-flex mb-2">
+                                        <div class="flex-grow-1 me-2">
+                                            <label class="form-label">Purchase Date</label>
+                                            <input class="form-control" type="date" name="purchase_date" required/>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <label class="form-label">Purchase Price</label>
+                                            <input class="form-control" type="number" name="purchase_price" required/>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex mb-2">
+                                        <div class="flex-grow-1 me-2">
+                                            <label class="form-label">Useful Life (Years)</label>
+                                            <input class="form-control" type="number" name="useful_life" required/>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <label class="form-label">Salvage Value</label>
+                                            <input class="form-control" type="number" name="salvage_value" required/>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label">Depreciation Method</label>
+                                        <select class="form-select" name="depreciation_method">
+                                            <option value="straight_line">Straight Line</option>
+                                            <option value="declining_balance">Declining Balance</option>
+                                            <option value="sum_of_years">Sum of Years' Digits</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label">Annual Depreciation</label>
+                                        <input class="form-control" type="text" name="annual_depreciation" readonly/>
+                                    </div>
+
+                                    <button type="button" class="btn btn-outline-info" id="calculateDepreciation">Calculate</button>
+                                </div>
+                            </div>
+
                             <div class="tab-pane fade show active" id="general" role="tabpanel"
                                  aria-labelledby="general-tab">
                                 <div class="mb-4">
@@ -2028,3 +2079,25 @@
     });
 </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("calculateDepreciation").addEventListener("click", function() {
+            let purchasePrice = parseFloat(document.querySelector("[name='purchase_price']").value);
+            let usefulLife = parseInt(document.querySelector("[name='useful_life']").value);
+            let salvageValue = parseFloat(document.querySelector("[name='salvage_value']").value);
+            let depreciationMethod = document.querySelector("[name='depreciation_method']").value;
+            let annualDepreciation = 0;
+
+            if (depreciationMethod === "straight_line") {
+                annualDepreciation = (purchasePrice - salvageValue) / usefulLife;
+            } else if (depreciationMethod === "declining_balance") {
+                annualDepreciation = (purchasePrice - salvageValue) * (2 / usefulLife);
+            } else if (depreciationMethod === "sum_of_years") {
+                let sumYears = (usefulLife * (usefulLife + 1)) / 2;
+                annualDepreciation = (usefulLife / sumYears) * (purchasePrice - salvageValue);
+            }
+
+            document.querySelector("[name='annual_depreciation']").value = annualDepreciation.toFixed(2);
+        });
+    });
+</script>

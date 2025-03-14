@@ -12,9 +12,8 @@ class BusinessController extends Controller
 {
     public function index()
     {
-        $qrcode = QrCode::size(200)->generate('Halo Dunia!');
         $business = Business::latest()->get();
-        return view('business.index', compact('business','qrcode'));
+        return view('business.index', compact('business'));
 
     }
 
@@ -42,6 +41,12 @@ class BusinessController extends Controller
                 'status' => 'nullable',
             ]);
 
+//            photo
+            if ($request->hasFile('photo')) {
+                $data['photo'] = $request->file('photo')->store('business', 'public');
+            }else{
+                $data['photo'] = null;
+            }
 
             $business = Business::create([
                 'code' => 'B' . rand(100000, 999999),
@@ -54,6 +59,7 @@ class BusinessController extends Controller
                 'city' => $data['city'],
                 'country' => $data['country'],
                 'status' => $data['status'],
+                'photo' => $data['photo']
             ]);
             Alert::success('Success', 'Business created successfully');
 
@@ -96,8 +102,20 @@ class BusinessController extends Controller
             $request->business_classification = $request->business_classification;
         }
 
+
         try {
             $business = Business::find($id);
+
+            $oldPhotoPath = public_path('storage/business/' . $business->photo);
+            if (file_exists($oldPhotoPath)) {
+                unlink($oldPhotoPath);
+            }
+            if ($request->hasFile('photo')) {
+                $business->photo = $request->file('photo')->store('business', 'public');
+            }else{
+                $business->photo = $business->photo;
+            }
+
             $business->update([
                 'business_classification' => $request->business_classification,
                 'business_name' => $request->business_name,
@@ -108,6 +126,7 @@ class BusinessController extends Controller
                 'city' => $request->city,
                 'country' => $request->country,
                 'status' => $request->status,
+                'photo' => $business->photo
             ]);
             Alert::success('Success', 'Business updated successfully');
             return redirect()->route('business.list');

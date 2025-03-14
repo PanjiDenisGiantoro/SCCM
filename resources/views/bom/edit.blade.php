@@ -4,20 +4,15 @@
     $title = 'BOM Group';
     $subTitle = 'BOM Group';
     // Ambil record BOM yang memiliki part (quantity tidak null) dan yang memiliki facility (quantity null)
-    $currentBomParts = $bomParts->first();
-    $currentBomFacility = $bomFacilities->first();
-@endphp
-@php
-    $currentBom = $bom[0];
-@endphp
 
+@endphp
 @section('content')
     <!-- Header -->
     <div class="card">
         <div class="card-header">
             <div class="d-flex justify-content-end">
                 <a href="{{ route('bom.list') }}" class="btn btn-dark m-2">Back</a>
-                <button class="btn btn-primary m-2 btn-submit">Submit</button>
+                <button class="btn btn-outline-info m-2 btn-submit">Submit</button>
             </div>
         </div>
         <div class="card-body">
@@ -25,7 +20,7 @@
             <div class="form-group mb-3 w-60">
                 <label for="name">Name</label>
                 <!-- Contoh: gunakan nama dari BOM parts -->
-                <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" value="{{ $currentBomParts->name ?? $currentBomFacility->name }}" readonly>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" value="{{ $bomParts[0]->name ?? '-'  }}" readonly>
             </div>
         </div>
     </div>
@@ -60,23 +55,41 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {{-- Tampilkan data parts dari $currentBomParts --}}
-                            @if($currentBomParts && $currentBomParts->parts && $currentBomParts->parts->count())
-                                @foreach($currentBomParts->parts as $index => $part)
-                                    <tr data-id="{{ $part->id }}" data-index="{{ $index }}">
+                            {{-- Tampilkan data parts dari $bomParts --}}
+
+                            @if($bomParts)
+                                @foreach($bomParts as $item)
+
+                                    <tr data-id="{{ $item->id }}" data-index="{{ $loop->index }}">
                                         <td>
-                                            <input type="hidden" name="parts[{{ $index }}][id]" value="{{ $part->id }}">
-                                            <input type="text" class="form-control" name="parts[{{ $index }}][name]" value="{{ $part->nameParts }}" readonly>
+                                            <input type="hidden" name="parts[{{ $loop->index }}][id]" value="{{ $item->id }}">
+                                            <input type="text" class="form-control" name="parts[{{ $loop->index }}][name]" value="{{ $item->nameParts }}" readonly>
                                         </td>
                                         <td>
-                                            <input type="number" class="form-control qty-input" name="parts[{{ $index }}][qty]" min="1" value="{{ $currentBomParts->quantity ?? 1 }}">
+                                            <input type="number" class="form-control qty-input" name="parts[{{ $loop->index }}][qty]" min="1" value="{{ $item->quantity ?? 1 }}">
                                         </td>
                                         <td>
                                             <button class="btn btn-sm btn-danger removePartBtn">Remove</button>
                                         </td>
                                     </tr>
                                 @endforeach
-                            @endif
+                                @endif
+{{--                            @if($bomParts && $bomParts->parts && $bomParts->parts->count())--}}
+{{--                                @foreach($bomParts->parts as $index => $part)--}}
+{{--                                    <tr data-id="{{ $part->id }}" data-index="{{ $index }}">--}}
+{{--                                        <td>--}}
+{{--                                            <input type="hidden" name="parts[{{ $index }}][id]" value="{{ $part->id }}">--}}
+{{--                                            <input type="text" class="form-control" name="parts[{{ $index }}][name]" value="{{ $part->nameParts }}" readonly>--}}
+{{--                                        </td>--}}
+{{--                                        <td>--}}
+{{--                                            <input type="number" class="form-control qty-input" name="parts[{{ $index }}][qty]" min="1" value="{{ $bomParts->quantity ?? 1 }}">--}}
+{{--                                        </td>--}}
+{{--                                        <td>--}}
+{{--                                            <button class="btn btn-sm btn-danger removePartBtn">Remove</button>--}}
+{{--                                        </td>--}}
+{{--                                    </tr>--}}
+{{--                                @endforeach--}}
+{{--                            @endif--}}
                             </tbody>
                         </table>
                     </div>
@@ -94,29 +107,53 @@
                                 <th>Category</th>
                                 <th>Asset</th>
                                 <th>Location</th>
+                                <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
                             {{-- Tampilkan data asset dari $currentBomFacility --}}
-                            @if($currentBomFacility && $currentBomFacility->facilities)
-                                <tr>
-                                    <td>
-                                        <input type="hidden" name="bom[][id]" value="{{ $currentBomFacility->facilities->id }}">
-                                        <input class="form-control" type="text" name="bom[][code]" value="{{ $currentBomFacility->facilities->code }}">
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="text" name="bom[][name]" value="{{ $currentBomFacility->facilities->name }}">
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="text" name="bom[][category]" value="{{ $currentBomFacility->facilities->category }}">
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="text" name="bom[][asset]" value="{{ $currentBomFacility->id_asset ?? $currentBomFacility->facilities->id_asset }}">
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="text" name="bom[][location]" value="{{ $currentBomFacility->facilities->id_location }}">
-                                    </td>
-                                </tr>
+                            @if($bomFacilities)
+                                @foreach($bomFacilities as $item)
+                                    <tr data-id="{{ $item->bom_id }}" data-index="{{ $loop->index }}">
+                                        <td>
+                                            <input type="hidden" name="bom[{{ $loop->index }}][id]" value="{{ $item->bom_id }}">
+                                            <input class="form-control" type="text" name="bom[{{ $loop->index }}][code]" value="{{ $item->code }}" readonly>
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="text" name="bom[{{ $loop->index }}][name]" value="{{ $item->name }}" readonly>
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="text" name="bom[{{ $loop->index }}][category]" value="{{ $item->category_name }}" readonly>
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="text" name="bom[{{ $loop->index }}][asset]" value="{{ $item->bom_id  }}" readonly>
+                                        </td>
+                                        <td>
+                                            <input class="form-control" type="text" name="bom[{{ $loop->index }}][location]" value="{{ $item->id_location }}" readonly>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-danger removeBomBtn">Remove</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+{{--                                <tr>--}}
+{{--                                    <td>--}}
+{{--                                        <input type="hidden" name="bom[][id]" value="{{ $currentBomFacility->facilities->id }}">--}}
+{{--                                        <input class="form-control" type="text" name="bom[][code]" value="{{ $currentBomFacility->facilities->code }}">--}}
+{{--                                    </td>--}}
+{{--                                    <td>--}}
+{{--                                        <input class="form-control" type="text" name="bom[][name]" value="{{ $currentBomFacility->facilities->name }}">--}}
+{{--                                    </td>--}}
+{{--                                    <td>--}}
+{{--                                        <input class="form-control" type="text" name="bom[][category]" value="{{ $currentBomFacility->facilities->category }}">--}}
+{{--                                    </td>--}}
+{{--                                    <td>--}}
+{{--                                        <input class="form-control" type="text" name="bom[][asset]" value="{{ $currentBomFacility->id_asset ?? $currentBomFacility->facilities->id_asset }}">--}}
+{{--                                    </td>--}}
+{{--                                    <td>--}}
+{{--                                        <input class="form-control" type="text" name="bom[][location]" value="{{ $currentBomFacility->facilities->id_location }}">--}}
+{{--                                    </td>--}}
+{{--                                </tr>--}}
                             @endif
                             </tbody>
                         </table>
@@ -190,7 +227,7 @@
 <script src="{{ asset('assets/js/lib/jquery-3.7.1.min.js') }}"></script>
 <script>
     $(document).ready(function () {
-        let partIndex = {{ $currentBom->parts->count() ?? 0 }};
+        let partIndex = {{ $bomParts->count() ?? 0 }};
 
         // ========================
         // Modal Part: Load List Part via AJAX
@@ -212,7 +249,7 @@
                             <tr>
                                 <td>${part.nameParts}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-primary addPartBtn"
+                                    <button class="btn btn-sm btn-outline-info addPartBtn"
                                         data-id="${part.id}"
                                         data-name="${part.nameParts}">
                                         Add
@@ -291,7 +328,7 @@
                                 <td>${facility.category}</td>
                                 <td>${facility.id_location ? facility.id_location : '-'}</td>
                                 <td>
-                                    <button class="btn btn-primary btn-add-asset" data-asset='${JSON.stringify(facility)}'>Add</button>
+                                    <button class="btn btn-outline-info btn-add-asset" data-asset='${JSON.stringify(facility)}'>Add</button>
                                 </td>
                             </tr>
                         `;
@@ -314,26 +351,35 @@
                 <tr>
                     <td>
                         <input type="hidden" name="bom[][id]" value="${facilityData.id}">
-                        <input class="form-control" type="text" name="bom[][code]" value="${facilityData.code}">
+                        <input class="form-control" type="text" name="bom[][code]" value="${facilityData.code}"readonly>
                     </td>
                     <td>
-                        <input class="form-control" type="text" name="bom[][name]" value="${facilityData.name}">
+                        <input class="form-control" type="text" name="bom[][name]" value="${facilityData.name}"readonly>
                     </td>
                     <td>
-                        <input class="form-control" type="text" name="bom[][category]" value="${facilityData.category}">
+                        <input class="form-control" type="text" name="bom[][category]" value="${facilityData.category}"readonly>
                     </td>
                     <td>
-                        <input class="form-control" type="text" name="bom[][asset]" value="${facilityData.code}">
+                        <input class="form-control" type="text" name="bom[][asset]" value="${facilityData.code}"readonly>
                     </td>
                     <td>
-                        <input class="form-control" type="text" name="bom[][location]" value="${facilityData.id_location ? facilityData.id_location : ''}">
+                        <input class="form-control" type="text" name="bom[][location]" value="${facilityData.id_location ? facilityData.id_location : ''}" readonly>
                     </td>
+                    <td>
+                            <button class="btn btn-sm btn-danger removeBomBtn">Remove</button>
+                        </td>
                 </tr>
             `;
             $("#assetTable tbody").append(row);
             $("#addAssetModal").modal("hide");
+
+
         });
 
+        // Hapus Part
+        $(document).on("click", ".removeBomBtn", function () {
+            $(this).closest("tr").remove();
+        });
         // ========================
         // Submit Data (Edit BOM)
         // ========================

@@ -1,4 +1,3 @@
-
 @extends('layout.layout')
 
 @php
@@ -55,12 +54,12 @@
             serverSide: true,
             ajax: "{{ route('asset.getDataFacility') }}",
             columns: [
-                { data: 'expand', orderable: false, searchable: false },
-                { data: 'name', name: 'name' },
-                { data: 'code', name: 'code' },
-                { data: 'description', name: 'description' },
-                { data: 'status', name: 'status' },
-                { data: 'action', orderable: false, searchable: false },
+                {data: 'expand', orderable: false, searchable: false},
+                {data: 'name', name: 'name'},
+                {data: 'code', name: 'code'},
+                {data: 'description', name: 'description'},
+                {data: 'status', name: 'status'},
+                {data: 'action', orderable: false, searchable: false},
             ]
         });
 
@@ -77,13 +76,33 @@
 
                 $.ajax({
                     url: "{{ route('asset.getDataFacility') }}",
-                    data: { parent_id: facilityId },
+                    data: {parent_id: facilityId},
                     success: function (data) {
-                        var childTable = '<table class="table table-bordered"><thead><tr><th>Name</th><th>Code</th><th>Description</th><th>Status</th></tr></thead><tbody>';
+                        var childTable = `<table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>`;
+
                         data.forEach(function (child) {
-                            childTable += `<tr><td>${child.name}</td><td>${child.code}</td><td>${child.description}</td><td>${child.status}</td></tr>`;
+                            childTable += `<tr>
+            <td>${child.name}</td>
+            <td>${child.code}</td>
+            <td>${child.description || '-'}</td>
+            <td>
+                <span class="badge ${child.status === '1' ? 'bg-success' : 'bg-danger'}">
+                    ${child.status === '1' ? 'Active' : 'Inactive'}
+                </span>
+            </td>
+        </tr>`;
                         });
-                        childTable += '</tbody></table>';
+
+                        childTable += `</tbody></table>`;
 
                         row.child(childTable).show();
                         tr.addClass('shown');

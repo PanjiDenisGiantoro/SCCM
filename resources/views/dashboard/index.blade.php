@@ -374,12 +374,12 @@ $subTitle = 'Dashboard';
                 type: 'column'
             },
             title: {
-                text: 'Total Work Order / Month'
+                text: 'Total Work Order / Year'
             },
             xAxis: {
                 categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
                 title: {
-                    text: 'Bulan'
+                    text: 'Month'
                 }
             },
             yAxis: {
@@ -402,12 +402,12 @@ $subTitle = 'Dashboard';
                 type: 'line'
             },
             title: {
-                text: 'Total Purchase Order / Month'
+                text: 'Total Purchase Order / Year'
             },
             xAxis: {
                 categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
                 title: {
-                    text: 'Bulan'
+                    text: 'Month'
                 }
             },
             yAxis: {

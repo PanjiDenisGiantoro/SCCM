@@ -100,19 +100,31 @@ class BOMController extends Controller
     }
     public function edit($id)
     {
-        $bom = Boms::with('parts','facilities')
-            ->where('model' , 'App\Models\Boms')
-            ->where('name', $id)
-            ->latest()->get();
 
-        $bomParts = $bom->filter(function($item) {
+        $part = Part::leftJoin('boms_managers', 'boms_managers.id_asset', '=', 'parts.id')
+            ->where('boms_managers.model', 'App\Models\Boms')
+            ->where('boms_managers.name', $id)
+            ->get();
+
+        $facilities = Facility::leftJoin('boms_managers', 'boms_managers.id_bom', '=', 'facilities.id')
+            ->leftJoin('asset_categories', DB::raw('CAST(facilities.category AS BIGINT)'), '=', 'asset_categories.id')
+            ->select('facilities.*', 'asset_categories.category_name', 'boms_managers.quantity','boms_managers.id as bom_id')
+            ->where('boms_managers.model', 'App\Models\Boms')
+            ->where('boms_managers.name', $id)
+            ->get();
+
+        $bomFacilities = $facilities->filter(function($item) {
+            return is_null($item->quantity);
+        });
+
+        $bomParts = $part->filter(function($item) {
             return !is_null($item->quantity); // Record dengan quantity tidak null (ada part)
         });
-        $bomFacilities = $bom->filter(function($item) {
-            return is_null($item->quantity); // Record dengan quantity null (hanya facility)
-        });
 
-        return view('bom.edit', compact('bom','bomParts', 'bomFacilities'));
+
+
+
+        return view('bom.edit', compact('bomParts', 'bomFacilities'));
 
     }
 

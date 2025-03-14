@@ -216,11 +216,24 @@
                     <li>
                         <a href=""><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>Report Account</a>
                     </li>
-
                     <li>
                         <a href=""><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>Report KPI Dashboard</a>
                     </li>
-
+                    <li>
+                        <a href=""><i class="ri-circle-fill circle-icon text-success-600 w-auto"></i>Report Tenant</a>
+                    </li>
+                    <li>
+                        <a href=""><i class="ri-circle-fill circle-icon text-danger-600 w-auto"></i>Report Maintenance</a>
+                    </li>
+                    <li>
+                        <a href=""><i class="ri-circle-fill circle-icon text-info-600 w-auto"></i>Report Security</a>
+                    </li>
+                    <li>
+                        <a href=""><i class="ri-circle-fill circle-icon text-primary-500 w-auto"></i>Report Asset & Inventory</a>
+                    </li>
+                    <li>
+                        <a href=""><i class="ri-circle-fill circle-icon text-secondary-600 w-auto"></i>Report Procurement</a>
+                    </li>
                 </ul>
             </li>
 
