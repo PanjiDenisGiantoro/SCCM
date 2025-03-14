@@ -13,6 +13,7 @@ use App\Models\Organization;
 use App\Models\personnel;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
@@ -50,6 +51,13 @@ class AssetController extends Controller
 
 
         try {
+
+            if ($request->hasFile('image')) {
+                $imageName = $request->file('image')->store('facilities', 'public');
+            }else{
+                $imageName = null;
+            }
+
             $facility = Facility::create([
                 'name' => $request->nameFacility,
                 'id_asset' => 1,
@@ -59,7 +67,8 @@ class AssetController extends Controller
                 'charge_departement_id' => $request->chargemanagement,
                 'description' => $request->descriptionnote,
                 'status' => $request->online,
-                'parent_id' => $request->locationid
+                'parent_id' => $request->locationid,
+                'photo' => $imageName
             ]);
 
             if ($request->location == 0) {
@@ -91,32 +100,32 @@ class AssetController extends Controller
             }
 
 
-            $bomData = json_decode($request->bomData, true); // Decode JSON ke array
 
+            if (!empty($request->bomData)) { // Pastikan bomData ada dan tidak kosong
+                $bomData = json_decode($request->bomData, true); // Decode JSON ke array
 
-            if ($request->bomData == '[]') {
-                $bomdataperson = []; // Pastikan array kosong sudah dideklarasikan
+                if (is_array($bomData) && count($bomData) > 0) { // Cek apakah array valid dan memiliki isi
+                    $bomdataperson = [];
 
-                foreach ($bomData as $data) {
-                    $bomdataperson[] = [
-                        'id_asset' => $data['asset'] ?? null,  // Isi dari asset
-                        'id_bom' => $data['bomControl'] ?: null, // Bisa kosong
-                        'quantity' => $data['quantity'] ?? '0', // Default '0' jika kosong
-                        'model' => 'App\Model\Facility',
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
+                    foreach ($bomData as $data) {
+                        $bomdataperson[] = [
+                            'id_asset' => $data['asset'] ?? null,
+                            'id_bom' => $data['bomControl'] ?? null,
+                            'quantity' => $data['quantity'] ?? '0',
+                            'model' => 'App\Model\Facility',
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+
+                    if (!empty($bomdataperson)) {
+                        Boms::insert($bomdataperson);
+                    }
+                } else {
+                 Log::error('BOM data is not valid or empty.');
                 }
-
-                // Hanya insert jika ada data
-                if (!empty($bomdataperson)) {
-                    Boms::insert($bomdataperson);
-                }
-            } else {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'bomData tidak ditemukan atau kosong.',
-                ], 422);
+            }else{
+                Log::error('BOM data is not valid or empty.');
             }
 
 
@@ -336,44 +345,60 @@ class AssetController extends Controller
         ]);
     }
 
-
     public function getDataFacility(Request $request)
     {
-        // Cek apakah request memiliki parent_id untuk mengambil child data
         if ($request->has('parent_id')) {
-            $facilities = Facility::where('parent_id', $request->parent_id)->get();
-            return response()->json($facilities);
+            return response()->json($this->getChildFacilities($request->parent_id));
         }
-        $facility = Facility::whereNull('parent_id')->latest()->get();
 
-        return DataTables::of($facility)
+        $facilities = Facility::whereNull('parent_id')->latest()->get();
+
+        return DataTables::of($facilities)
             ->addColumn('expand', function ($facility) {
-                // Jika ada child, tampilkan tombol expand
                 $hasChildren = Facility::where('parent_id', $facility->id)->exists();
-                return $hasChildren ? '<button class="btn btn-info btn-sm toggle-child" data-id="' . $facility->id . '">+</button>' : '';
+                return $hasChildren ? '<button class="btn btn-outline-info btn-sm toggle-child" data-id="' . $facility->id . '">+</button>' : '';
             })
             ->editColumn('name', function ($facility) {
                 return $facility->name;
             })
             ->editColumn('status', function ($facility) {
-                if ($facility->status == 1) {
-                    return '<span class="badge bg-success">Active</span>';
-                } else {
-                    return '<span class="badge bg-danger">Inactive</span>';
-                }
+                return $facility->status == 1
+                    ? '<span class="badge bg-success">Active</span>'
+                    : '<span class="badge bg-danger">Inactive</span>';
             })
             ->editColumn('description', function ($facility) {
-                return $facility->description;
+                return $facility->description ?? '-';
             })
             ->addColumn('action', function ($facility) {
                 return '
-            <button class="btn btn-outline-info btn-sm editBtn " data-id="' . $facility->id . '">            <iconify-icon icon="lucide:edit"></iconify-icon>
-</button>
-            <button class="btn btn-outline-danger btn-sm deleteBtn" data-id="' . $facility->id . '"><iconify-icon icon="lucide:trash-2"></iconify-icon></button>
-            ';
+            <button class="btn btn-outline-info btn-sm editBtn" data-id="' . $facility->id . '">
+                <iconify-icon icon="lucide:edit"></iconify-icon>
+            </button>
+            <button class="btn btn-outline-danger btn-sm deleteBtn" data-id="' . $facility->id . '">
+                <iconify-icon icon="lucide:trash-2"></iconify-icon>
+            </button>
+                <button class="btn btn-outline-info btn-sm viewBtn" data-id="' . $facility->id . '">
+                <iconify-icon icon="lucide:eye"></iconify-icon>
+            </button>'
+                    ;
             })
-            ->rawColumns(['action', 'name', 'description', 'expand','status'])
+            ->rawColumns(['expand', 'status', 'action'])
             ->make(true);
+    }
+
+// Fungsi rekursif untuk mendapatkan semua anak secara bertingkat
+    private function getChildFacilities($parentId)
+    {
+        $facilities = Facility::where('parent_id', $parentId)->get();
+
+        foreach ($facilities as $facility) {
+            $facility->has_children = Facility::where('parent_id', $facility->id)->exists();
+            if ($facility->has_children) {
+                $facility->children = $this->getChildFacilities($facility->id);
+            }
+        }
+
+        return $facilities;
     }
 
 }

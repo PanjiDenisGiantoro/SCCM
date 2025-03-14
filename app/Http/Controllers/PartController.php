@@ -256,9 +256,22 @@ class PartController extends Controller
 
     public function getFacility()
     {
+
         $categories = AssetCategory::with('children')
             ->whereHas('assets', function ($query) {
                 $query->where('type_id', 1);
+            })
+            ->whereNull('parent_id') // Ambil parent saja
+            ->get();
+
+        return response()->json($categories);
+    }
+    public function getFacility2()
+    {
+
+        $categories = AssetCategory::with('children')
+            ->whereHas('assets', function ($query) {
+                $query->where('type_id', 2);
             })
             ->whereNull('parent_id') // Ambil parent saja
             ->get();
@@ -272,6 +285,16 @@ class PartController extends Controller
             'category_name' => $request->name,
             'parent_id' => $request->parent_id,
             'type_id' => 4
+        ]);
+
+        return response()->json($category);
+    }
+    public function storecategories2(Request $request)
+    {
+        $category = AssetCategory::create([
+            'category_name' => $request->name,
+            'parent_id' => $request->parent_id,
+            'type_id' => 2
         ]);
 
         return response()->json($category);

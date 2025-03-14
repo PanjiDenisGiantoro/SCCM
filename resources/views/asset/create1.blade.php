@@ -62,21 +62,22 @@
                                     <label class="form-check-label line-height-1 fw-medium text-secondary-light" for="onlineSwitch" id="onlineLabel">Online</label>
                                 </div>
 
+
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="d-flex align-items-start mb-4">
                             <div class="upload-container">
-                                <input type="file" id="uploadImage" accept="image/*" hidden>
+                                <input type="file" id="uploadImage" name="image" accept="image/*" hidden>
                                 <label for="uploadImage" class="upload-label">
                                     <div class="upload-box">
-                                        <i class="bi bi-cloud-arrow-up upload-icon"></i>
-                                        <p class="upload-text">Upload Image</p>
+                                        <iconify-icon icon="lucide:image" class="upload-icon"></iconify-icon>
                                     </div>
                                 </label>
-                                <img id="previewImage" class="img-fluid mt-2 preview-hidden" width="100" height="100" />
+                                <img id="previewImage" class="img-fluid mt-2 preview-hidden" width="100" height="100">
                             </div>
+
 
                             <div class="flex-grow-1 ms-3">
                                 <div class="mb-2">
@@ -98,7 +99,6 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-primary" onclick="uploadFacilityImage()">Upload Image</button>
                     </div>
                     <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel"
                          aria-hidden="true">
@@ -1919,68 +1919,63 @@
     }
 </script>
 
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelector(".btnsubmitall").addEventListener("click", function () {
-            let formData = {};
+            let formData = new FormData();
 
             // Ambil semua input, select, dan textarea dalam form
             document.querySelectorAll("#facility-form input, #facility-form select, #facility-form textarea").forEach(element => {
                 if (element.type === "checkbox") {
-                    formData[element.name] = element.checked ? 1 : 0;
+                    formData.append(element.name, element.checked ? 1 : 0);
                 } else if (element.type === "radio") {
                     if (element.checked) {
-                        formData[element.name] = element.value;
+                        formData.append(element.name, element.value);
+                    }
+                } else if (element.type === "file") {
+                    if (element.files.length > 0) {
+                        formData.append(element.name, element.files[0]); // Menyimpan file pertama
                     }
                 } else {
-                    formData[element.name] = element.value;
+                    formData.append(element.name, element.value);
                 }
             });
 
-            console.log(formData); // Debugging: Lihat hasil di console sebelum dikirim ke server
+            console.log([...formData.entries()]); // Debugging: Cek isi formData sebelum dikirim
 
-            // Kirim data ke Laravel via AJAX (Opsional)
+            // Kirim data ke Laravel via AJAX
             fetch("{{ route('asset.store') }}", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
                     "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
                 },
-                body: JSON.stringify(formData)
+                body: formData // Gunakan FormData agar mendukung file upload
             })
                 .then(response => {
-                    console.log("Raw response:", response); // Debugging: Lihat response sebelum parsing JSON
-                    return response.text(); // Ambil teks response dulu
-                })
-                .then(text => {
-                    console.log("Raw text response:", text); // Debugging: Lihat isi response
-                    return JSON.parse(text); // Parse ke JSON
+                    console.log("Raw response:", response); // Debugging
+                    return response.json();
                 })
                 .then(data => {
-                    if(data.success) {
+                    if (data.success) {
                         swal.fire({
                             icon: 'success',
                             title: 'Success',
                             text: 'Data saved successfully!',
-                        })
-                        .then(() => {
+                        }).then(() => {
                             console.log(data);
                             {{--window.location.href = "{{ route('asset.list') }}";--}}
                         });
-                    }else{
+                    } else {
                         swal.fire({
                             icon: 'error',
                             title: 'Error',
                             text: 'Failed to save data. Please try again.',
-                        })
+                        });
                     }
                 })
                 .catch(error => console.error("Error:", error));
-
         });
     });
-
 </script>
 
 
@@ -2101,3 +2096,54 @@
         });
     });
 </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var fileInput = document.getElementById("uploadImage");
+        var preview = document.getElementById("previewImage");
+        var nameFacility = document.getElementById("nameFacility");
+
+        if (fileInput) {
+            fileInput.addEventListener("change", function () {
+                if (fileInput.files.length > 0) {
+                    var file = fileInput.files[0];
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        if (preview) {
+                            preview.src = e.target.result;
+                            preview.classList.remove("preview-hidden");
+                        }
+                    };
+
+                    reader.readAsDataURL(file);
+
+                    if (nameFacility) {
+                        nameFacility.value = file.name;
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+<style>
+    .upload-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        background: #f1f1f1;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .upload-icon {
+        color: #007bff;
+    }
+
+    .preview-hidden {
+        display: none;
+    }
+</style>

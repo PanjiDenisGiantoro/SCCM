@@ -379,7 +379,9 @@ Route::prefix('part')->group(function () {
         Route::get('create','create')->name('part.create');
         Route::get('/categories','getCategories')->name('categories.get');
         Route::get('/getFacility','getFacility')->name('categories.getFacility');
+        Route::get('/getFacility2','getFacility2')->name('categories.getFacility2');
         Route::post('/categories','storecategories')->name('categories.store');
+        Route::post('/categories2','storecategories2')->name('categories.store2');
 
 
     });
@@ -506,6 +508,13 @@ Route::get('/socket/delete/{id}', [\App\Http\Controllers\RestController::class, 
 Route::get('socket/test/{id}', [\App\Http\Controllers\RestController::class, 'test'])->name('socket.test');
 Route::get('socket/show/{id}', [\App\Http\Controllers\RestController::class, 'show'])->name('socket.show');
 Route::get('/error-log', [\App\Http\Controllers\RestController::class, 'error'])->name('error.log');
+
+
+//link diatas gimana
+
+Route::get('test111',[\App\Http\Controllers\RestController::class, 'test1'])->name('test');
+Route::post('chat',[\App\Http\Controllers\RestController::class, 'chat'])->name('chat');
+Route::get('chatgpt',[\App\Http\Controllers\RestController::class, 'chatgpt'])->name('chatgpt');
 
 Route::middleware([
     'auth:sanctum',

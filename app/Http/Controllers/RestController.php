@@ -114,12 +114,12 @@ class RestController extends Controller
             }
         }
 
-        return view('socket.test', compact('api', 'data','isEdit', 'existingData','value'));
+        return view('socket.test', compact('api', 'data', 'isEdit', 'existingData', 'value'));
     }
 
 
-
-        public function show($socketId) {
+    public function show($socketId)
+    {
         $socket = Socket::with('errorLogs')->find($socketId);
 
         return DataTables::of($socket->errorLogs)
@@ -132,11 +132,13 @@ class RestController extends Controller
             ->rawColumns(['created_at', 'message'])
             ->make(true);
     }
+
     public function error()
     {
         $errorLogs = SocketErrorLog::with('socket')->orderBy('updated_at', 'desc')->get();
         return view('error_log', compact('errorLogs'));
     }
+
     public function store_alarm(Request $request)
     {
         $request->validate([
@@ -172,4 +174,67 @@ class RestController extends Controller
     }
 
 
+    public function test1()
+    {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'http://localhost:1234/v1/completions',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => '{
+  "model": "meta-llama-3.1-8b-instruct",
+  "prompt": "Apakah yang dimaksud dengan API",
+  "max_tokens": 1000
+}',
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json'
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        echo $response;
+
+    }
+    public function chat(Request $request)
+    {
+        $prompt = $request->input('prompt'); // Ambil input prompt dari form
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'http://localhost:1234/v1/completions',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode([
+                "model" => "meta-llama-3.1-8b-instruct",
+                "prompt" => $prompt,
+                "max_tokens" => 1000
+            ]),
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json'
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        return response()->json(json_decode($response, true)); // Kembalikan sebagai JSON
+    }
+    public function chatgpt()
+    {
+        return view('chatgpt');
+
+    }
 }
+
