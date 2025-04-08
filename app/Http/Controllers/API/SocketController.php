@@ -110,7 +110,6 @@ class SocketController extends Controller
         ];
 
         // Cek jika ada salah satu nilai yang lebih dari 0.01
-        if ($data['rpm'] > 0.01 || $data['temperature'] > 0.01 || $data['vibration'] > 0.01 || $data['voltage'] > 0.01) {
             sensor_motor::create([
                 'listrik' => $data['voltage'],
                 'suhu' => $data['temperature'],
@@ -123,14 +122,8 @@ class SocketController extends Controller
                 'message' => 'Data received successfully',
                 'data' => $data
             ], 200);
-        }
 
-        Log::info('Data tidak memenuhi syarat:', $data);
 
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Data tidak memenuhi syarat untuk disimpan'
-        ], 400);
     }
     public function getdatacsv()
     {
