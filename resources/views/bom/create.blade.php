@@ -33,11 +33,11 @@
                             type="button" role="tab" aria-controls="part" aria-selected="true">Parts List
                     </button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="asset-tab" data-bs-toggle="tab" data-bs-target="#asset"
-                            type="button" role="tab" aria-controls="asset" aria-selected="false">Asset BOM
-                    </button>
-                </li>
+{{--                <li class="nav-item" role="presentation">--}}
+{{--                    <button class="nav-link" id="asset-tab" data-bs-toggle="tab" data-bs-target="#asset"--}}
+{{--                            type="button" role="tab" aria-controls="asset" aria-selected="false">Asset BOM--}}
+{{--                    </button>--}}
+{{--                </li>--}}
             </ul>
 
             <div class="tab-content" id="myTabContent">

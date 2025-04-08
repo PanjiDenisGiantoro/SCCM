@@ -12,13 +12,13 @@ Content-Type: application/json
 }
 
 ###
-POST http://192.168.5.228:8000/api/sensor
+POST http://103.134.154.111/api/sensor
 Content-Type: application/json
 
 {
-    "rpm": 0,
-    "temperature": 0,
-    "vibration": 0,
-    "voltage": 0
+    "rpm": 1,
+    "temperature": 1,
+    "vibration": 1,
+    "voltage": 1
 }
 

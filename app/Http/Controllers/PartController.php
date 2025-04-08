@@ -332,6 +332,7 @@ class PartController extends Controller
     {
         $bomsCount = Part::with('categories')->latest()
             ->get();
+
         return DataTables::of($bomsCount)
             ->editColumn('code', function ($row) {
                 return $row->code ?? '-';

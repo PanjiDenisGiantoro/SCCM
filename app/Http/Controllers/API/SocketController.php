@@ -96,13 +96,21 @@ class SocketController extends Controller
     }
     public function sensor(Request $request)
     {
-        $data = $request->json()->all();
+        // Ambil data dari request query (bukan JSON)
+        $data = $request->only(['rpm', 'suhu', 'vibration', 'tegangan']);
+
         Log::info('Data dari ESP8266:', $data);
-//        RPM: 990.00  |  Vibration Z: 0.90 g  |  Suhu (C): 35.38  |  Tegangan AC (V): 41.1
+
+        // Ubah nama field ke format Laravel-mu
+        $data = [
+            'rpm' => floatval($data['rpm'] ?? 0),
+            'temperature' => floatval($data['suhu'] ?? 0),
+            'vibration' => floatval($data['vibration'] ?? 0),
+            'voltage' => floatval($data['tegangan'] ?? 0),
+        ];
 
         // Cek jika ada salah satu nilai yang lebih dari 0.01
-//        if ($data['rpm'] > 0.01 || $data['temperature'] > 0.01 || $data['vibration'] > 0.01 || $data['voltage'] > 0.01) {
-            // Simpan data jika valid
+        if ($data['rpm'] > 0.01 || $data['temperature'] > 0.01 || $data['vibration'] > 0.01 || $data['voltage'] > 0.01) {
             sensor_motor::create([
                 'listrik' => $data['voltage'],
                 'suhu' => $data['temperature'],
@@ -115,15 +123,15 @@ class SocketController extends Controller
                 'message' => 'Data received successfully',
                 'data' => $data
             ], 200);
-//        }
+        }
 
-        // Jika semua nilai 0.01 atau kurang, tidak disimpan
+        Log::info('Data tidak memenuhi syarat:', $data);
+
         return response()->json([
             'status' => 'error',
             'message' => 'Data tidak memenuhi syarat untuk disimpan'
         ], 400);
     }
-
     public function getdatacsv()
     {
         $data = sensor_motor::latest()->get();
