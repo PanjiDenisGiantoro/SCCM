@@ -88,6 +88,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
+            'no_wa' => 'required',
             'password' => 'required|string|min:6',
             'profile_photo_path' => 'nullable|file|image|max:2048',
             'status' => 'required|in:0,1',
@@ -118,6 +119,7 @@ class UserController extends Controller
                 $user = User::create([
                     'name' => $request->name,
                     'email' => $request->email,
+                    'no_wa' => $request->no_wa,
                     'password' => Hash::make($request->password),
                     'profile_photo_path' => $photoPath,
                     'status' => $request->status,
@@ -175,6 +177,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'status' => $request->status,
+            'no_wa' => $request->no_wa,
             'organization_id' => $request->organization_id,
             'division_id' => $request->division_id,
         );

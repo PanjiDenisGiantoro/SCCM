@@ -185,10 +185,23 @@ class AssetController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Asset $asset)
+
+    public function show($id)
     {
-        //
+        try {
+            $facility = Facility::with(['location', 'personnel', 'boms', 'files'])->findOrFail($id);
+
+            return response()->json([
+                'success' => true,
+                'data' => $facility
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -236,8 +249,6 @@ class AssetController extends Controller
             ]);
 
         }
-
-
     }
 
     public function destroy_account($id)

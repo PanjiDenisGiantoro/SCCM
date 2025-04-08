@@ -20,8 +20,8 @@ class BOMController extends Controller
 
     public function create()
     {
-        return view('bom.create');
-
+        $parts = Part::with('boms','categories')->latest()->get();
+        return view('bom.create',compact('parts'));
     }
 
     public function store(Request $request)
@@ -132,6 +132,16 @@ class BOMController extends Controller
         $bom = Facility::with('categories')->latest()->get();
         return response()->json($bom);
 
+
+    }
+
+    public function getPart(Request $request)
+    {
+        $part = Part::with('categories')->where('id', $request->id)->first();
+        return response()->json([
+            'success' => true,
+            'data' => $part
+        ]);
     }
 
 

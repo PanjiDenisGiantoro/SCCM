@@ -1,8 +1,8 @@
 @extends('layout.layout')
 
 @php
-    $title = 'Purhcase Order';
-    $subTitle = 'Purhcase Order';
+    $title = 'Purhcase Request';
+    $subTitle = 'Purhcase Request';
 
 @endphp
 
@@ -11,7 +11,7 @@
 
     <div class="card basic-data-table">
         <div class="card-header d-flex justify-content-end">
-            <a href="{{ route('purchase.create') }}" class="btn btn-primary btn-sm">
+            <a href="{{ route('purchase.create') }}" class="btn btn-outline-info btn-sm">
                 <iconify-icon icon="fa6-regular:square-plus" class="icon text-lg line-height-1"></iconify-icon>
             </a>
 
@@ -19,32 +19,20 @@
         <div class="card-body">
             <div class="table-responsive">
 
-                <table class="table bordered-table mb-0" id="dataTable" data-page-length='10'>
+                <table id="dataTable" class="table table-bordered">
                     <thead>
                     <tr>
-                        <th scope="col">
-                            <div class="form-check style-check d-flex align-items-center">
-                                <label class="form-check-label">
-                                    No
-                                </label>
-                            </div>
-                        </th>
-                        <th scope="col">Request Item</th>
-                        <th scope="col">Part #</th>
-                        <th scope="col">Source</th>
-                        <th scope="col">Need By</th>
-                        <th scope="col">Qty</th>
-                        <th scope="col">Unit Price</th>
-                        <th scope="col">Line Total</th>
-                        <th scope="col">Quotes</th>
-                        <th scope="col">Account</th>
-                        <th scope="col">Charge Department</th>
-                        <th scope="col">Action</th>
+                        <th>No</th>
+                        <th>No Request</th>
+                        <th>Request Date</th>
+                        <th>Required Date</th>
+                        <th>Description</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
-                    <tbody>
-
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
@@ -61,7 +49,26 @@
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 <script>
     $(document).ready(function () {
+        $('#dataTable').DataTable({
+            processing: true,
+            serverSide: true,
+            responsive: true, // Tambahkan opsi ini untuk responsivitas
 
+            ajax: "{{ route('purchase.getData') }}",
+            columns: [
+                {data: null, name: 'no', orderable: false, searchable: false}, // No urut
+                {data: 'no_pr', name: 'no_pr'},
+                {data: 'request_date', name: 'request_date'},
+                {data: 'required_date', name: 'required_date'},
+                {data: 'description', name: 'description'},
+                {data: 'total', name: 'total'},
+                {data: 'status', name: 'status'},
+                {data: 'action', name: 'action'},
+            ],
+            rowCallback: function(row, data, index) {
+                $('td:eq(0)', row).html(index + 1);
+            }
+        });
     });
 </script>
 

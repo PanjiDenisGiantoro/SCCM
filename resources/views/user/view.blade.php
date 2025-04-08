@@ -137,6 +137,8 @@
                                         @enderror
                                     </div>
 
+
+
                                     <div class="col-md-6">
                                         <label class="form-label">Password
                                             <span class="text-danger"> ( if empty then not update )
@@ -155,6 +157,17 @@
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">No Whatsapp <span class="text-danger">*</span></label>
+                                        <input type="text" name="no_wa" required
+                                               class="form-control @error('no_wa') is-invalid @enderror"
+                                               value="{{ old('no_wa', $users->no_wa ?? '') }}">
+                                        @error('no_wa')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
 
                                     <div class="col-md-6">
                                         <label class="form-label">Role <span class="text-danger">*</span></label>

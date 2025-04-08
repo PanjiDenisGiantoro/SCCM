@@ -62,6 +62,7 @@ class ClientController extends Controller
             activity()
                 ->causedBy(Auth::user())
                 ->log('Create Client');
+
            Alert::success('Success', 'Client created successfully');
             return redirect()->route('client.list');
         }catch (\Exception $e) {

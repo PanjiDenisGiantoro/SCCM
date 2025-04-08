@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\sensor_motor;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AiapplicationController;
@@ -297,6 +298,10 @@ Route::prefix('equipment')->group(function () {
         Route::post('equipment','store')->name('equipment.store');
         Route::get('/destroy/{id}','destroy')->name('equipment.destroy');
         Route::get('create','create')->name('equipment.create');
+        Route::get('getDataEquipment','getDataEquipment')->name('asset.getDataEquipment');
+        Route::get('/getequipment','getequipment')->name('equipment.getequipment');
+        Route::get('/gettools','gettools')->name('equipment.gettools');
+
     });
 });
 Route::prefix('tools')->group(function () {
@@ -310,6 +315,7 @@ Route::prefix('tools')->group(function () {
         Route::post('tools','store')->name('tools.store');
         Route::get('/destroy/{id}','destroy')->name('tools.destroy');
         Route::get('create','create')->name('tools.create');
+        Route::get('getDataTools','getDataTools')->name('tools.getDataTools');
     });
 });
 
@@ -380,8 +386,10 @@ Route::prefix('part')->group(function () {
         Route::get('/categories','getCategories')->name('categories.get');
         Route::get('/getFacility','getFacility')->name('categories.getFacility');
         Route::get('/getFacility2','getFacility2')->name('categories.getFacility2');
+        Route::get('/getFacility3','getFacility3')->name('categories.getFacility3');
         Route::post('/categories','storecategories')->name('categories.store');
         Route::post('/categories2','storecategories2')->name('categories.store2');
+        Route::post('/categories3','storecategories3')->name('categories.store3');
 
 
     });
@@ -415,6 +423,7 @@ Route::prefix('bom')->group(function () {
         Route::get('getDataAsset','getDataAsset')->name('bom.getDataAsset');
         Route::get('getDataBom','getDataBom')->name('bom.getDataBom');
         Route::get('getlistBom','getlistBom')->name('bom.getlistBom');
+        Route::get('getPart/{id}','getPart')->name('bom.getPart');
     });
 });
 Route::prefix('permit')->group(function () {
@@ -433,14 +442,16 @@ Route::prefix('permit')->group(function () {
 Route::prefix('receipt')->group(function () {
     Route::controller(\App\Http\Controllers\ProcurementController::class)->group(function () {
         Route::get('/list', 'index')->name('receipt.list');
-        Route::get('/getData','getData')->name('receipt.getData');
+        Route::get('/getData','getDataReceipt')->name('receipt.getData');
         Route::get('/edit/{id}','edit')->name('receipt.edit');
         Route::put('/update/{id}','update')->name('receipt.update');
         Route::get('/status/{id}','status')->name('receipt.status');
-        Route::get('/show/{id}','show')->name('receipt.show');
-        Route::post('receipt','store')->name('receipt.store');
+        Route::get('/show/{id}','show_receipt')->name('receipt.show');
+        Route::post('receipt','store_receipt')->name('receipt.store');
         Route::get('/destroy/{id}','destroy')->name('receipt.destroy');
         Route::get('create','create')->name('receipt.create');
+        Route::get('/getpurchase/','getpurchase')->name('receipt.getpurchase');
+
     });
 });
 Route::prefix('purchase')->group(function () {
@@ -454,6 +465,26 @@ Route::prefix('purchase')->group(function () {
         Route::post('purchase','store')->name('purchase.store');
         Route::get('/destroy/{id}','destroy')->name('purchase.destroy');
         Route::get('create','purchase_create')->name('purchase.create');
+        Route::get('/download/{id}','download')->name('purchase.download');
+        Route::post('/approve/{id}','approve')->name('purchase.approve');
+        Route::post('generate-po','generate_po')->name('purchase.generate_po');
+
+    });
+});
+Route::prefix('purchase_order')->group(function () {
+    Route::controller(\App\Http\Controllers\PurchaseOrderController::class)->group(function () {
+        Route::get('/list', 'index')->name('purchase_order.list');
+        Route::get('/getData','getData')->name('purchase_order.getData');
+        Route::get('/edit/{id}','edit')->name('purchase_order.edit');
+        Route::put('/update/{id}','update')->name('purchase_order.update');
+        Route::get('/status/{id}','status')->name('purchase_order.status');
+        Route::get('/show/{id}','show')->name('purchase_order.show');
+        Route::post('purchase_order','store')->name('purchase_order.store');
+        Route::get('/destroy/{id}','destroy')->name('purchase_order.destroy');
+        Route::get('create','purchase_order_create')->name('purchase_order.create');
+        Route::get('/download/{id}','download')->name('purchase_order.download');
+        Route::post('/approve/{id}','approve')->name('purchase_order.approve');
+
     });
 });
 
@@ -498,6 +529,24 @@ Route::prefix('account')->group(function (){
     });
 });
 
+Route::prefix('approve')->group(function (){
+    Route::get('/list', [\App\Http\Controllers\ApproveController::class, 'index'])->name('approve.list');
+    Route::post('/store', [\App\Http\Controllers\ApproveController::class, 'store'])->name('approve.store');
+    Route::get('/destroy/{id}', [\App\Http\Controllers\ApproveController::class, 'destroy'])->name('approve.destroy');
+    Route::get('/edit/{id}', [\App\Http\Controllers\ApproveController::class, 'edit'])->name('approve.edit');
+    Route::post('store_sequence',[\App\Http\Controllers\ApproveController::class,'store_sequence'])->name('approve.store_sequence');
+    Route::get('/destroy_sequence/{id}', [\App\Http\Controllers\ApproveController::class, 'destroy_sequence'])->name('approve.destroy_sequence');
+});
+
+Route::prefix('wa')->group(function (){
+    Route::get('/list', [\App\Http\Controllers\WhatsappController::class, 'index'])->name('wa.list');
+    Route::post('/store', [\App\Http\Controllers\WhatsappController::class, 'store'])->name('wa.store');
+    Route::get('/verify/{id}', [\App\Http\Controllers\WhatsappController::class, 'verify'])->name('wa.verify');
+    Route::get('/viewVerify/{id}', [\App\Http\Controllers\WhatsappController::class, 'viewVerify'])->name('wa.viewVerify');
+    Route::put('/update/{id}', [\App\Http\Controllers\WhatsappController::class, 'update'])->name('wa.update');
+    Route::get('/startSession/{id}', [\App\Http\Controllers\WhatsappController::class, 'startSession'])->name('wa.startSession');
+    Route::get('test/{no}/{ms}', [\App\Http\Controllers\WhatsappController::class, 'test'])->name('wa.test');
+});
 
 Route::get('/socket/list', [\App\Http\Controllers\RestController::class, 'index'])->name('socket.list');
 Route::post('/socket/store', [\App\Http\Controllers\RestController::class, 'store'])->name('socket.store');
@@ -515,7 +564,11 @@ Route::get('/error-log', [\App\Http\Controllers\RestController::class, 'error'])
 Route::get('test111',[\App\Http\Controllers\RestController::class, 'test1'])->name('test');
 Route::post('chat',[\App\Http\Controllers\RestController::class, 'chat'])->name('chat');
 Route::get('chatgpt',[\App\Http\Controllers\RestController::class, 'chatgpt'])->name('chatgpt');
+Route::get('getSeonsor',[\App\Http\Controllers\RestController::class, 'getSeonsor'])->name('getSeonsor');
 
+Route::get('/getSeonsor1', function () {
+    return view('readsensor');
+});
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

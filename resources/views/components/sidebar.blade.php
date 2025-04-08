@@ -166,6 +166,9 @@
                     <li>
                         <a href="{{ route('purchase.list') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>Puchase Request</a>
                     </li>
+                    <li>
+                        <a href="{{ route('purchase_order.list') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>Puchase Order</a>
+                    </li>
 
                     <li>
                         <a href="{{ route('receipt.list') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>Receipt Management</a>
@@ -263,6 +266,12 @@
                     </li>
                     <li>
                         <a href="{{ route('user.show', \Illuminate\Support\Facades\Auth::user()->id) }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>My Profile</a>
+                    </li>
+                    <li>
+                        <a href="{{ url('approve/list') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>Approval</a>
+                    </li>
+                    <li>
+                        <a href="{{ url('wa/list') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>Whatsapp</a>
                     </li>
                     <li>
                         <a href=""><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>Import</a>

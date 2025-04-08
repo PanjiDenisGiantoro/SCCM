@@ -3,7 +3,6 @@
 @php
     $title = 'List Work Orders';
     $subTitle = 'List Work Orders';
-
 @endphp
 
 @section('content')
@@ -11,73 +10,78 @@
 
     <div class="card basic-data-table">
         <div class="card-header d-flex justify-content-end">
-          <a href="{{ route('wo.create') }}" class="btn btn-info btn-sm">
-            <iconify-icon icon="fa6-regular:square-plus" class="icon text-lg line-height-1"></iconify-icon>
-          </a>
-
+            <a href="{{ route('wo.create') }}" class="btn btn-info btn-sm">
+                <iconify-icon icon="fa6-regular:square-plus" class="icon text-lg line-height-1"></iconify-icon>
+            </a>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-
-                <table class="table bordered-table mb-0" id="dataTable" data-page-length='10'>
+                <table class="table bordered-table mb-0" id="dataTable">
                     <thead>
                     <tr>
-                        <th scope="col">
-                            <div class="form-check style-check d-flex align-items-center">
-                                <label class="form-check-label">
-                                    No
-                                </label>
-                            </div>
-                        </th>
-                        <th scope="col">Code</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Priority</th>
-                        <th scope="col">Assets</th>
-                        <th scope="col">Assign Users</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Type</th>
-                        <th scope="col">Origin Work Order</th>
-                        <th scope="col">Completed By Users</th>
-                        <th scope="col">Time Estimated Hours</th>
-                        <th scope="col">Time Spent Hours</th>
+                        <th>No</th>
+                        <th>Code</th>
+                        <th>Description</th>
+                        <th>Priority</th>
+                        <th>Assets</th>
+                        <th>Assign Users</th>
+                        <th>Status</th>
+                        <th>Origin Work Order</th>
+                        <th>Completed By Users</th>
+                        <th>Time Estimated Hours</th>
+                        <th>Time Spent Hours</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
+                    @foreach ($workOrders as $workOrder)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $workOrder->code }}</td>
+                            <td>{{ $workOrder->description }}</td>
+                            <td>{{ $workOrder->priority }}</td>
+                            <td>{{ $workOrder->asset_id }}</td>
+                            <td>{{ $workOrder->assign_from }}</td>
+                            <td>{{ $workOrder->work_order_status }}</td>
+                            <td>{{ $workOrder->work_order_date }}</td>
+                            <td>{{ $workOrder->completed_date }}</td>
+                            <td>{{ $workOrder->estimate_hours }} Hours</td>
+                            <td>{{ $workOrder->actual_hours }} Hours</td>
+                            <td>
 
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>WO-0000001</td>
-                        <td>WO-0000001</td>
-                        <td>High</td>
-                        <td>Asset 1</td>
-                        <td>John Doe</td>
-                        <td>Completed</td>
-                        <td>Normal</td>
-                        <td>WO-0000001</td>
-                        <td>John Doe</td>
-                        <td>2</td>
-                        <td>2</td>
-                    </tr>
+                                <a href="{{ route('wo.show', $workOrder->id) }}" class="btn btn-info btn-sm">
+                                    <iconify-icon icon="fa6-regular:eye" class="icon text-lg line-height-1"></iconify-icon>
+                                </a>
 
-
+                            </td>
+                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-
-    <!-- Modal -->
 @endsection
-<script src="{{ asset('assets/js/lib/jquery-3.7.1.min.js') }}"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
-<script>
-    $(document).ready(function () {
+    <script src="{{ asset('assets/js/lib/jquery-3.7.1.min.js') }}"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 
-    });
-</script>
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable();
+        });
 
+        function edit(id) {
+            alert('Edit Work Order ID: ' + id);
+        }
+
+        function destroy(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus Work Order ini?')) {
+                alert('Hapus Work Order ID: ' + id);
+            }
+        }
+    </script>

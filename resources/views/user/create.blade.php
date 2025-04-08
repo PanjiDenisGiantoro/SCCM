@@ -50,6 +50,7 @@
                                             @enderror
                                         </div>
 
+
                                         <div class="col-md-6">
                                             <label class="form-label">Password <span class="text-danger">*</span></label>
                                             <div class="input-group">
@@ -79,6 +80,17 @@
                                             @enderror
                                         </div>
 
+
+                                        {{--                                        no_wa--}}
+                                        <div class="col-md-6">
+                                            <label class="form-label">No Whatsapp <span class="text-danger">*</span></label>
+                                            <input type="text" name="no_wa" required
+                                                   class="form-control @error('no_wa') is-invalid @enderror"
+                                                   value="{{ old('no_wa', $user->no_wa ?? '') }}">
+                                            @error('no_wa')
+                                            <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Profile Photo Path</label>
                                             <input type="file" name="profile_photo_path"

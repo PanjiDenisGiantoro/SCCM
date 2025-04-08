@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\sensor_motor;
 use App\Models\Socket;
 use App\Models\SocketErrorLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class SocketController extends Controller
 {
@@ -70,5 +73,97 @@ class SocketController extends Controller
             ]);
         return response()->json(['success' => true, 'message' => 'Error log updated']);
     }
+    public function rand(Request $request)
+    {
+        $data = $request->json()->all();
+
+        // Log untuk debugging
+        Log::info('Data dari ESP8266:', $data);
+
+        DB::table('sensor_data')->create([
+            'name'=> 'test',
+            'value' => $data['temp'],
+            'node_od'  => '0',
+            'status_alarm' => 0,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data received successfully',
+            'data' => $data
+        ], 200);
+
+    }
+    public function sensor(Request $request)
+    {
+        $data = $request->json()->all();
+        Log::info('Data dari ESP8266:', $data);
+//        RPM: 990.00  |  Vibration Z: 0.90 g  |  Suhu (C): 35.38  |  Tegangan AC (V): 41.1
+
+        // Cek jika ada salah satu nilai yang lebih dari 0.01
+//        if ($data['rpm'] > 0.01 || $data['temperature'] > 0.01 || $data['vibration'] > 0.01 || $data['voltage'] > 0.01) {
+            // Simpan data jika valid
+            sensor_motor::create([
+                'listrik' => $data['voltage'],
+                'suhu' => $data['temperature'],
+                'vibrasi' => $data['vibration'],
+                'rpm' => $data['rpm'],
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data received successfully',
+                'data' => $data
+            ], 200);
+//        }
+
+        // Jika semua nilai 0.01 atau kurang, tidak disimpan
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Data tidak memenuhi syarat untuk disimpan'
+        ], 400);
+    }
+
+    public function getdatacsv()
+    {
+        $data = sensor_motor::latest()->get();
+
+        // Nama file CSV yang akan di-download
+        $fileName = 'sensor_data_' . now()->format('Y-m-d_H-i-s') . '.csv';
+
+        // Header CSV
+        $headers = [
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        // Membuka output stream
+        $callback = function () use ($data) {
+            $file = fopen('php://output', 'w');
+
+            // Menulis header kolom
+            fputcsv($file, ['ID', 'Listrik (V)', 'Suhu (°C)', 'Vibrasi', 'RPM', 'Tanggal']);
+
+            // Menulis data ke dalam CSV
+            foreach ($data as $row) {
+                fputcsv($file, [
+                    $row->id,
+                    $row->listrik,
+                    $row->suhu,
+                    $row->vibrasi,
+                    $row->rpm,
+                    $row->created_at
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
 
 }

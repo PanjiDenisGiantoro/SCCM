@@ -1,19 +1,45 @@
 @extends('layout.layout')
 
 @php
-    $title = 'List tools';
-    $subTitle = 'List tools';
+    $title = 'List Tools';
+    $subTitle = 'List Tools';
 
 @endphp
 
 @section('content')
+    <style>
+        .child-row td {
+            padding: 0 !important; /* Hapus padding bawaan */
+        }
+
+        .child-table {
+            width: 100%;
+            margin: 0;
+            border-collapse: collapse;
+        }
+
+        .child-table th, .child-table td {
+            padding: 8px;
+            text-align: left;
+            white-space: nowrap; /* Mencegah wrapping yang tidak diinginkan */
+        }
+
+        .child-table tr {
+            display: table-row;
+        }
+
+        .child-row {
+            background-color: #f9f9f9; /* Warna latar belakang child */
+        }
+
+    </style>
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
 
     <div class="card basic-data-table">
         <div class="card-header d-flex justify-content-end">
-          <a href="{{ route('tools.create') }}" class="btn btn-primary btn-sm">
-            <iconify-icon icon="fa6-regular:square-plus" class="icon text-lg line-height-1"></iconify-icon>
-          </a>
+            <a href="{{ route('equipment.create') }}" class="btn btn-outline-success btn-sm">
+                <iconify-icon icon="fa6-regular:square-plus" class="icon text-lg line-height-1"></iconify-icon>
+            </a>
 
         </div>
         <div class="card-body">
@@ -22,30 +48,20 @@
                 <table class="table bordered-table mb-0" id="dataTable" data-page-length='10'>
                     <thead>
                     <tr>
-                        <th scope="col">
-                            <div class="form-check style-check d-flex align-items-center">
-                                <label class="form-check-label">
-                                    No
-                                </label>
-                            </div>
-                        </th>
-                        <th scope="col">Location</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Code</th>
-                        <th scope="col">Asset Status</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Note</th>
-                        <th scope="col">Action</th>
+                        <th>No</th> <!-- Kolom untuk Expand Child -->
+                        <th></th>
+                        <th>Code</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
-                    <tbody>
-
-                    </tbody>
+                    <tbody></tbody>
                 </table>
+
             </div>
         </div>
     </div>
-
     <!-- Modal -->
 @endsection
 <script src="{{ asset('assets/js/lib/jquery-3.7.1.min.js') }}"></script>
@@ -55,21 +71,112 @@
 
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+
 <script>
     $(document).ready(function () {
-        $('#dataTable').DataTable({
+        var table = $('#dataTable').DataTable({
             processing: true,
             serverSide: true,
-            responsive: true, // Tambahkan opsi ini untuk responsivitas
-
-            ajax: "{{ route('groups.getData') }}",
+            ajax: "{{ route('tools.getDataTools') }}",
+            columnDefs: [{
+                targets: 0,
+                render: function (data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1; // Nomor urut
+                }
+            }],
             columns: [
-                { data: 'id', name: 'id' },
-                { data: 'name', name: 'name' },
-                { data: 'description', name: 'description' },
-                { data: 'action', name: 'action', orderable: false, searchable: false }
+                {data: null, orderable: false, searchable: false}, // Kolom nomor urut
+                {data: 'expand', orderable: false, searchable: false},
+                {data: 'name', name: 'name'},
+                {data: 'code', name: 'code'},
+                {data: 'description', name: 'description'},
+                {data: 'status', name: 'status'},
+                {data: 'action', orderable: false, searchable: false},
             ]
         });
-    });
-</script>
 
+        // Handle klik tombol expand child (Gunakan event delegation)
+        $(document).on('click', '.toggle-child', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+            var facilityId = $(this).data('id');
+            var button = $(this);
+
+            if (tr.next().hasClass('child-row')) {
+                // Jika child row sudah ada, toggle visibility saja
+                tr.next().toggle();
+                button.text(tr.next().is(':visible') ? '-' : '+');
+            } else {
+                // Jika belum ada, ambil data dari server
+                $.ajax({
+                    url: "{{ route('tools.getDataTools') }}",
+                    data: {parent_id: facilityId},
+                    success: function (data) {
+                        console.log("Child data loaded for facility ID:", facilityId, data);
+
+                        if (data.length > 0) {
+                            var childTable = generateChildTable(data, facilityId);
+                            tr.after(childTable);
+                            button.text('-');
+                        } else {
+                            alert('Tidak ada data child.');
+                        }
+                    },
+                    error: function () {
+                        alert('Gagal mengambil data anak.');
+                    }
+                });
+            }
+        });
+
+        function generateChildTable(data, parentId) {
+            var tableHtml = `<tr class="child-row">
+    <td colspan="7"> <!-- Sesuaikan colspan karena menambah kolom -->
+        <div style="padding-left: 30px;"> <!-- Tambahkan div wrapper agar lebih rapi -->
+            <table class="table table-bordered child-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Code</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+            data.forEach(function (child, index) {
+                tableHtml += `<tr>
+        <td>${index + 1}</td> <!-- Nomor urut untuk child -->
+        <td>
+            ${child.has_children ? `<button class="btn btn-outline-info btn-sm toggle-child" data-id="${child.id}">+</button>` : ''}
+        </td>
+        <td>${child.name}</td>
+        <td>${child.code}</td>
+        <td>${child.description || '-'}</td>
+        <td>
+            <span class="badge ${child.status === '1' ? 'bg-success' : 'bg-danger'}">
+                ${child.status === '1' ? 'Active' : 'Inactive'}
+            </span>
+        </td>
+        <td>
+            <button class="btn btn-outline-info btn-sm editBtn" data-id="${child.id}">
+                <iconify-icon icon="lucide:edit"></iconify-icon>
+            </button>
+            <button class="btn btn-outline-danger btn-sm deleteBtn" data-id="${child.id}">
+                <iconify-icon icon="lucide:trash-2"></iconify-icon>
+            </button>
+        </td>
+    </tr>`;
+            });
+
+            tableHtml += `</tbody></table></div></td></tr>`;
+            return tableHtml;
+        }
+
+
+    });
+
+</script>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AlarmSensor;
+use App\Models\sensor_motor;
 use App\Models\Socket;
 use App\Models\SocketErrorLog;
 use Illuminate\Http\Request;
@@ -235,6 +236,20 @@ class RestController extends Controller
     {
         return view('chatgpt');
 
+    }
+    public function getSeonsor()
+    {
+        $data = sensor_motor::orderBy('created_at', 'desc')
+            ->paginate(20);
+
+
+        return response()->json([
+            'data' => $data->items(),
+            'current_page' => $data->currentPage(),
+            'last_page' => $data->lastPage(),
+            'per_page' => $data->perPage(),
+            'total' => $data->total(),
+        ]);
     }
 }
 

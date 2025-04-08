@@ -1,0 +1,42 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('work_orders', function (Blueprint $table) {
+            $table->id();
+            $table->string('work_order_status')->nullable();
+            $table->bigInteger('parent_id')->nullable();
+            $table->text('description')->nullable();
+            $table->bigInteger('asset_id')->nullable();
+            $table->string('maintenance_id')->nullable();
+            $table->bigInteger('project_id')->nullable();
+            $table->date('work_order_date')->nullable();
+            $table->date('completed_date')->nullable();
+            $table->bigInteger('priority')->nullable()->comment('1 = low, 2 = medium, 3 = high, 4 = critical');
+            $table->string('assign_from')->nullable();
+            $table->string('assign_to')->nullable();
+            $table->string('estimate_hours')->nullable();
+            $table->string('actual_hours')->nullable();
+            $table->string('problem_code')->nullable();
+            $table->string('status')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('work_orders');
+    }
+};

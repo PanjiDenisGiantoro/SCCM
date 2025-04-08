@@ -20,5 +20,8 @@ class Part extends Model
             ->groupBy('name', 'id_asset', 'id_bom', 'model');
     }
 
-
+    public function categories()
+    {
+        return $this->belongsTo(AssetCategory::class, 'category', 'id');
+    }
 }

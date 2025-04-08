@@ -30,4 +30,12 @@ Route::post('/update-running-status', [\App\Http\Controllers\API\SocketControlle
 Route::get('/socket/{id}/error', [\App\Http\Controllers\RestController::class, 'store'])->name('socket.error');
 Route::post('/update-error-log', [\App\Http\Controllers\API\SocketController::class, 'updateErrorLog'])->name('api.updateErrorLog');
 Route::post('/log-error', [\App\Http\Controllers\API\SocketController::class, 'log-error'])->name('api.log-error');
-http://127.0.0.1:8000/api/log-error
+
+Route::prefix('wo')->group(function (){
+    Route::post('store', [\App\Http\Controllers\WorkOrderController::class, 'store'])->name('wo.store');
+    Route::get('show/{id}', [\App\Http\Controllers\WorkOrderController::class, 'show'])->name('wo.show');
+});
+Route::post('sensor',[\App\Http\Controllers\API\SocketController::class, 'sensor'])->name('sensor');
+Route::get('getdatacsv',[\App\Http\Controllers\API\SocketController::class, 'getdatacsv'])->name('getdatacsv');
+Route::post('/rand', [\App\Http\Controllers\API\SocketController::class, 'rand'])->name('rand');
+Route::middleware('auth:sanctum')->get('/user-id', [\App\Http\Controllers\API\AuthController::class, 'getUserId']);

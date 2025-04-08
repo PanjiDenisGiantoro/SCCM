@@ -192,7 +192,6 @@
                                 <div class="mb-4">
                                     <h2 class="h6 font-weight-bold mb-2">Depreciation Details</h2>
 
-
                                     <div class="d-flex mb-2">
                                         <div class="flex-grow-1 me-2">
                                             <label class="form-label">Purchase Date</label>
@@ -220,13 +219,17 @@
                                         <select class="form-select" name="depreciation_method">
                                             <option value="straight_line">Straight Line</option>
                                             <option value="declining_balance">Declining Balance</option>
-                                            <option value="sum_of_years">Sum of Years' Digits</option>
                                         </select>
                                     </div>
 
                                     <div class="mb-2">
                                         <label class="form-label">Annual Depreciation</label>
                                         <input class="form-control" type="text" name="annual_depreciation" readonly/>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label">Remaining Life (%)</label>
+                                        <input class="form-control" type="text" name="remaining_life" readonly/>
                                     </div>
 
                                     <button type="button" class="btn btn-outline-info" id="calculateDepreciation">Calculate</button>
@@ -247,8 +250,7 @@
                                     </div>
 
                                     <div class="ms-3 mb-2">
-                                        <p class="text-muted" id="locationname">Jl. Indonesia Raya, Bekasi, Jawa barat, 17426, Indonesia,
-                                            Republic of</p>
+                                        <p class="text-muted" id="locationname"></p>
                                     </div>
                                     <div class="mb-2">
                                         <input class="form-check-input" id="notPartOf" name="location" type="radio" value="1" checked/>
@@ -383,15 +385,29 @@
                                                                        id="chargeDescription" required>
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label for="chargeFacility"
-                                                                       class="form-label">Facility</label>
-                                                                <select class="form-select" id="chargeFacility"
-                                                                        required>
+                                                                <label for="chargeFacility" class="form-label">Facility</label>
+                                                                <select class="form-select" id="chargeFacility" required>
                                                                     <option value="">-- Select Facility --</option>
-                                                                    <option value="Facility A">Facility A</option>
-                                                                    <option value="Facility B">Facility B</option>
                                                                 </select>
                                                             </div>
+
+                                                            <script>
+                                                                document.addEventListener("DOMContentLoaded", function () {
+                                                                    fetch('getFacilities')  // Ganti dengan URL API yang sesuai
+                                                                        .then(response => response.json())
+                                                                        .then(data => {
+                                                                            const facilitySelect = document.getElementById("chargeFacility");
+
+                                                                            data.forEach(facility => {
+                                                                                const option = document.createElement("option");
+                                                                                option.value = facility.id;  // Sesuaikan dengan struktur data
+                                                                                option.textContent = facility.name;
+                                                                                facilitySelect.appendChild(option);
+                                                                            });
+                                                                        })
+                                                                        .catch(error => console.error("Error fetching facilities:", error));
+                                                                });
+                                                            </script>
                                                         </form>
                                                     </div>
                                                     <div class="modal-footer">
@@ -1450,7 +1466,6 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         loadChargeDepartments();
-
         document.getElementById("chargeForm").addEventListener("submit", function (event) {
             event.preventDefault();
             const saveButton = document.querySelector("#ChargeModal .btn-outline-success");
@@ -1963,7 +1978,7 @@
                             text: 'Data saved successfully!',
                         }).then(() => {
                             console.log(data);
-                            {{--window.location.href = "{{ route('asset.list') }}";--}}
+                            window.location.href = "{{ route('asset.list') }}";
                         });
                     } else {
                         swal.fire({
@@ -1971,6 +1986,7 @@
                             title: 'Error',
                             text: 'Failed to save data. Please try again.',
                         });
+                        window.location.href = "{{ route('asset.list') }}";
                     }
                 })
                 .catch(error => console.error("Error:", error));
@@ -2081,8 +2097,12 @@
             let usefulLife = parseInt(document.querySelector("[name='useful_life']").value);
             let salvageValue = parseFloat(document.querySelector("[name='salvage_value']").value);
             let depreciationMethod = document.querySelector("[name='depreciation_method']").value;
+            let purchaseDate = new Date(document.querySelector("[name='purchase_date']").value);
+            let currentDate = new Date();
+
             let annualDepreciation = 0;
 
+            // Hitung Penyusutan Berdasarkan Metode
             if (depreciationMethod === "straight_line") {
                 annualDepreciation = (purchasePrice - salvageValue) / usefulLife;
             } else if (depreciationMethod === "declining_balance") {
@@ -2093,6 +2113,14 @@
             }
 
             document.querySelector("[name='annual_depreciation']").value = annualDepreciation.toFixed(2);
+
+            // Hitung Persentase Umur Tersisa
+            let usedYears = (currentDate - purchaseDate) / (1000 * 60 * 60 * 24 * 365);
+            let remainingYears = usefulLife - usedYears;
+            let remainingLifePercent = (remainingYears / usefulLife) * 100;
+            remainingLifePercent = remainingLifePercent < 0 ? 0 : remainingLifePercent.toFixed(2); // Tidak boleh negatif
+
+            document.querySelector("[name='remaining_life']").value = remainingLifePercent + "%";
         });
     });
 </script>

@@ -278,6 +278,18 @@ class PartController extends Controller
 
         return response()->json($categories);
     }
+    public function getFacility3()
+    {
+
+        $categories = AssetCategory::with('children')
+            ->whereHas('assets', function ($query) {
+                $query->where('type_id', 3);
+            })
+            ->whereNull('parent_id') // Ambil parent saja
+            ->get();
+
+        return response()->json($categories);
+    }
 
     public function storecategories(Request $request)
     {
@@ -299,6 +311,16 @@ class PartController extends Controller
 
         return response()->json($category);
     }
+    public function storecategories3(Request $request)
+    {
+        $category = AssetCategory::create([
+            'category_name' => $request->name,
+            'parent_id' => $request->parent_id,
+            'type_id' => 3
+        ]);
+
+        return response()->json($category);
+    }
 
     public function getPart(Request $request)
     {
@@ -308,11 +330,14 @@ class PartController extends Controller
 
     public function getData()
     {
-        $bomsCount = Part::latest()
+        $bomsCount = Part::with('categories')->latest()
             ->get();
         return DataTables::of($bomsCount)
             ->editColumn('code', function ($row) {
                 return $row->code ?? '-';
+            })
+            ->editColumn('category_name', function ($row) {
+                return $row->categories->category_name ?? '-';
             })
             ->editColumn('nameParts', function ($row) {
                 return $row->nameParts ?? '-';
@@ -333,7 +358,7 @@ class PartController extends Controller
                 <a href="'.url('part/destroy/'.$row->id).'" class="btn btn-danger btn-sm">Delete</a>';
 
             })
-            ->rawColumns(['action', 'code', 'nameParts','qrcode']) // Render HTML di kolom action
+            ->rawColumns(['action', 'code', 'nameParts','qrcode','category_name']) // Render HTML di kolom action
             ->make(true);
     }
     public function listBom()

@@ -25,8 +25,8 @@
 
                         <th scope="col">Code</th>
                         <th scope="col">Name</th>
+                        <th scope="col">Category</th>
                         <th scope="col">QRcode</th>
-                        {{--                                                <th scope="col">Last Price Currency</th>--}}
                         {{--                                                <th scope="col">Total Stock</th>--}}
                         {{--                                                <th scope="col">Stock Location</th>--}}
                         {{--                                                <th scope="col">Aisle</th>--}}
@@ -67,6 +67,7 @@
 
                 {data: 'code', name: 'code'},
                 {data: 'nameParts', name: 'nameParts'},
+                {data: 'category_name', name: 'category_name'},
                 {data: 'qrcode', name: 'qrcode'},
                 {data: 'created_at', name: 'created_at'},
                 {data: 'action', name: 'action', orderable: false, searchable: false}

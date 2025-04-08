@@ -194,10 +194,10 @@
 
                             <div class="tab-content" id="myTabContent">
 
+
                                 <div class="tab-pane fade" id="deprec" role="tabpanel" aria-labelledby="deprec-tab">
                                     <div class="mb-4">
                                         <h2 class="h6 font-weight-bold mb-2">Depreciation Details</h2>
-
 
                                         <div class="d-flex mb-2">
                                             <div class="flex-grow-1 me-2">
@@ -226,13 +226,17 @@
                                             <select class="form-select" name="depreciation_method">
                                                 <option value="straight_line">Straight Line</option>
                                                 <option value="declining_balance">Declining Balance</option>
-                                                <option value="sum_of_years">Sum of Years' Digits</option>
                                             </select>
                                         </div>
 
                                         <div class="mb-2">
                                             <label class="form-label">Annual Depreciation</label>
                                             <input class="form-control" type="text" name="annual_depreciation" readonly/>
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <label class="form-label">Remaining Life (%)</label>
+                                            <input class="form-control" type="text" name="remaining_life" readonly/>
                                         </div>
 
                                         <button type="button" class="btn btn-outline-info" id="calculateDepreciation">Calculate</button>
@@ -245,7 +249,7 @@
                                         <h2 class="h6 font-weight-bold mb-2">Location</h2>
                                         <div class="mb-2">
                                             <input  class="form-check-input" id="partOf" name="location" type="radio" value="0" />
-                                            <label class="form-check-label" for="partOf">This facility is a part of:</label>
+                                            <label class="form-check-label" for="partOf">This facility is a location of:</label>
 
                                             <select class="form-select d-inline-block" id="locationSelect" name="locationid" style="width: auto;">
                                                 <option value="">-- Select Location --</option>
@@ -253,40 +257,41 @@
                                         </div>
 
                                         <div class="ms-3 mb-2">
-                                            <p class="text-muted" id="locationname">Jl. Indonesia Raya, Bekasi, Jawa barat, 17426, Indonesia,
-                                                Republic of</p>
+                                            <p class="text-muted" id="locationname"></p>
                                         </div>
                                         <div class="mb-2">
-                                            <input class="form-check-input" id="notPartOf" name="location" type="radio" value="1" checked/>
-                                            <label class="form-check-label" for="notPartOf">This facility is not part of
-                                                another location, and is located at:</label>
+                                            <input  class="form-check-input" id="partOf" name="location" type="radio" value="0" />
+                                            <label class="form-check-label" for="partOf">This Equipment is a part of:</label>
+                                            <select class="form-select d-inline-block" id="equipmentSelect" name="equipmentid" style="width: auto;">
+                                                <option value="">-- Select Equipment --</option>
+                                            </select>
                                         </div>
-                                        <div class="ms-3" id="biodata">
-                                            <div class="mb-2">
-                                                <label class="form-label">Address</label>
-                                                <input class="form-control" type="text" name="asset_address"/>
-                                            </div>
-                                            <div class="d-flex mb-2">
-                                                <div class="flex-grow-1 me-2">
-                                                    <label class="form-label">City</label>
-                                                    <input class="form-control" type="text" name="asset_city"/>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <label class="form-label">Province</label>
-                                                    <input class="form-control" type="text" name="asset_province"/>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex mb-2">
-                                                <div class="flex-grow-1 me-2">
-                                                    <label class="form-label">Postal Code</label>
-                                                    <input class="form-control" type="text" name="asset_postal"/>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <label class="form-label">Country</label>
-                                                    <input class="form-control" type="text" name="asset_country"/>
-                                                </div>
-                                            </div>
-                                        </div>
+{{--                                        <div class="ms-3" id="biodata">--}}
+{{--                                            <div class="mb-2">--}}
+{{--                                                <label class="form-label">Address</label>--}}
+{{--                                                <input class="form-control" type="text" name="asset_address"/>--}}
+{{--                                            </div>--}}
+{{--                                            <div class="d-flex mb-2">--}}
+{{--                                                <div class="flex-grow-1 me-2">--}}
+{{--                                                    <label class="form-label">City</label>--}}
+{{--                                                    <input class="form-control" type="text" name="asset_city"/>--}}
+{{--                                                </div>--}}
+{{--                                                <div class="flex-grow-1">--}}
+{{--                                                    <label class="form-label">Province</label>--}}
+{{--                                                    <input class="form-control" type="text" name="asset_province"/>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                            <div class="d-flex mb-2">--}}
+{{--                                                <div class="flex-grow-1 me-2">--}}
+{{--                                                    <label class="form-label">Postal Code</label>--}}
+{{--                                                    <input class="form-control" type="text" name="asset_postal"/>--}}
+{{--                                                </div>--}}
+{{--                                                <div class="flex-grow-1">--}}
+{{--                                                    <label class="form-label">Country</label>--}}
+{{--                                                    <input class="form-control" type="text" name="asset_country"/>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
                                     </div>
                                     <div>
                                         <h2 class="h6 font-weight-bold mb-2">General Information</h2>
@@ -434,7 +439,6 @@
                                         </div>
 
                                         <div class="d-flex mb-4">
-
                                             <div class="flex-grow-1">
                                                 <label class="form-label">Note</label>
                                                 <textarea class="form-control" rows="5"></textarea>
@@ -1328,7 +1332,10 @@
             dropdown.value = id;
         }
 
+        document.body.style.overflow = "";
+        document.body.style.paddingRight = "";
         $('.modal-backdrop').remove();
+
         $("#accountModal").modal("hide");
     }
 
@@ -1348,14 +1355,17 @@
                 "Content-Type": "application/json",
                 "X-CSRF-TOKEN": "{{ csrf_token() }}"
             },
-            body: JSON.stringify({name: newAccount, description: newDescription})
+
+            body: JSON.stringify({account: newAccount, description: newDescription})
         })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    console.log(data);
                     loadAccounts(); // Refresh tabel
                     document.getElementById("newAccount").value = "";
                     document.getElementById("newDescription").value = "";
+                    document.body.style.overflow = "";
                 } else {
                     swal.fire({
                         icon: 'error',
@@ -1385,6 +1395,10 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+
+
+
+
         const locationRadios = document.querySelectorAll('input[name="location"]');
         const biodataSection = document.getElementById("biodata");
         const locationInfo = document.getElementById("locationname");
@@ -1582,6 +1596,9 @@
             }
             $('.modal-backdrop').remove();
 
+        document.body.style.overflow = "";
+        document.body.style.paddingRight = "";
+
 
             // 👉 Tutup modal setelah memilih (opsional)
             $('#categoryModal').modal('hide');
@@ -1719,6 +1736,9 @@
     function closeModal() {
         $("#ChargeModal").modal("hide");
         $('.modal-backdrop').remove();
+
+        document.body.style.overflow = "";
+        document.body.style.paddingRight = "";
     }
 </script>
 
@@ -1822,6 +1842,9 @@
             // Tutup modal setelah menambahkan
             const modalInstance = bootstrap.Modal.getInstance(modalElement);
             $('.modal-backdrop').remove();
+
+        document.body.style.overflow = "";
+        document.body.style.paddingRight = "";
             if (modalInstance) modalInstance.hide();
         });
 
@@ -1905,7 +1928,6 @@
                 let id = $(this).val();
                 let name = $(this).data('name');
                 let type = $(this).data('type');
-
                 if (id) {
                     $('#personnelTable tbody').append(`
                      <tr>
@@ -2086,7 +2108,7 @@
             console.log([...formData.entries()]); // Debugging: Cek isi formData sebelum dikirim
 
             // Kirim data ke Laravel via AJAX
-            fetch("{{ route('asset.store') }}", {
+            fetch("{{ route('equipment.store') }}", {
                 method: "POST",
                 headers: {
                     "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
@@ -2105,7 +2127,7 @@
                             text: 'Data saved successfully!',
                         }).then(() => {
                             console.log(data);
-                            {{--window.location.href = "{{ route('asset.list') }}";--}}
+                            window.location.href = "{{ route('equipment.list') }}";
                         });
                     } else {
                         swal.fire({
@@ -2160,6 +2182,8 @@
         document.getElementById("submittedDate").value = submittedDate;
         $("#meterReadingModal").modal("hide");
         $('.modal-backdrop').remove();
+        document.body.style.overflow = "";
+        document.body.style.paddingRight = "";
     }
 </script>
 
@@ -2216,6 +2240,46 @@
     });
 </script>
 
+
+<script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        const locationSelect = document.getElementById("equipmentSelect");
+
+        try {
+            const response = await fetch("{{ route('equipment.getequipment') }}");
+            if (!response.ok) throw new Error("Failed to fetch locations");
+
+            const data = await response.json();
+            data.forEach(location => {
+                const option = document.createElement("option");
+                option.value = location.id;
+                option.textContent = location.name;
+                locationSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Error fetching locations:", error);
+        }
+
+        // Event listener untuk update lokasi dengan AJAX
+        locationSelect.addEventListener("change", async function () {
+            const selectedId = locationSelect.value;
+            try {
+                const response = await fetch("{{ route('asset.getLocationDetails') }}?id=" + selectedId);
+                if (!response.ok) throw new Error("Failed to fetch location details");
+
+                const result = await response.json();
+                if (result.status === "error") {
+                    locationInfo.innerHTML = "<em>Equipment not found.</em>";
+                    return;
+                }
+                const locationData = result.data;
+            } catch (error) {
+                console.error("Error fetching location details:", error);
+                locationInfo.innerHTML = "<em>-</em>";
+            }
+        });
+    });
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("calculateDepreciation").addEventListener("click", function() {
@@ -2223,8 +2287,12 @@
             let usefulLife = parseInt(document.querySelector("[name='useful_life']").value);
             let salvageValue = parseFloat(document.querySelector("[name='salvage_value']").value);
             let depreciationMethod = document.querySelector("[name='depreciation_method']").value;
+            let purchaseDate = new Date(document.querySelector("[name='purchase_date']").value);
+            let currentDate = new Date();
+
             let annualDepreciation = 0;
 
+            // Hitung Penyusutan Berdasarkan Metode
             if (depreciationMethod === "straight_line") {
                 annualDepreciation = (purchasePrice - salvageValue) / usefulLife;
             } else if (depreciationMethod === "declining_balance") {
@@ -2235,6 +2303,14 @@
             }
 
             document.querySelector("[name='annual_depreciation']").value = annualDepreciation.toFixed(2);
+
+            // Hitung Persentase Umur Tersisa
+            let usedYears = (currentDate - purchaseDate) / (1000 * 60 * 60 * 24 * 365);
+            let remainingYears = usefulLife - usedYears;
+            let remainingLifePercent = (remainingYears / usefulLife) * 100;
+            remainingLifePercent = remainingLifePercent < 0 ? 0 : remainingLifePercent.toFixed(2); // Tidak boleh negatif
+
+            document.querySelector("[name='remaining_life']").value = remainingLifePercent + "%";
         });
     });
 </script>
@@ -2368,6 +2444,14 @@
     }
 </script>
 
+
+<script>
+    $(document).ready(function () {
+        $("#openModalButton").click(function () {
+            $("#addWarrantyModal").modal("show");
+        });
+    });
+</script>
 
 <style>
     .upload-box {
