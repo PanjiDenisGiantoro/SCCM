@@ -111,8 +111,8 @@ class SocketController extends Controller
 
         // Cek jika ada salah satu nilai yang lebih dari 0.01
             sensor_motor::create([
-                'listrik' => $data['voltage'],
-                'suhu' => $data['temperature'],
+                'listrik' => floatval($data['voltage'] ?? 0),
+                'suhu' => floatval($data['temperature'] ?? 0),
                 'vibrasi' => $data['vibration'],
                 'rpm' => $data['rpm'],
             ]);
