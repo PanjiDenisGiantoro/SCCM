@@ -203,10 +203,12 @@ class ProcurementController extends Controller
             'purchaseBodies.facility',
         ])->find($id);
 
+        $total = (int) $purchase->total;
+
         $approve = Approval_process::join('approval_layers', 'approval_process.process_id', '=', 'approval_layers.process_id')
             ->where('process_name','PR')
-            ->where('budget','<',$purchase->total)
-            ->where('max_budget','>=',$purchase->total)
+            ->where('budget','<',$total)
+            ->where('max_budget','>=',$total)
             ->pluck('role_id')->toArray();
 
         $business = Business::find($purchase->business_id);
@@ -238,8 +240,8 @@ class ProcurementController extends Controller
         $approve_user = Approvaluser::with('user')->join('approval_process', 'approvaluser.process_id', '=', 'approval_process.process_id')
             ->where('process_name','PR')
             ->where('approve_id', $id)
-            ->where('budget','<',$purchase->total)
-            ->where('max_budget','>=',$purchase->total)
+            ->where('budget','<',$total)
+            ->where('max_budget','>=',$total)
             ->where('model','App/Models/Purchases')
             ->get();
 

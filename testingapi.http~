@@ -17,7 +17,7 @@ Content-Type: application/json
 
 {
     "rpm": 33,
-    "temperature": 22,
+    "temperature": 1,
     "vibration": 1,
     "voltage": 1
 }

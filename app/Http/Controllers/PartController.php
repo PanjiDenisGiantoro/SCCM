@@ -355,7 +355,7 @@ class PartController extends Controller
                 }
             })
             ->editColumn('action', function ($row) {
-                return '<a href="" class="btn btn-outline-success btn-sm">Edit</a>
+                return '<a href="'.url('part/show/'.$row->id).'" class="btn btn-outline-success btn-sm">Edit</a>
                 <a href="'.url('part/destroy/'.$row->id).'" class="btn btn-danger btn-sm">Delete</a>';
 
             })
@@ -371,4 +371,21 @@ class PartController extends Controller
         return response()->json($bom);
     }
 
+    public function show($id)
+    {
+        $personelUser = User::whereHas('roles', function ($query) {
+            $query->where('name', '!=', 'super_admin');
+        })
+            ->where('status', 1)
+            ->get();
+
+        $personelGroup = Organization::latest()->get();
+
+        $parts = Facility::latest()->get();
+        $partdata = Part::with('categories')->findOrFail($id);
+
+        return view('part.show', compact('parts', 'personelUser', 'personelGroup','partdata'));
+
+
+    }
 }

@@ -80,10 +80,12 @@ class PurchaseOrderController extends Controller
             'purchaseOrderBodies.tools',
             'purchaseOrderBodies.facility',
         ])->find($id);
+        $total = (int) $purchase->total;
+
         $approve = Approval_process::join('approval_layers', 'approval_process.process_id', '=', 'approval_layers.process_id')
             ->where('process_name','PO')
-            ->where('budget','<',$purchase->total)
-            ->where('max_budget','>=',$purchase->total)
+            ->where('budget','<',$total)
+            ->where('max_budget','>=',$total)
             ->pluck('role_id')->toArray();
 
         $business = Business::find($purchase->business_id);
@@ -116,8 +118,8 @@ class PurchaseOrderController extends Controller
             ->where('process_name','PO')
             ->where('approve_id', $id)
             ->where('model','App/Models/PurchaseOrder')
-            ->where('budget','<',$purchase->total)
-            ->where('max_budget','>=',$purchase->total)
+            ->where('budget','<',$total)
+            ->where('max_budget','>=',$total)
             ->get();
 
         return view('purchase_order.detail',compact('purchase','business','clients','approve','approveuser','approve_user'));

@@ -104,9 +104,9 @@ class SocketController extends Controller
         // Ubah nama field ke format Laravel-mu
         $data = [
             'rpm' => floatval($data['rpm'] ?? 0),
-            'temperature' => floatval($data['suhu'] ?? 0),
+            'temperature' => floatval($data['temperature'] ?? 0),
             'vibration' => floatval($data['vibration'] ?? 0),
-            'voltage' => floatval($data['tegangan'] ?? 0),
+            'voltage' => floatval($data['voltage'] ?? 0),
         ];
 
         // Cek jika ada salah satu nilai yang lebih dari 0.01
