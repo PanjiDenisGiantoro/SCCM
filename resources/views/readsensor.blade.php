@@ -1,26 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Sensor Motor</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
+<!-- ... kode <head> tetap sama ... -->
+
 <body class="bg-light">
 <div class="container mt-4">
     <h2 class="text-center mb-4">Data Sensor Motor</h2>
 
     <div class="row">
-        <div class="col-md-6">
+        <!-- Grafik per sensor -->
+        <div class="col-md-6 mb-4">
             <div class="card shadow p-3">
-                <div class="card-body">
-                    <canvas id="sensorChart"></canvas>
-                </div>
+                <h5>Listrik (V)</h5>
+                <canvas id="chartListrik"></canvas>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow p-3">
+                <h5>RPM</h5>
+                <canvas id="chartRPM"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow p-3">
+                <h5>Vibrasi</h5>
+                <canvas id="chartVibrasi"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow p-3">
+                <h5>Suhu (°C)</h5>
+                <canvas id="chartSuhu"></canvas>
+            </div>
+        </div>
+
+        <!-- Tabel Data -->
+        <div class="col-12">
             <div class="card shadow p-3">
                 <div class="card-body">
                     <h5 class="card-title">Tabel Data Sensor</h5>
@@ -35,9 +47,7 @@
                             <th>Waktu</th>
                         </tr>
                         </thead>
-                        <tbody id="sensorData">
-                        <!-- Data akan diisi dengan AJAX -->
-                        </tbody>
+                        <tbody id="sensorData"></tbody>
                     </table>
                     <div id="paginationLinks" class="text-center"></div>
                 </div>
@@ -79,64 +89,75 @@
 
                 $('.pagination-link').click(function (e) {
                     e.preventDefault();
-                    let page = $(this).data('page');
-                    loadSensorData(page);
+                    loadSensorData($(this).data('page'));
                 });
             }
         });
     }
+
     loadSensorData();
-    setInterval(() => { loadSensorData(); }, 5000);
+    setInterval(() => loadSensorData(), 5000);
 </script>
 
 <script>
-    let ctx = document.getElementById('sensorChart').getContext('2d');
-    let sensorChart = new Chart(ctx, {
+    const chartConfigs = (label, color) => ({
         type: 'line',
-        data: {
-            labels: [],
-            datasets: [
-                { label: 'Listrik', borderColor: 'red', data: [], fill: false },
-                { label: 'RPM', borderColor: 'blue', data: [], fill: false },
-                { label: 'Vibrasi', borderColor: 'green', data: [], fill: false },
-                { label: 'Suhu', borderColor: 'orange', data: [], fill: false }
-            ]
-        },
+        data: { labels: [], datasets: [{ label: label, borderColor: color, data: [], fill: false }] },
         options: {
             responsive: true,
             scales: {
                 x: { title: { display: true, text: 'Waktu' } },
-                y: { title: { display: true, text: 'Sensor Value' } }
+                y: { title: { display: true, text: label } }
             }
         }
     });
 
-    function updateChart() {
+    const ctxListrik = document.getElementById('chartListrik').getContext('2d');
+    const ctxRPM = document.getElementById('chartRPM').getContext('2d');
+    const ctxVibrasi = document.getElementById('chartVibrasi').getContext('2d');
+    const ctxSuhu = document.getElementById('chartSuhu').getContext('2d');
+
+    const chartListrik = new Chart(ctxListrik, chartConfigs('Listrik (V)', 'red'));
+    const chartRPM = new Chart(ctxRPM, chartConfigs('RPM', 'blue'));
+    const chartVibrasi = new Chart(ctxVibrasi, chartConfigs('Vibrasi', 'green'));
+    const chartSuhu = new Chart(ctxSuhu, chartConfigs('Suhu (°C)', 'orange'));
+
+    function updateCharts() {
         $.ajax({
             url: '{{ url('getSeonsor') }}',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                let labels = [], listrikData = [], rpmData = [], vibrasiData = [], suhuData = [];
+                const labels = [], listrik = [], rpm = [], vibrasi = [], suhu = [];
+
                 response.data.forEach(sensor => {
                     labels.push(new Date(sensor.created_at).toLocaleTimeString());
-                    listrikData.push(parseFloat(sensor.listrik));
-                    rpmData.push(parseFloat(sensor.rpm));
-                    vibrasiData.push(parseFloat(sensor.vibrasi));
-                    suhuData.push(parseFloat(sensor.suhu));
+                    listrik.push(parseFloat(sensor.listrik));
+                    rpm.push(parseFloat(sensor.rpm));
+                    vibrasi.push(parseFloat(sensor.vibrasi));
+                    suhu.push(parseFloat(sensor.suhu));
                 });
 
-                sensorChart.data.labels = labels;
-                sensorChart.data.datasets[0].data = listrikData;
-                sensorChart.data.datasets[1].data = rpmData;
-                sensorChart.data.datasets[2].data = vibrasiData;
-                sensorChart.data.datasets[3].data = suhuData;
-                sensorChart.update();
+                // Update each chart
+                [chartListrik, chartRPM, chartVibrasi, chartSuhu].forEach(chart => {
+                    chart.data.labels = labels;
+                });
+
+                chartListrik.data.datasets[0].data = listrik;
+                chartRPM.data.datasets[0].data = rpm;
+                chartVibrasi.data.datasets[0].data = vibrasi;
+                chartSuhu.data.datasets[0].data = suhu;
+
+                chartListrik.update();
+                chartRPM.update();
+                chartVibrasi.update();
+                chartSuhu.update();
             }
         });
     }
-    updateChart();
-    setInterval(() => { updateChart(); }, 5000);
+
+    updateCharts();
+    setInterval(() => updateCharts(), 5000);
 </script>
 
 </body>
