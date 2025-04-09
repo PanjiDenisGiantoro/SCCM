@@ -36,6 +36,7 @@ Route::prefix('wo')->group(function (){
     Route::get('show/{id}', [\App\Http\Controllers\WorkOrderController::class, 'show'])->name('wo.show');
 });
 Route::post('sensor',[\App\Http\Controllers\API\SocketController::class, 'sensor'])->name('sensor');
+Route::post('testingdata',[\App\Http\Controllers\API\SocketController::class, 'testingdata'])->name('testingdata');
 Route::get('getdatacsv',[\App\Http\Controllers\API\SocketController::class, 'getdatacsv'])->name('getdatacsv');
 Route::post('/rand', [\App\Http\Controllers\API\SocketController::class, 'rand'])->name('rand');
 Route::middleware('auth:sanctum')->get('/user-id', [\App\Http\Controllers\API\AuthController::class, 'getUserId']);

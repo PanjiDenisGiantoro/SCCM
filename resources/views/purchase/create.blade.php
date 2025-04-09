@@ -1,8 +1,14 @@
 @extends('layout.layout2')
 
 @php
-    $title = 'New Purchase Request';
-    $subTitle = 'New Purchase Request';
+    if(!empty($purchase)){
+        $title = 'Edit Purchase Request';
+        $subTitle = 'Edit Purchase Request';
+    }else{
+        $title = 'New Purchase Request';
+        $subTitle = 'New Purchase Request';
+    }
+
 @endphp
 
 @section('content')
@@ -12,196 +18,292 @@
             display: inline;
         }
     </style>
-    <form id="purchaseRequestForm" action="{{ route('purchase.store') }}" method="POST" enctype="multipart/form-data">
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">New Purchase Request</h4>
-                </div>
-                <div class="card-body">
-                        @csrf
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">PR Number</label>
-                                <input type="text" class="form-control @error('pr_number') is-invalid @enderror" name="pr_number" readonly value="{{ $code }}">
-                                @error('pr_number')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Request Date</label>
-                                <input type="date" class="form-control @error('request_date') is-invalid @enderror" name="request_date" required value="{{ old('request_date') }}">
-                                @error('request_date')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Required Date</label>
-                                <input type="date" class="form-control @error('required_date') is-invalid @enderror" name="required_date" required value="{{ old('required_date') }}">
-                                @error('required_date')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Notes</label>
-                                <textarea class="form-control" name="notes">{{ old('notes') }}</textarea>
-                            </div>
-                        </div>
-
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Upload Supporting Documents</label>
-                                <input type="file" class="form-control @error('supporting_documents') is-invalid @enderror" name="supporting_documents" value="{{ old('supporting_documents') }}">
-                                @error('supporting_documents')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Business</label>
-                                <select class="form-select select2" name="business">
-                                    <option value="">-- Pilih Business --</option>
-                                    @foreach($business as $busines)
-                                        <option value="{{ $busines->id }}">{{ $busines->business_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                        </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h4 class="card-title">Additional Information</h4>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Account</label>
-                            <select class="form-select select2" name="account">
-                                <option value="">-- Pilih Account --</option>
-                                @foreach($account as $accounts)
-                                    <option value="{{ $accounts->id }}">{{ $accounts->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Charge Department</label>
-                            <select class="form-select select2" name="chargemanagement">
-                                <option value="">-- Pilih Charge Department --</option>
-                                @foreach($charge as $chargemanagement)
-                                    <option value="{{ $chargemanagement->id }}">{{ $chargemanagement->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Ship To Location</label>
-                            <select class="form-select select2"  name="ship_to_location">
-                                <option value="">-- Pilih Facility --</option>
-                                @foreach($facilities as $facility)
-                                    <option value="{{ $facility->id }}">{{ $facility->name }}</option>
-                                    @foreach($facility->children as $child)
-                                        <option value="{{ $child->id }}">- {{ $child->name }}</option>
-                                    @endforeach
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
+    @if(!empty($purchase))
+        <form id="purchaseRequestForm" action="{{ route('purchase.update', $purchase->id) }}" method="POST"
+              enctype="multipart/form-data">
+            @method('PUT')
+            @else
+                <form id="purchaseRequestForm" action="{{ route('purchase.store') }}" method="POST"
+                      enctype="multipart/form-data">
+                    @endif
+                    <div class="row">
                         <div class="col-md-6">
-                            <label class="form-label">Associated / Impacted Work Order</label>
-                            <input type="text" class="form-control" name="work_order">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">New Purchase Request</h4>
+                                </div>
+                                <div class="card-body">
+                                    @csrf
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">PR Number</label>
+                                            <input type="text"
+                                                   class="form-control @error('pr_number') is-invalid @enderror"
+                                                   name="pr_number" readonly
+                                                   @if(!empty($purchase)) value="{{ $purchase->no_pr }}" @else
+                                                       value="{{ $code }}"
+                                                @endif
+                                            >
+                                            @error('pr_number')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Request Date</label>
+                                            <input type="date"
+                                                   class="form-control @error('request_date') is-invalid @enderror"
+                                                   name="request_date" required
+                                                   @if(!empty($purchase)) value="{{ $purchase->request_date }}" @else
+                                                       value="{{ old('request_date') }}" @endif>
+                                            @error('request_date')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Required Date</label>
+                                            <input type="date"
+                                                   class="form-control @error('required_date') is-invalid @enderror"
+                                                   name="required_date" required
+                                                   @if(!empty($purchase)) value="{{ $purchase->required_date }}" @else
+                                                       value="{{ old('required_date') }}" @endif>
+                                            @error('required_date')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Notes</label>
+                                            <textarea class="form-control" name="notes">@if(!empty($purchase))
+                                                    {{ $purchase->description }}
+                                                @else
+                                                    {{ old('notes') }}
+                                                @endif</textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Upload Supporting Documents</label>
+                                            <input type="file"
+                                                   class="form-control @error('supporting_documents') is-invalid @enderror"
+                                                   name="supporting_documents"
+                                                   value="{{ old('supporting_documents') }}">
+
+                                            <div class="text-center mt-3">
+                                                @if(!empty($purchase))
+                                                    <a href="{{ asset('storage/' . $purchase->doc) }}"
+                                                       target="_blank">
+                                                        <iconify-icon icon="lucide:download"
+                                                                      class="text-xl btn btn-outline-info"></iconify-icon>
+                                                        Download
+                                                    </a>
+                                                @endif
+                                            </div>
+
+                                            @error('supporting_documents')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Business</label>
+                                            <select class="form-select select2" name="business">
+                                                <option value="">-- Pilih Business --</option>
+                                                @foreach($business as $busines)
+                                                    <option value="{{ $busines->id }}"
+                                                            @if(!empty($purchase) && $purchase->business_id == $busines->id) selected @endif
+                                                    >@if(!empty($purchase) && $purchase->business_id == $busines->id)
+                                                            {{ $busines->business_name }}
+                                                        @else
+                                                            {{ $busines->business_name }}
+                                                        @endif
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Associated / Impacted Asset</label>
-                            <input type="text" class="form-control" name="impacted_asset">
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    <h4 class="card-title">Additional Information</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label">Account</label>
+                                            <select class="form-select select2" name="account">
+                                                <option value="">-- Pilih Account --</option>
+                                                @foreach($account as $accounts)
+                                                    <option
+                                                        @if(!empty($purchase) && !empty($purchase->purchaseAdditional) &&$purchase->purchaseAdditional->account_id == $accounts->id) selected
+                                                        @else
+                                                        value="{{ $accounts->id }}"@endif>
+                                                        @if(!empty($purchase) && !empty($purchase->purchaseAdditional) && $purchase->purchaseAdditional->account_id == $accounts->id)
+                                                            {{ $purchase->purchaseAdditional->accounts->name }}
+                                                        @else
+                                                            {{ $accounts->name }}
+                                                        @endif
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Charge Department</label>
+                                            <select class="form-select select2" name="chargemanagement">
+                                                <option value="">-- Pilih Charge Department --</option>
+                                                @foreach($charge as $chargemanagement)
+                                                    <option
+
+                                                        @if(!empty($purchase) && !empty($purchase->purchaseAdditional) && $purchase->purchaseAdditional->charge_department == $chargemanagement->id) selected
+                                                        @endif
+                                                        value="{{ $chargemanagement->id }}">
+                                                        @if(!empty($purchase) && !empty($purchase->purchaseAdditional) && $purchase->purchaseAdditional->charge_management == $chargemanagement->id)
+                                                            {{ $purchase->purchaseAdditional->charge_account->name }}
+                                                        @else
+                                                            {{ $chargemanagement->name }}
+                                                        @endif</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Ship To Location</label>
+                                            <select class="form-select select2" name="ship_to_location">
+                                                <option value="">-- Pilih Facility --</option>
+                                                @foreach($facilities as $facility)
+                                                    <option value="{{ $facility->id }}">{{ $facility->name }}</option>
+                                                    @foreach($facility->children as $child)
+                                                        <option
+                                                            @if(!empty($purchase) && $purchase->asset_id == $child->id) selected @else
+                                                            value="{{ $child->id }}"@endif>
+                                                            @if(!empty($purchase) && $purchase->asset_id == $child->id)
+                                                                ->   {{ $child->name }}
+                                                            @else
+                                                                ->  {{ $child->name }}
+                                                            @endif
+                                                            </option>
+                                                    @endforeach
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Associated / Impacted Work Order</label>
+                                            <select class="form-select select2" name="work_order">
+                                                <option value="">-- Pilih Work Order --</option>
+                                                @foreach($wo as $workorder)
+                                                    <option
+                                                        @if(!empty($purchase) && $purchase->wo_id == $workorder->id) selected @else
+                                                        value="{{ $workorder->id }}"@endif>
+                                                        @if(!empty($purchase) && $purchase->wo_id == $workorder->id)
+                                                            {{ $purchase->purchaseAdditional->wos->code ?? '' }}
+                                                        @else
+                                                        {{ $workorder->code }}@endif</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Associated / Impacted Asset</label>
+                                            <select class="form-control select2" name="impacted_asset">
+                                                @foreach ($groupedData as $group)
+                                                    <optgroup label="{{ $group['text'] }}">
+                                                        @foreach ($group['children'] as $child)
+                                                            <option value="{{ $child['id'] }}"
+                                                                    data-type="{{ $group['text'] }}">
+                                                                {{ $child['text'] }} ({{ $group['text'] }})
+                                                            </option>
+                                                        @endforeach
+                                                    </optgroup>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="production_impact"
+                                               id="productionImpact">
+                                        <label class="form-check-label" for="productionImpact">
+                                            Production equipment is impacted
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" name="production_impact" id="productionImpact">
-                        <label class="form-check-label" for="productionImpact">
-                            Production equipment is impacted
-                        </label>
+
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4 class="card-title">Item List</h4>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered" id="itemTable">
+                                <thead>
+                                <tr>
+                                    <th>Item Code</th>
+                                    <th>Item Name</th>
+                                    <th hidden>model</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price</th>
+                                    <th>Total Price</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                            <button type="button" class="btn btn-outline-info" onclick="addItem()">+ Add Item</button>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Total Amount</label>
+                                    <input type="text" class="form-control" name="totalAmount" id="totalAmount"
+                                           readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="submit" class="btn btn-success mt-3">Submit Request</button>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                </form>
+                @endsection
 
-    <div class="card mt-4">
-        <div class="card-header">
-            <h4 class="card-title">Item List</h4>
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered" id="itemTable">
-                <thead>
-                <tr>
-                    <th>Item Code</th>
-                    <th>Item Name</th>
-                    <th hidden>model</th>
-                    <th>Quantity</th>
-                    <th>Unit Price</th>
-                    <th>Total Price</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
+                <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+                <script src="{{ asset('assets/js/lib/jquery-3.7.1.min.js') }}"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-                </tbody>
-            </table>
-            <button type="button" class="btn btn-outline-info" onclick="addItem()">+ Add Item</button>
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <label class="form-label">Total Amount</label>
-                    <input type="text" class="form-control" name="totalAmount" id="totalAmount" readonly>
-                </div>
-            </div>
-        </div>
-        <div class="card-footer d-flex justify-content-end">
-            <button type="submit" class="btn btn-success mt-3">Submit Request</button>
-        </div>
-    </div>
-    </form>
-@endsection
+                <!-- Tambahkan di bagian head -->
+                <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+                <script>
+                    let items = @json($data); // Data dari PHP
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-<script src="{{ asset('assets/js/lib/jquery-3.7.1.min.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                    function addItem() {
+                        let table = document.getElementById("itemTable").getElementsByTagName("tbody")[0];
+                        let row = table.insertRow();
 
-<!-- Tambahkan di bagian head -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-<script>
-     let items = @json($data); // Data dari PHP
+                        let options = `<option value="">-- Select Item --</option>`;
+                        items.forEach(item => {
+                            options += `<option value="${item.id}" data-name="${item.name}" data-type="${item.type}">${item.id} - ${item.name} (${item.type})</option>`;
+                        });
 
-    function addItem() {
-        let table = document.getElementById("itemTable").getElementsByTagName("tbody")[0];
-        let row = table.insertRow();
+                        // Tambahkan opsi item tidak terdaftar
+                        options += `<option value="custom">-- Not in Inventory --</option>`;
 
-        let options = `<option value="">-- Select Item --</option>`;
-        items.forEach(item => {
-            options += `<option value="${item.id}" data-name="${item.name}" data-type="${item.type}">${item.id} - ${item.name} (${item.type})</option>`;
-        });
-
-        // Tambahkan opsi item tidak terdaftar
-        options += `<option value="custom">-- Not in Inventory --</option>`;
-
-        row.innerHTML = `
+                        row.innerHTML = `
             <td>
                 <select class="form-control item_code select2" name="item_code[]" required onchange="updateItemName(this)">
                     ${options}
@@ -215,84 +317,83 @@
             <td><input type="text" class="form-control total_price" name="total_price[]" readonly></td>
             <td><button type="button" class="btn btn-danger btn-sm" onclick="removeItem(this)">X</button></td>
         `;
-        $('.select2').select2(); // Inisialisasi Select2 untuk elemen yang baru ditambahkan
+                        $('.select2').select2(); // Inisialisasi Select2 untuk elemen yang baru ditambahkan
 
-    }
+                    }
 
-    function updateItemName(select) {
-        let row = select.closest("tr");
-        let selectedOption = select.options[select.selectedIndex];
-        let itemNameField = row.querySelector(".item_name");
-        let customItemInput = row.querySelector(".custom_item_name");
-        let model = row.querySelector(".model");
+                    function updateItemName(select) {
+                        let row = select.closest("tr");
+                        let selectedOption = select.options[select.selectedIndex];
+                        let itemNameField = row.querySelector(".item_name");
+                        let customItemInput = row.querySelector(".custom_item_name");
+                        let model = row.querySelector(".model");
 
-        if (select.value === "custom") {
-            customItemInput.style.display = "block";
-            itemNameField.value = "";
-            customItemInput.addEventListener("input", function () {
-                itemNameField.value = customItemInput.value;
-            });
-        } else {
-            customItemInput.style.display = "none";
-            itemNameField.value = selectedOption.getAttribute("data-name") || "";
-            model.value = selectedOption.getAttribute("data-type") || "";
-        }
-    }
+                        if (select.value === "custom") {
+                            customItemInput.style.display = "block";
+                            itemNameField.value = "";
+                            customItemInput.addEventListener("input", function () {
+                                itemNameField.value = customItemInput.value;
+                            });
+                        } else {
+                            customItemInput.style.display = "none";
+                            itemNameField.value = selectedOption.getAttribute("data-name") || "";
+                            model.value = selectedOption.getAttribute("data-type") || "";
+                        }
+                    }
 
-    function removeItem(button) {
-        let row = button.closest("tr");
-        row.remove();
-        updateGrandTotal();
-    }
+                    function removeItem(button) {
+                        let row = button.closest("tr");
+                        row.remove();
+                        updateGrandTotal();
+                    }
 
-    function calculateTotal(input) {
-        let row = input.closest("tr");
-        let quantity = row.querySelector(".quantity").value;
-        let unitPrice = row.querySelector(".unit_price").value;
-        let totalPriceField = row.querySelector(".total_price");
+                    function calculateTotal(input) {
+                        let row = input.closest("tr");
+                        let quantity = row.querySelector(".quantity").value;
+                        let unitPrice = row.querySelector(".unit_price").value;
+                        let totalPriceField = row.querySelector(".total_price");
 
-        totalPriceField.value = (quantity && unitPrice) ? (quantity * unitPrice).toFixed(0) : "";
+                        totalPriceField.value = (quantity && unitPrice) ? (quantity * unitPrice).toFixed(0) : "";
 
-        updateGrandTotal();
-    }
+                        updateGrandTotal();
+                    }
 
-    function updateGrandTotal() {
-        let totalAmount = 0;
-        document.querySelectorAll(".total_price").forEach(input => {
-            let value = parseFloat(input.value);
-            if (!isNaN(value)) {
-                totalAmount += value;
-            }
-        });
+                    function updateGrandTotal() {
+                        let totalAmount = 0;
+                        document.querySelectorAll(".total_price").forEach(input => {
+                            let value = parseFloat(input.value);
+                            if (!isNaN(value)) {
+                                totalAmount += value;
+                            }
+                        });
 
-        document.getElementById("totalAmount").value = totalAmount.toFixed(0);
-    }
-</script>
+                        document.getElementById("totalAmount").value = totalAmount.toFixed(0);
+                    }
+                </script>
 
-<script>
+                <script>
 
-    $(document).ready(function() {
-        $('.select2').select2({
-            width: '100%',
-            dropdownParent: $('body') // Pastikan dropdown tidak berada dalam elemen tersembunyi
-        });
+                    $(document).ready(function () {
+                        $('.select2').select2({
+                            width: '100%',
+                            dropdownParent: $('body') // Pastikan dropdown tidak berada dalam elemen tersembunyi
+                        });
 
 
-
-        $("#purchaseRequestForm").on("submit", function(event) {
-            event.preventDefault();
-            Swal.fire({
-                title: "Are you sure?",
-                text: "Do you want to submit this purchase request?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes, submit it!",
-                cancelButtonText: "Cancel"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.submit();
-                }
-            });
-        });
-    });
-</script>
+                        $("#purchaseRequestForm").on("submit", function (event) {
+                            event.preventDefault();
+                            Swal.fire({
+                                title: "Are you sure?",
+                                text: "Do you want to submit this purchase request?",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "Yes, submit it!",
+                                cancelButtonText: "Cancel"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    this.submit();
+                                }
+                            });
+                        });
+                    });
+                </script>

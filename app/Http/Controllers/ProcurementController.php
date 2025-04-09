@@ -22,6 +22,7 @@ use App\Models\Receipt;
 use App\Models\ReceiptBody;
 use App\Models\Tools;
 use App\Models\User;
+use App\Models\Work_orders;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -546,5 +547,36 @@ class ProcurementController extends Controller
             ->find($id);
 
         return view('receipt.view', compact('receipt'));
+    }
+
+    public function edit($id)
+    {
+        $facilities = Facility::select('id', 'name', DB::raw("'facility' as type"))->get();
+        $tools = Tools::select('id', 'name', DB::raw("'tool' as type"))->get();
+        $equipments = Equipment::select('id', 'name', DB::raw("'equipment' as type"))->get();
+        $part = Part::select('id', DB::raw('"nameParts" as name'), DB::raw("'part' as type"))->get(); // Perbaikan kutip ganda
+        $business = Business::latest()->get();
+        $data = $facilities->merge($equipments)->merge($tools);
+        $purchase = Purchases::with('business','purchaseAdditional.accounts','purchaseAdditional.charge_account','purchaseAdditional.wos','purchaseBodies.facility','purchaseBodies.equipment','purchaseBodies.tools')->find($id);
+//        dd($purchase);
+        $business = Business::latest()->get();
+        $account = Account::latest()->get();
+        $charge = ChargeDepartment::latest()->get();
+        $facilities = Facility::with('children')->whereNull('parent_id')->latest()->get();
+
+        $groupedData = $data->groupBy('type')->map(function ($items, $key) {
+            return [
+                'text' => ucfirst($key), // Menjadikan nama grup lebih rapi
+                'children' => $items->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'text' => $item->name
+                    ];
+                })->values()
+            ];
+        })->values();
+        $wo = Work_orders::latest()->get();
+
+        return view('purchase.create', compact('purchase','business','account','charge','facilities','data','groupedData','wo'));
     }
 }

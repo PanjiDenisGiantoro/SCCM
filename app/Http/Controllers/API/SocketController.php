@@ -165,6 +165,17 @@ class SocketController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+    public function testingdata(Request $request)
+    {
+
+        Log::info('Data dari ESP8266 baru:', $request->all());
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data received successfully',
+            'data' => $request->all()
+        ]);
+
+    }
 
 
 }
