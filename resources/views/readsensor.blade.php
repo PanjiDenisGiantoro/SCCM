@@ -40,6 +40,12 @@
                 <canvas id="chartSuhu"></canvas>
             </div>
         </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow p-3">
+                <h5>Axis</h5>
+                <canvas id="chartAxis"></canvas>
+            </div>
+        </div>
 
         <!-- Tabel Data -->
         <div class="col-12">
@@ -54,6 +60,7 @@
                             <th>RPM</th>
                             <th>Vibrasi</th>
                             <th>Suhu (°C)</th>
+                            <th>Axis</th>
                             <th>Waktu</th>
                         </tr>
                         </thead>
@@ -84,6 +91,7 @@
                             <td>${sensor.rpm}</td>
                             <td>${sensor.vibrasi}</td>
                             <td>${sensor.suhu}</td>
+                            <td>${sensor.axis}</td>
                             <td>${sensor.created_at}</td>
                         </tr>
                     `;
@@ -126,11 +134,13 @@
     const ctxRPM = document.getElementById('chartRPM').getContext('2d');
     const ctxVibrasi = document.getElementById('chartVibrasi').getContext('2d');
     const ctxSuhu = document.getElementById('chartSuhu').getContext('2d');
+    const ctxAxis = document.getElementById('chartAxis').getContext('2d');
 
     const chartListrik = new Chart(ctxListrik, chartConfigs('Listrik (V)', 'red'));
     const chartRPM = new Chart(ctxRPM, chartConfigs('RPM', 'blue'));
     const chartVibrasi = new Chart(ctxVibrasi, chartConfigs('Vibrasi', 'green'));
     const chartSuhu = new Chart(ctxSuhu, chartConfigs('Suhu (°C)', 'orange'));
+    const chartAxis = new Chart(ctxAxis, chartConfigs('Axis (°C)', 'yellow'));
 
     function updateCharts() {
         $.ajax({
@@ -138,7 +148,7 @@
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                const labels = [], listrik = [], rpm = [], vibrasi = [], suhu = [];
+                const labels = [], listrik = [], rpm = [], vibrasi = [], suhu = [], axis = [];
 
                 response.data.forEach(sensor => {
                     labels.push(new Date(sensor.created_at).toLocaleTimeString());
@@ -146,10 +156,11 @@
                     rpm.push(parseFloat(sensor.rpm));
                     vibrasi.push(parseFloat(sensor.vibrasi));
                     suhu.push(parseFloat(sensor.suhu));
+                    axis.push(parseFloat(sensor.axis));
                 });
 
                 // Update each chart
-                [chartListrik, chartRPM, chartVibrasi, chartSuhu].forEach(chart => {
+                [chartListrik, chartRPM, chartVibrasi, chartSuhu,chartAxis].forEach(chart => {
                     chart.data.labels = labels;
                 });
 
@@ -157,11 +168,13 @@
                 chartRPM.data.datasets[0].data = rpm;
                 chartVibrasi.data.datasets[0].data = vibrasi;
                 chartSuhu.data.datasets[0].data = suhu;
+                chartAxis.data.datasets[0].data = axis;
 
                 chartListrik.update();
                 chartRPM.update();
                 chartVibrasi.update();
                 chartSuhu.update();
+                chartAxis.update();
             }
         });
     }
