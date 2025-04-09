@@ -40,7 +40,12 @@
                 <canvas id="chartSuhu"></canvas>
             </div>
         </div>
-
+        <div class="col-md-6 mb-4" hidden">
+            <div class="card shadow p-3">
+                <h5>Axis</h5>
+                <canvas id="chartAxis"></canvas>
+            </div>
+        </div>
 
         <!-- Tabel Data -->
         <div class="col-12">
