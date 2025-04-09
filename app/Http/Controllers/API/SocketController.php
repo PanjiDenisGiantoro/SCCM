@@ -97,7 +97,7 @@ class SocketController extends Controller
     public function sensor(Request $request)
     {
         // Ambil data dari request query (bukan JSON)
-        $data = $request->only(['rpm', 'suhu', 'vibration', 'tegangan']);
+        $data = $request->only(['rpm', 'temperature', 'vibration', 'voltage','axis']);
 
         Log::info('Data dari ESP8266:', $data);
 
@@ -111,10 +111,11 @@ class SocketController extends Controller
 
         // Cek jika ada salah satu nilai yang lebih dari 0.01
             sensor_motor::create([
-                'suhu' => $data['suhu'] ?? 0,
-                'listrik' => $data['tegangan'],
+                'suhu' => $data['temperature'] ?? 0,
+                'listrik' => $data['voltage'],
                 'vibrasi' => $data['vibration'],
                 'rpm' => $data['rpm'],
+                'axis' => $data['axis'],
             ]);
 
             return response()->json([
