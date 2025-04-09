@@ -40,12 +40,7 @@
                 <canvas id="chartSuhu"></canvas>
             </div>
         </div>
-        <div class="col-md-6 mb-4">
-            <div class="card shadow p-3">
-                <h5>Axis</h5>
-                <canvas id="chartAxis"></canvas>
-            </div>
-        </div>
+
 
         <!-- Tabel Data -->
         <div class="col-12">
@@ -60,7 +55,7 @@
                             <th>RPM</th>
                             <th>Vibrasi</th>
                             <th>Suhu (°C)</th>
-                            <th>Axis</th>
+{{--                            <th>Axis</th>--}}
                             <th>Waktu</th>
                         </tr>
                         </thead>
@@ -91,7 +86,6 @@
                             <td>${sensor.rpm}</td>
                             <td>${sensor.vibrasi}</td>
                             <td>${sensor.suhu}</td>
-                            <td>${sensor.axis}</td>
                             <td>${sensor.created_at}</td>
                         </tr>
                     `;
