@@ -168,13 +168,32 @@ class SocketController extends Controller
     }
     public function testingdata(Request $request)
     {
+        $data = $request->only(['rpm', 'temperature', 'vibration', 'voltage','axis']);
 
-        Log::info('Data dari ESP8266 baru:', $request->all());
+        Log::info('Data dari ESP8266 baru:', $data);
+
+        // Ubah nama field ke format Laravel-mu
+//        $data = [
+//            'rpm' => floatval($data['rpm'] ?? 0),
+//            'temperature' => floatval($data['temperature'] ?? 0),
+//            'vibration' => floatval($data['vibration'] ?? 0),
+//            'voltage' => floatval($data['voltage'] ?? 0),
+//        ];
+
+        // Cek jika ada salah satu nilai yang lebih dari 0.01
+        sensor_motor::create([
+            'suhu' => $data['temperature'] ?? 0,
+            'listrik' => $data['voltage'],
+            'vibrasi' => $data['vibration'],
+            'rpm' => $data['rpm'],
+            'axis' => $data['axis'],
+        ]);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Data received successfully',
-            'data' => $request->all()
-        ]);
+            'data' => $data
+        ], 200);
 
     }
 
