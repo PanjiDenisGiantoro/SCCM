@@ -17,7 +17,18 @@ Content-Type: application/json
 
 {
     "rpm": 33,
-    "temperature": 22,
+    "suhu": 22,
     "vibration": 1,
     "voltage": 1
+}
+
+###
+POST http://127.0.0.1:8000/api/sensor
+Content-Type: application/json
+
+{
+    "rpm": 33,
+    "suhu": 22,
+    "tegangan": 10,
+    "vibration": 10
 }

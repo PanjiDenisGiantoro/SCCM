@@ -102,17 +102,17 @@ class SocketController extends Controller
         Log::info('Data dari ESP8266:', $data);
 
         // Ubah nama field ke format Laravel-mu
-        $data = [
-            'rpm' => floatval($data['rpm'] ?? 0),
-            'temperature' => floatval($data['temperature'] ?? 0),
-            'vibration' => floatval($data['vibration'] ?? 0),
-            'voltage' => floatval($data['voltage'] ?? 0),
-        ];
+//        $data = [
+//            'rpm' => floatval($data['rpm'] ?? 0),
+//            'temperature' => floatval($data['temperature'] ?? 0),
+//            'vibration' => floatval($data['vibration'] ?? 0),
+//            'voltage' => floatval($data['voltage'] ?? 0),
+//        ];
 
         // Cek jika ada salah satu nilai yang lebih dari 0.01
             sensor_motor::create([
-                'listrik' => floatval($data['voltage'] ?? 0),
-                'suhu' => floatval($data['temperature'] ?? 0),
+                'suhu' => $data['suhu'] ?? 0,
+                'listrik' => $data['tegangan'],
                 'vibrasi' => $data['vibration'],
                 'rpm' => $data['rpm'],
             ]);
