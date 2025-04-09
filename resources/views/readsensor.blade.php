@@ -174,7 +174,7 @@
     }
 
     updateCharts();
-    setInterval(() => updateCharts(), 5000);
+    setInterval(() => updateCharts(), 3000);
 </script>
 
 </body>
