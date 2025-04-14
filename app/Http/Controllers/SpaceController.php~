@@ -111,6 +111,7 @@ class SpaceController extends Controller
     function update(Request $request, $id)
     {
 
+        dd($request->all());
         $validated = $request->validate([
             'space_id' => 'required|string',
             'building_ref' => 'required|string',

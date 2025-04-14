@@ -203,9 +203,6 @@ class EquipmentController extends Controller
             <button class="btn btn-outline-info btn-sm editBtn" data-id="' . $facility->id . '">
                 <iconify-icon icon="lucide:edit"></iconify-icon>
             </button>
-            <button class="btn btn-outline-danger btn-sm deleteBtn" data-id="' . $facility->id . '">
-                <iconify-icon icon="lucide:trash-2"></iconify-icon>
-            </button>
                 <button class="btn btn-outline-info btn-sm viewBtn" data-id="' . $facility->id . '">
                 <iconify-icon icon="lucide:eye"></iconify-icon>
             </button>'

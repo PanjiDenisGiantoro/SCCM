@@ -90,9 +90,6 @@
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
-                        <a href="{{ route('asset.list') }}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i>All Assets</a>
-                    </li>
-                    <li>
                         <a href="{{ route('asset.facility') }}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i>Facilites</a>
                     </li>
 

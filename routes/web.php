@@ -435,8 +435,9 @@ Route::prefix('permit')->group(function () {
         Route::get('/status/{id}','status')->name('permit.status');
         Route::get('/show/{id}','show')->name('permit.show');
         Route::post('permit','store')->name('permit.store');
-        Route::get('/destroy/{id}','destroy')->name('permit.destroy');
+        Route::delete('/destroy/{id}','destroy')->name('permit.destroy');
         Route::get('create','create')->name('permit.create');
+
     });
 });
 Route::prefix('receipt')->group(function () {
@@ -497,7 +498,8 @@ Route::prefix('space')->group(function () {
         Route::get('/status/{id}','status')->name('space.status');
         Route::get('/show/{id}','show')->name('space.show');
         Route::post('space','store')->name('space.store');
-        Route::get('/destroy/{id}','destroy')->name('space.destroy');
+
+        Route::delete('/destroy/{id}','destroy')->name('space.destroy');
         Route::get('create','create')->name('space.create');
         Route::get('analytics','analytics')->name('space.analytics');
     });

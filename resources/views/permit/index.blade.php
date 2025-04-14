@@ -5,6 +5,9 @@
     $subTitle = 'List Permit Building';
 
 @endphp
+@php
+    use Carbon\Carbon;
+@endphp
 
 @section('content')
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
@@ -30,8 +33,26 @@
                     </tr>
                     </thead>
                     <tbody>
-
+                    @foreach ($permits as $permit )
+                        <tr>
+                            <td>{{ $permit->id }}</td>
+                            <td>{{ $permit->permit_type }}</td>
+                            <td>{{ $permit->facility_reference }}</td>
+                            <td>{{ $permit->issued_by }}</td>
+                            <td>{{ Carbon::parse($permit->expiration_date)->format('d-m-Y') }}</td>
+                            <td>{{ $permit->status }}</td>
+                            <td>
+                                <a href="{{ route('permit.edit', $permit->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                <form action="{{ route('permit.destroy', $permit->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
                     </tbody>
+
                 </table>
             </div>
         </div>
@@ -49,10 +70,12 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="addPermitForm">
+                    <form id="addPermitForm" method="POST" action="{{ route('permit.store') }}">
+                        @csrf
+
                         <div class="form-group">
                             <label for="permitType">Permit Type</label>
-                            <select class="form-select select2" id="permitType" required>
+                            <select class="form-select select2" id="permitType" name="permit_type" required>
                                 <option value="Construction">Construction</option>
                                 <option value="Renovation">Renovation</option>
                                 <option value="Safety">Safety</option>
@@ -60,19 +83,27 @@
                         </div>
                         <div class="form-group">
                             <label for="facilityReference">Facility/Building Reference</label>
-                            <input type="text" class="form-control" id="facilityReference" required>
+                            <select class="form-select select2" id="facilityReference" name="facility_reference" required>
+                                @foreach ($facilities as $facility)
+                                    <option value="{{ $facility->id }}">{{ $facility->name }}</option>
+                                    @foreach($facility->children as $child)
+                                        <option value="{{ $child->id }}">{{ $child->name }}</option>
+                                    @endforeach
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="issuedBy">Issued By</label>
-                            <input type="text" class="form-control" id="issuedBy" required>
+                            <input type="text" class="form-control" id="issuedBy" name="issued_by" required>
                         </div>
                         <div class="form-group">
                             <label for="expirationDate">Expiration Date</label>
-                            <input type="date" class="form-control" id="expirationDate" required>
+                            <input type="date" class="form-control" id="expirationDate" name="expiration_date" required>
                         </div>
                         <div class="form-group">
                             <label for="status">Status</label>
-                            <select class="form-select" id="status" required>
+
+                            <select class="form-select" id="status" name="status" required>
                                 <option value="Pending">Pending</option>
                                 <option value="Approved">Approved</option>
                                 <option value="Expired">Expired</option>
@@ -80,9 +111,9 @@
                         </div>
                         <div class="form-group">
                             <label for="complianceDocuments">Compliance Documents</label>
-                            <textarea class="form-control" id="complianceDocuments"></textarea>
+                            <textarea class="form-control" id="complianceDocuments" name="compliance_documents"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Add Permit</button>
+                        <button type="submit" class="btn btn-outline-info">Add Permit</button>
                     </form>
                 </div>
             </div>
