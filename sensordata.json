@@ -1,0 +1,82 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Sensor Data API",
+        "description": "API untuk menerima data sensor (RPM, suhu, tegangan, dan vibrasi).",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://103.134.154.111"
+        }
+    ],
+    "paths": {
+        "/api/sensor": {
+            "post": {
+                "summary": "Kirim data sensor",
+                "description": "Endpoint untuk menerima data sensor dari perangkat.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "rpm": {
+                                        "type": "integer",
+                                        "example": 33
+                                    },
+                                    "suhu": {
+                                        "type": "integer",
+                                        "example": 22
+                                    },
+                                    "tegangan": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "vibration": {
+                                        "type": "integer",
+                                        "example": 10
+                                    }
+                                },
+                                "required": ["rpm", "suhu", "tegangan", "vibration"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data berhasil diterima",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data received successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "rpm": { "type": "integer", "example": 33 },
+                                                "temperature": { "type": "integer", "example": 22 },
+                                                "vibration": { "type": "integer", "example": 10 },
+                                                "voltage": { "type": "integer", "example": 10 },
+                                                "axis": { "type": "string", "example": "Z" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

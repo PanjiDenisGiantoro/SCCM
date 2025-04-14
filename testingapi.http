@@ -17,9 +17,10 @@ Content-Type: application/json
 
 {
     "rpm": 33,
-    "suhu": 22,
-    "tegangan": 10,
-    "vibration": 10
+    "temperature": 22,
+    "voltage": 10,
+    "vibration": 10,
+    "axis": "Z"
 }
 
 ###
