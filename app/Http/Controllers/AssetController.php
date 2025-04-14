@@ -262,14 +262,13 @@ class AssetController extends Controller
 
     public function charge_list()
     {
-        $charge = ChargeDepartment::latest()->get();
+        $charge = ChargeDepartment::with('facility')->latest()->get();
         return response()->json($charge);
     }
 
     public function charge_store(Request $request)
     {
         try {
-
             $charge = ChargeDepartment::create([
                 'name' => $request->code,
                 'description' => $request->description,

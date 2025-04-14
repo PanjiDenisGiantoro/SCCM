@@ -45,4 +45,8 @@ class ReceiptBody extends Model
         }
         return null;
     }
+    public function receipt()
+    {
+        return $this->hasOne(Receipt::class, 'id', 'receipt_id');
+    }
 }

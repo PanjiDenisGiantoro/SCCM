@@ -11,7 +11,7 @@
     <div class="container mt-4">
         <div class="d-flex justify-content-between">
             <h4>API Test Result</h4>
-            <a href="{{ route('socket.list') }}" class="btn btn-primary mt-3">Back</a>
+            <a href="{{ route('socket.list') }}" class="btn btn-outline-info mt-3">Back</a>
         </div>
         <p><strong>Host:</strong> {{ $api->host }}</p>
         <p><strong>Port:</strong> {{ $api->port }}</p>
@@ -43,35 +43,111 @@
                         </div>
                         <div class="card-body">
                             @php
-                                // Jika edit, gunakan existingData, jika tidak, gunakan hasil API
+                                // Ambil data dari API atau existingData
                                 $readResults = $isEdit ? ($existingData ?? []) : ($data['readResults'] ?? []);
-                                     if (!is_array(reset($readResults))) {
-                $readResults = [$readResults]; // Ubah menjadi array multidimensi jika perlu
-            }
+                                if (!is_array(reset($readResults))) {
+                                    $readResults = [$readResults]; // Bikin jadi array multidimensi jika perlu
+                                }
                             @endphp
+
                             @if(is_array($readResults))
                                 @foreach($readResults as $index => $result)
                                     <div class="border p-3 mb-3 data-box" id="box_{{ $index }}">
-                                        @foreach($result as $key => $value)
-                                            @php $checked = $isEdit && isset($existingData[$index][$key]); @endphp
-                                            <div class="form-check mt-2">
-                                                <input class="form-check-input checkbox-item" type="checkbox"
-                                                       id="select_{{ $index }}_{{ $key }}"
-                                                       onchange="toggleInput(this, '{{ $index }}', '{{ $key }}')" {{ $checked ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="select_{{ $index }}_{{ $key }}">
-                                                    <strong>{{ ucfirst($key) }}:</strong> {{ $value }}
-                                                </label>
-                                            </div>
-                                            <input type="text" name="readResults[{{ $index }}][{{ $key }}]"
-                                                   class="form-control mt-1 input-item"
-                                                   id="input_{{ $index }}_{{ $key }}"
-                                                   value="{{ $value }}" {{ $checked ? '' : 'style=display:none;' }} {{ $checked ? '' : 'disabled' }}>
-                                        @endforeach
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input checkbox-item" type="checkbox"
+                                                   id="select_{{ $index }}_name"
+                                                   onchange="toggleInput(this, '{{ $index }}', 'name')"
+                                                {{ $isEdit && isset($existingData[$index]['name']) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="select_{{ $index }}_name">
+                                                <strong>Name:</strong> {{ $result['name'] ?? '' }}
+                                            </label>
+                                        </div>
+                                        <input type="text" name="readResults[{{ $index }}][name]"
+                                               class="form-control mt-1 input-item"
+                                               id="input_{{ $index }}_name"
+                                               value="{{ $result['name'] ?? '' }}"
+                                            {{ $isEdit && isset($existingData[$index]['name']) ? '' : 'style=display:none;' }} {{ $isEdit && isset($existingData[$index]['name']) ? '' : 'disabled' }}>
+
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input checkbox-item" type="checkbox"
+                                                   id="select_{{ $index }}_value"
+                                                   onchange="toggleInput(this, '{{ $index }}', 'value')"
+                                                {{ $isEdit && isset($existingData[$index]['value']) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="select_{{ $index }}_value">
+                                                <strong>Value:</strong> {{ $result['value'] ?? '' }}
+                                            </label>
+                                        </div>
+                                        <input type="text" name="readResults[{{ $index }}][value]"
+                                               class="form-control mt-1 input-item"
+                                               id="input_{{ $index }}_value"
+                                               value="{{ $result['value'] ?? '' }}"
+                                            {{ $isEdit && isset($existingData[$index]['value']) ? '' : 'style=display:none;' }} {{ $isEdit && isset($existingData[$index]['value']) ? '' : 'disabled' }}>
+
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input checkbox-item" type="checkbox"
+                                                   id="select_{{ $index }}_node_id"
+                                                   onchange="toggleInput(this, '{{ $index }}', 'node_id')"
+                                                {{ $isEdit && isset($existingData[$index]['node_id']) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="select_{{ $index }}_node_id">
+                                                <strong>Node ID:</strong> {{ $result['node_id'] ?? '' }}
+                                            </label>
+                                        </div>
+                                        <input type="text" name="readResults[{{ $index }}][node_id]"
+                                               class="form-control mt-1 input-item"
+                                               id="input_{{ $index }}_node_id"
+                                               value="{{ $result['node_id'] ?? '' }}"
+                                            {{ $isEdit && isset($existingData[$index]['node_id']) ? '' : 'style=display:none;' }} {{ $isEdit && isset($existingData[$index]['node_id']) ? '' : 'disabled' }}>
+
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input checkbox-item" type="checkbox"
+                                                   id="select_{{ $index }}_status"
+                                                   onchange="toggleInput(this, '{{ $index }}', 'status')"
+                                                {{ $isEdit && isset($existingData[$index]['status']) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="select_{{ $index }}_status">
+                                                <strong>Status:</strong> {{ $result['status'] ?? '' }}
+                                            </label>
+                                        </div>
+                                        <input type="text" name="readResults[{{ $index }}][status]"
+                                               class="form-control mt-1 input-item"
+                                               id="input_{{ $index }}_status"
+                                               value="{{ $result['status'] ?? '' }}"
+                                            {{ $isEdit && isset($existingData[$index]['status']) ? '' : 'style=display:none;' }} {{ $isEdit && isset($existingData[$index]['status']) ? '' : 'disabled' }}>
+
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input checkbox-item" type="checkbox"
+                                                   id="select_{{ $index }}_count_over_temp"
+                                                   onchange="toggleInput(this, '{{ $index }}', 'count_over_temp')"
+                                                {{ $isEdit && isset($existingData[$index]['count_over_temp']) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="select_{{ $index }}_count_over_temp">
+                                                <strong>Count Over Temp:</strong> {{ $result['count_over_temp'] ?? '' }}
+                                            </label>
+                                        </div>
+                                        <input type="text" name="readResults[{{ $index }}][count_over_temp]"
+                                               class="form-control mt-1 input-item"
+                                               id="input_{{ $index }}_count_over_temp"
+                                               value="{{ $result['count_over_temp'] ?? '' }}"
+                                            {{ $isEdit && isset($existingData[$index]['count_over_temp']) ? '' : 'style=display:none;' }} {{ $isEdit && isset($existingData[$index]['count_over_temp']) ? '' : 'disabled' }}>
+
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input checkbox-item" type="checkbox"
+                                                   id="select_{{ $index }}_datetime"
+                                                   onchange="toggleInput(this, '{{ $index }}', 'datetime')"
+                                                {{ $isEdit && isset($existingData[$index]['datetime']) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="select_{{ $index }}_datetime">
+                                                <strong>Datetime:</strong> {{ $result['datetime'] ?? '' }}
+                                            </label>
+                                        </div>
+                                        <input type="text" name="readResults[{{ $index }}][datetime]"
+                                               class="form-control mt-1 input-item"
+                                               id="input_{{ $index }}_datetime"
+                                               value="{{ $result['datetime'] ?? '' }}"
+                                            {{ $isEdit && isset($existingData[$index]['datetime']) ? '' : 'style=display:none;' }} {{ $isEdit && isset($existingData[$index]['datetime']) ? '' : 'disabled' }}>
                                     </div>
                                 @endforeach
                             @else
                                 <p>No data available</p>
                             @endif
+
                         </div>
                     </div>
                 </div>
@@ -123,7 +199,7 @@
             </div>
             <input type="hidden" name="api_id" value="{{ $api->id  ?? ''}} ">
             <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-success mt-3">{{ $isEdit ? 'Update' : 'Save' }} Selection</button>
+                <button type="submit" class="btn btn-outline-info mt-3">{{ $isEdit ? 'Update' : 'Save' }} Selection</button>
             </div>
         </form>
     </div>

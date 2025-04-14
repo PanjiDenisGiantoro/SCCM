@@ -1,8 +1,8 @@
 @extends('layout.layout2')
 
 @php
-    $title = 'Detail Purchase Request';
-    $subTitle = 'Detail Purchase Request';
+    $title = 'Detail Purchase Order';
+    $subTitle = 'Detail Purchase Order';
 @endphp
 
 @section('content')
@@ -77,7 +77,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                 </div>
-                                <form id="generatePoForm" action="{{ url('purchase/generate-po') }}" method="POST">
+                                <form id="generatePoForm" action="{{ url('purchase_order/generate-po') }}" method="POST">
                                     @csrf
                                     <div class="modal-body">
                                         <div class="mb-3">
@@ -186,7 +186,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach($purchase->purchaseOrderBodies as $item)
+                                            @foreach($purchase->purchaseBodies as $item)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>

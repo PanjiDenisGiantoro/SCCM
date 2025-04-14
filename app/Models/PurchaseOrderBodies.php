@@ -38,7 +38,7 @@ class PurchaseOrderBodies extends Model
             return $this->part;
         } elseif ($this->model === 'equipment') {
             return $this->equipment;
-        } elseif ($this->model === 'tools') {
+        } elseif ($this->model === 'tool') {
             return $this->tools;
         }elseif ($this->model === 'facility') {
             return $this->facility;

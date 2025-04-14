@@ -1,16 +1,27 @@
 @extends('layout.layout2')
 
 @php
-    $title = 'Part and Supplier';
-    $subTitle = 'Part and Supplier';
+    if(!empty($partdata)){
+
+        $title = 'Edit Part and Supplier';
+        $subTitle = 'Edit Part and Supplier';
+    }else{
+        $title = 'Part and Supplier';
+        $subTitle = 'Part and Supplier';
+    }
 @endphp
 
 @section('content')
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        span {
+            display: inline;
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <div id="submitform">
         <div class="row gy-4">
-            <div class="col-lg-10">
+            <div class="col-lg-9">
                 <div class="card mb-3">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h6 class="card-title mb-0">Part and Supplier Form</h6>
@@ -32,12 +43,19 @@
                                     <div class="flex-grow-1 ms-3    ">
                                         <div class="mb-2">
                                             <label class="form-label">Name Part</label>
-                                            <input class="form-control" type="text" name="namepart"/>
+                                            <input class="form-control" type="text" name="namepart"
+                                                   @if(!empty($partdata)) value="{{$partdata->nameParts}}" @endif
+                                            />
                                         </div>
                                         <label class="form-label">Category</label>
                                         <div class="input-group">
                                             <select class="form-select" id="categoryDropdown" name="categorypart">
-                                                <option value="">-- Select Category --</option>
+                                                @if(!empty($partdata))
+                                                    <option
+                                                        value="{{$partdata->category}}">{{$partdata->categories->category_name ?? ''}}</option>
+                                                @else
+                                                    <option value="">-- Select Category --</option>
+                                                @endif
                                             </select>
                                             <button class="btn btn-outline-success" data-bs-toggle="modal"
                                                     data-bs-target="#categoryModal">Manage
@@ -53,8 +71,13 @@
                                 <label class="form-label">Charge Department</label>
                                 <div class="input-group">
                                     <select class="form-select" id="chargemanagement"
-                                            name="chargemanagement">
-                                        <option value="">-- Select Charge Department --</option>
+                                            name="id_charge">
+                                        @if(!empty($partdata))
+                                            <option
+                                                value="{{$partdata->id_charge}}">{{$partdata->charge->name ?? ''}}</option>
+                                        @else
+                                            <option value="">-- Select Charge Department --</option>
+                                        @endif
                                     </select>
                                     <button class="btn btn-outline-success" data-bs-toggle="modal"
                                             data-bs-target="#ChargeModal">
@@ -63,8 +86,13 @@
                                 </div>
                                 <label class="form-label">Account</label>
                                 <div class="input-group">
-                                    <select class="form-select" id="accountInput" name="account">
-                                        <option value="">-- Select Account --</option>
+                                    <select class="form-select" id="accountInput" name="id_account">
+                                        @if(!empty($partdata))
+                                            <option
+                                                value="{{$partdata->id_account}}">{{$partdata->accounts->name ?? ''}}</option>
+                                        @else
+                                            <option value="">-- Select Account --</option>
+                                        @endif
                                     </select>
                                     <button class="btn btn-outline-success" data-bs-toggle="modal"
                                             data-bs-target="#accountModal">Manage
@@ -89,18 +117,21 @@
                                                                required>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="chargeDescription" class="form-label">Description</label>
+                                                        <label for="chargeDescription"
+                                                               class="form-label">Description</label>
                                                         <input type="text" class="form-control"
                                                                id="chargeDescription" required>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label for="chargeFacility"
                                                                class="form-label">Facility</label>
-                                                        <select class="form-select" id="chargeFacility"
+                                                        <select class="form-select " id="chargeFacility"
                                                                 required>
                                                             <option value="">-- Select Facility --</option>
-                                                            <option value="Facility A">Facility A</option>
-                                                            <option value="Facility B">Facility B</option>
+                                                            @foreach($facility as $faci)
+                                                                <option
+                                                                    value="{{ $faci->id }}">{{ $faci->name }}</option>
+                                                            @endforeach
                                                         </select>
                                                     </div>
                                                 </form>
@@ -151,7 +182,7 @@
                                                        placeholder="Account"/>
                                                 <input id="newDescription" class="form-control me-2"
                                                        type="text" placeholder="Description"/>
-                                                <button class="btn btn-outline-success" onclick="addAccount()">
+                                                <button class="btn btn-outline-info" onclick="addAccount()">
                                                     Tambah
                                                 </button>
                                             </div>
@@ -175,1044 +206,1135 @@
                             </div>
 
 
-
-
-                    </div>
-                    <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel"
-                         aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="categoryModalLabel">Manage Categories</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <!-- Add Category Form -->
-                                    <div class="d-flex mb-3">
-                                        <input type="text" id="newCategory" class="form-control"
-                                               placeholder="New Category">
-                                        <select class="form-select me-2" id="parentCategory">
-                                            <option value="">-- Select Parent --</option>
-                                        </select>
-                                        <button class="btn btn-outline-success ms-2" id="addCategoryBtn">Add</button>
-                                    </div>
-
-                                    <!-- Category Table -->
-                                    <table class="table table-bordered" id="categoryTable">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Category Name</th>
-                                            <th style="display: none">Parent</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <!-- Dynamic Rows -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
                         </div>
-                    </div>
-
-                </div>
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <ul class="nav nav-tabs mb-4bg-gray-200" id="myTab" role="tablist">
-
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="stock-tab" data-bs-toggle="tab"
-                                        data-bs-target="#stock"
-                                        type="button" role="tab" aria-controls="stock" aria-selected="false">Stock <span
-                                        class="badge bg-gray-200 text-gray-700">3</span></button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="parts-tab" data-bs-toggle="tab" data-bs-target="#parts"
-                                        type="button" role="tab" aria-controls="parts" aria-selected="false">BOMs <span
-                                        class="badge bg-gray-200 text-gray-700">3</span></button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="personnel-tab" data-bs-toggle="tab"
-                                        data-bs-target="#personnel"
-                                        type="button" role="tab" aria-controls="personnel" aria-selected="false">
-                                    Personnel
-                                    <span class="badge bg-gray-200 text-gray-700">3</span></button>
-                            </li>
-                            {{--                        warranties--}}
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="warranties-tab" data-bs-toggle="tab"
-                                        data-bs-target="#warranties" type="button" role="tab" aria-controls="warranties"
-                                        aria-selected="false">warranties <span
-                                        class="badge bg-gray-200 text-gray-700">3</span></button>
-                            </li>{{--                        warranties--}}
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="bussiness-tab" data-bs-toggle="tab"
-                                        data-bs-target="#bussiness"
-                                        type="button" role="tab" aria-controls="bussiness" aria-selected="false">
-                                    bussiness
-                                    <span class="badge bg-gray-200 text-gray-700">3</span></button>
-                            </li>{{--                        warranties--}}
-
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="files-tab" data-bs-toggle="tab" data-bs-target="#files"
-                                        type="button" role="tab" aria-controls="files" aria-selected="false">Files <span
-                                        class="badge bg-gray-200 text-gray-700">3</span></button>
-                            </li>
-
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="log-tab" data-bs-toggle="tab" data-bs-target="#log"
-                                        type="button" role="tab" aria-controls="log" aria-selected="false">Log <span
-                                        class="badge bg-gray-200 text-gray-700">6</span></button>
-                            </li>
-                        </ul>
-
-                        <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade" id="parts" role="tabpanel" aria-labelledby="parts-tab">
-                                <div class="card-body">
-                                    <div class="mb-4">
-                                        <button class="btn btn-outline-success mt-3" data-bs-toggle="modal"
-                                                data-bs-target="#addBOMModal">Add BOM
-                                        </button>
-
+                        <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="categoryModalLabel">Manage Categories</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
-
-
-                                    <!-- Modal Add BOM -->
-                                    <div class="modal fade" id="addBOMModal" tabindex="-1"
-                                         aria-labelledby="addBOMModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="addBOMModalLabel">Add BOM</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form id="bomForm">
-                                                        <div class="mb-3">
-                                                            <label for="partName" class="form-label">Select Part</label>
-                                                            <select class="form-select" id="partName">
-                                                                <option value="">-- Select Part --</option>
-                                                                @foreach($parts as $part)
-                                                                    <option
-                                                                        value="{{ $part->id }}">{{ $part->name }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="quantity" class="form-label">Quantity</label>
-                                                            <input type="number" class="form-control" id="quantity"
-                                                                   value="1" min="1">
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="bomControl" class="form-label">BOM
-                                                                Control</label>
-                                                            <input type="text" class="form-control" id="bomControl">
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Cancel
-                                                    </button>
-                                                    <button type="button" class="btn btn-outline-success"
-                                                            onclick="addBOMRow()">Add
-                                                    </button>
-                                                </div>
-                                            </div>
+                                    <div class="modal-body">
+                                        <!-- Add Category Form -->
+                                        <div class="d-flex mb-3">
+                                            <input type="text" id="newCategory" class="form-control"
+                                                   placeholder="New Category">
+                                            <select class="form-select me-2" id="parentCategory">
+                                                <option value="">-- Select Parent --</option>
+                                            </select>
+                                            <button class="btn btn-outline-success ms-2" id="addCategoryBtn">Add
+                                            </button>
                                         </div>
-                                    </div>
 
-
-                                    <!-- Table -->
-                                    <div class="table-responsive mt-3">
-                                        <table class="table basic-table mb-0">
+                                        <!-- Category Table -->
+                                        <table class="table table-bordered" id="categoryTable">
                                             <thead>
                                             <tr>
-                                                <th>Quantity</th>
-                                                <th>BOM Control</th>
-                                                <th>Asset</th>
-                                                <th>Action</th>
+                                                <th>#</th>
+                                                <th>Category Name</th>
+                                                <th style="display: none">Parent</th>
+                                                <th>Actions</th>
                                             </tr>
                                             </thead>
-                                            <tbody id="bomTableBody">
-                                            <!-- Data akan ditambahkan di sini -->
+                                            <tbody>
+                                            <!-- Dynamic Rows -->
                                             </tbody>
                                         </table>
                                     </div>
-                                    <input type="hidden" id="bomDataInput" name="bomData" value="[]">
-
-
                                 </div>
-                                <!-- Parts/BOM content goes here -->
                             </div>
+                        </div>
 
-                            <div class="tab-pane fade active show" id="stock" role="tabpanel"
-                                 aria-labelledby="stock-tab">
-                                <div class="row">
-                                    <div class="col-md-12 border-1 radius-4">
-                                        <div class="card-header">
-                                            <div class="mb-4 d-flex justify-content-between align-items-center">
-                                                <h6>Stock Levels per Location</h6>
-                                                <button class="btn btn-outline-success" data-bs-toggle="modal"
-                                                        data-bs-target="#addStockModal">
-                                                    Add Log
-                                                </button>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <ul class="nav nav-tabs mb-4bg-gray-200" id="myTab" role="tablist">
+
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="stock-tab" data-bs-toggle="tab"
+                                            data-bs-target="#stock"
+                                            type="button" role="tab" aria-controls="stock" aria-selected="false">Stock
+                                        <span
+                                            class="badge bg-gray-200 text-gray-700">3</span></button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="parts-tab" data-bs-toggle="tab" data-bs-target="#parts"
+                                            type="button" role="tab" aria-controls="parts" aria-selected="false">BOMs
+                                        <span
+                                            class="badge bg-gray-200 text-gray-700">3</span></button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="personnel-tab" data-bs-toggle="tab"
+                                            data-bs-target="#personnel"
+                                            type="button" role="tab" aria-controls="personnel" aria-selected="false">
+                                        Personnel
+                                        <span class="badge bg-gray-200 text-gray-700">3</span></button>
+                                </li>
+                                {{--                        warranties--}}
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="warranties-tab" data-bs-toggle="tab"
+                                            data-bs-target="#warranties" type="button" role="tab"
+                                            aria-controls="warranties"
+                                            aria-selected="false">warranties <span
+                                            class="badge bg-gray-200 text-gray-700">3</span></button>
+                                </li>{{--                        warranties--}}
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="bussiness-tab" data-bs-toggle="tab"
+                                            data-bs-target="#bussiness"
+                                            type="button" role="tab" aria-controls="bussiness" aria-selected="false">
+                                        bussiness
+                                        <span class="badge bg-gray-200 text-gray-700">3</span></button>
+                                </li>{{--                        warranties--}}
+
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="files-tab" data-bs-toggle="tab" data-bs-target="#files"
+                                            type="button" role="tab" aria-controls="files" aria-selected="false">Files
+                                        <span
+                                            class="badge bg-gray-200 text-gray-700">3</span></button>
+                                </li>
+
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="log-tab" data-bs-toggle="tab" data-bs-target="#log"
+                                            type="button" role="tab" aria-controls="log" aria-selected="false">Log <span
+                                            class="badge bg-gray-200 text-gray-700">6</span></button>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade" id="parts" role="tabpanel" aria-labelledby="parts-tab">
+                                    <div class="card-body">
+                                        <div class="mb-4">
+                                            <button class="btn btn-outline-success mt-3" data-bs-toggle="modal"
+                                                    data-bs-target="#addBOMModal">Add BOM
+                                            </button>
+
+                                        </div>
+
+
+                                        <!-- Modal Add BOM -->
+                                        <div class="modal fade" id="addBOMModal" tabindex="-1"
+                                             aria-labelledby="addBOMModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="addBOMModalLabel">Add BOM</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form id="bomForm">
+                                                            <div class="mb-3">
+                                                                <label for="partName" class="form-label">Select
+                                                                    Part</label>
+                                                                <select class="form-select" id="partName">
+                                                                    <option value="">-- Select Part --</option>
+                                                                    @foreach($parts as $part)
+                                                                        <option
+                                                                            value="{{ $part->id }}">{{ $part->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="quantity"
+                                                                       class="form-label">Quantity</label>
+                                                                <input type="number" class="form-control" id="quantity"
+                                                                       value="1" min="1">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="bomControl" class="form-label">BOM
+                                                                    Control</label>
+                                                                <input type="text" class="form-control" id="bomControl">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Cancel
+                                                        </button>
+                                                        <button type="button" class="btn btn-outline-success"
+                                                                onclick="addBOMRow()">Add
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="table basic-table mb-0">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Status</th>
-                                                        <th>Location</th>
-                                                        <th>Aisle</th>
-                                                        <th>Row</th>
-                                                        <th>Bin</th>
-                                                        <th>Qty On Hand</th>
-                                                        <th>Min Qty</th>
-                                                        <th>Max Qty</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody id="stockTableBody">
-                                                    <!-- Data akan ditambahkan di sini -->
-                                                    </tbody>
-                                                </table>
 
+
+                                        <!-- Table -->
+                                        <div class="table-responsive mt-3">
+                                            <table class="table basic-table mb-0">
+                                                <thead>
+                                                <tr>
+                                                    <th>Quantity</th>
+                                                    <th>BOM Control</th>
+                                                    <th>Asset</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="bomTableBody">
+                                                <!-- Data akan ditambahkan di sini -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <input type="hidden" id="bomDataInput" name="bomData" value="[]">
+
+
+                                    </div>
+                                    <!-- Parts/BOM content goes here -->
+                                </div>
+
+                                <div class="tab-pane fade active show" id="stock" role="tabpanel"
+                                     aria-labelledby="stock-tab">
+                                    <div class="row">
+                                        <div class="col-md-12 border-1 radius-4">
+                                            <div class="card-header">
+                                                <div class="mb-4 d-flex justify-content-between align-items-center">
+                                                    <h6>Stock Levels per Location</h6>
+                                                    <button class="btn btn-outline-success" data-bs-toggle="modal"
+                                                            data-bs-target="#addStockModal">
+                                                        Add Log
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table basic-table mb-0">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Status</th>
+                                                            <th>Location</th>
+                                                            <th>Aisle</th>
+                                                            <th>Row</th>
+                                                            <th>Bin</th>
+                                                            <th>Qty On Hand</th>
+                                                            <th>Min Qty</th>
+                                                            <th>Max Qty</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody id="stockTableBody">
+                                                        <!-- Data akan ditambahkan di sini -->
+                                                        </tbody>
+                                                    </table>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal fade" id="adjustStockModal" tabindex="-1"
+                                             aria-labelledby="adjustStockModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="adjustStockModalLabel">Adjust
+                                                            Stock</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form id="adjustStockForm">
+                                                            <input type="hidden" id="editRowIndex">
+
+                                                            <!-- Tampilkan Data Sebelumnya (tanpa Status) -->
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Location:</label>
+                                                                <span id="editLocation"></span>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Aisle:</label>
+                                                                <span id="editAisle"></span>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Row:</label>
+                                                                <span id="editRow"></span>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Bin:</label>
+                                                                <span id="editBin"></span>
+                                                            </div>
+
+                                                            <!-- Qty On Hand Adjustment -->
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Qty On Hand:</label>
+                                                                <input type="number" class="form-control"
+                                                                       id="editQtyOnHand">
+                                                            </div>
+
+                                                            <button type="button" class="btn btn-outline-success"
+                                                                    id="saveAdjustment">Save Adjustment
+                                                            </button>
+                                                        </form>
+
+                                                        <!-- Stock Log -->
+                                                        <div class="mt-4">
+                                                            <h6>Stock Log</h6>
+                                                            <div class="table-responsive">
+                                                                <table class="table table-striped">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th>Date</th>
+                                                                        <th>User</th>
+                                                                        <th>Description</th>
+                                                                        <th>Qty Before</th>
+                                                                        <th>Qty After</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody id="logTableBody">
+                                                                    <!-- Log akan ditampilkan di sini -->
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal fade" id="addStockModal" tabindex="-1"
+                                             aria-labelledby="addStockModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="addStockModalLabel">Add Stock
+                                                            Log</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <label class="form-label">Facility</label>
+                                                                <select id="facility" class="form-select">
+                                                                    @foreach ($facility as $faci)
+                                                                        <option
+                                                                            value="{{ $faci->id }}">{{ $faci->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label class="form-label">Qty On Hand</label>
+                                                                <input type="number" id="qtyOnHand"
+                                                                       class="form-control">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="form-label">Min Qty</label>
+                                                                <input type="number" id="minQty" class="form-control">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="form-label">Max Qty</label>
+                                                                <input type="number" id="maxQty" class="form-control">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="form-label">Aisle</label>
+                                                                <input type="text" id="aisle" class="form-control">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="form-label">Row</label>
+                                                                <input type="text" id="row" class="form-control">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="form-label">Bin</label>
+                                                                <input type="text" id="bin" class="form-control">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="form-label">Status</label>
+                                                                <select id="status" class="form-select">
+                                                                    <option value="Online">Online</option>
+                                                                    <option value="Offline">Offline</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <button id="addStockBtn" class="btn btn-outline-success mt-3">
+                                                            Add
+                                                        </button>
+
+                                                        <!-- Log Table -->
+                                                        <div class="mt-4">
+                                                            <h6>Stock Log</h6>
+                                                            <div class="table-responsive">
+                                                                <table class="table table-striped">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th>Date</th>
+                                                                        <th>User</th>
+                                                                        <th>Description</th>
+                                                                        <th>Qty Before</th>
+                                                                        <th>Qty After</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody id="logTableBody">
+                                                                    <!-- Data log akan ditambahkan di sini -->
+
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 border-1 radius-4 ">
+                                            <div class="card-header">
+                                                <div class="mb-4">
+                                                    <h6>
+                                                        Receipt
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                            <div class="card-body ">
+                                                <div class="table-responsive">
+                                                    <table class="table basic-table mb-0">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Qty Received</th>
+                                                            <th>Date Received</th>
+                                                            <th>Receipt #</th>
+                                                            <th>Supplier</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        @if(!empty($partdata) && $partdata->receiptbodies->isNotEmpty())
+                                                            @php
+                                                                $grouped = $partdata->receiptbodies->groupBy(fn($item) => $item->receipt->receipt_number ?? 'unknown');
+                                                                  $totalAllReceipt = $grouped->sum(function($group) {
+                                                                     return optional($group->first()->receipt)->total ?? 0;
+                                                                     });
+                                                            @endphp
+
+                                                            @foreach($grouped as $receiptNumber => $group)
+                                                                @php
+                                                                    $firstBody = $group->first();
+                                                                    $totalReceived = $group->sum(fn($item) => (int) $item->received_to);
+                                                                @endphp
+                                                                <tr>
+                                                                    <td>{{ $totalReceived }}</td>
+                                                                    <td>{{ $firstBody->receipt->receipt_date ?? '-' }}</td>
+                                                                    <td>{{ $receiptNumber }}</td>
+                                                                    <td>{{ $firstBody->receipt->business->business_name ?? '-' }}</td>
+                                                                </tr>
+                                                            @endforeach
+                                                        @else
+                                                            <tr>
+                                                                <td colspan="4">No data found</td>
+                                                            </tr>
+                                                        @endif
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 border-1 radius-4 ">
+                                            <div class="card-header">
+                                                <div class="mb-4">
+                                                    <h6>
+                                                        Open POs
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                            <div class="card-body ">
+                                                <div class="table-responsive">
+                                                    <table class="table basic-table mb-0">
+
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Qty On Order</th>
+                                                            <th>Purchase Order Status</th>
+                                                            <th>Purchase Order Id</th>
+                                                            <th>Supplier</th>
+                                                        </tr>
+
+                                                        </thead>
+                                                        <tbody>
+                                                        @if(!empty($partdata) && $partdata->purchasebodies)
+                                                            @foreach($partdata->purchasebodies as $po)
+                                                                <tr>
+                                                                    <td>{{ $po->qty ?? '-' }}</td>
+                                                                    <td>
+                                                                        @php
+                                                                            switch ($po->getpurchaseorder->status ?? null) {
+                                                                                case '0': $status = 'Pending'; break;
+                                                                                case '1': $status = 'Approved'; break;
+                                                                                default: $status = 'Reject'; break;
+                                                                            }
+                                                                        @endphp
+                                                                        {{ $status }}
+                                                                    </td>
+                                                                    <td>{{ $po->getpurchaseorder->po_number ?? '-' }}</td>
+                                                                    <td>{{ $po->getpurchaseorder->business->business_name ?? '-' }}</td>
+                                                                </tr>
+                                                            @endforeach
+                                                        @else
+                                                            <tr>
+                                                                <td colspan="4">No purchase order data found</td>
+                                                            </tr>
+                                                        @endif
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="modal fade" id="adjustStockModal" tabindex="-1" aria-labelledby="adjustStockModalLabel" aria-hidden="true">
+
+
+                                </div>
+                                <div class="tab-pane fade" id="warranties" role="tabpanel"
+                                     aria-labelledby="warranties-tab">
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="addWarrantyModal" tabindex="-1"
+                                         aria-labelledby="addWarrantyModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="adjustStockModalLabel">Adjust Stock</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    <h5 class="modal-title" id="addWarrantyModalLabel">Add Warranty</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
                                                 </div>
-                                                <div class="modal-body">
-                                                    <form id="adjustStockForm">
-                                                        <input type="hidden" id="editRowIndex">
+                                                <form id="warrantyForm">
+                                                    <div class="modal-body">
+                                                        <h2 class="h5 mb-4">WARRANTY CERTIFICATE</h2>
+                                                        <div class="form-group">
+                                                            <label>Warranty Type</label>
+                                                            <select class="form-control" name="warranties[type][]">
+                                                                <option value="basic">Basic</option>
+                                                                <option value="extended">Extended</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Provider</label>
+                                                            <select class="form-control" name="warranties[provider][]"
+                                                                    id="providerSelect">
+                                                                <option value="">Loading...</option>
 
-                                                        <!-- Tampilkan Data Sebelumnya (tanpa Status) -->
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Location:</label>
-                                                            <span id="editLocation"></span>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Aisle:</label>
-                                                            <span id="editAisle"></span>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Row:</label>
-                                                            <span id="editRow"></span>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Bin:</label>
-                                                            <span id="editBin"></span>
+                                                            </select>
                                                         </div>
 
-                                                        <!-- Qty On Hand Adjustment -->
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Qty On Hand:</label>
-                                                            <input type="number" class="form-control" id="editQtyOnHand">
+                                                        <div class="form-group">
+                                                            <label>Warranty Usage Term Type</label>
+                                                            <select class="form-control" name="warranties[usage_term][]"
+                                                                    id="usageTerm">
+                                                                <option value="">Pilih Usage Term</option>
+                                                                <option value="date">Date</option>
+                                                                <option value="meter_reading">Meter Reading</option>
+                                                                <option value="production_time">Production Time</option>
+                                                            </select>
                                                         </div>
 
-                                                        <button type="button" class="btn btn-outline-success" id="saveAdjustment">Save Adjustment</button>
-                                                    </form>
+                                                        <!-- Input untuk Expiry Date (Hanya muncul jika memilih "Date" atau lainnya) -->
+                                                        <div class="form-group" id="expiryDateGroup"
+                                                             style="display: none;">
+                                                            <label>Expiry Date</label>
+                                                            <input type="date" class="form-control"
+                                                                   name="warranties[expiry][]">
+                                                        </div>
 
-                                                    <!-- Stock Log -->
-                                                    <div class="mt-4">
-                                                        <h6>Stock Log</h6>
-                                                        <div class="table-responsive">
-                                                            <table class="table table-striped">
-                                                                <thead>
-                                                                <tr>
-                                                                    <th>Date</th>
-                                                                    <th>User</th>
-                                                                    <th>Description</th>
-                                                                    <th>Qty Before</th>
-                                                                    <th>Qty After</th>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody id="logTableBody">
-                                                                <!-- Log akan ditampilkan di sini -->
-                                                                </tbody>
-                                                            </table>
+                                                        <!-- Input tambahan untuk Meter Reading & Production Time -->
+                                                        <div id="meterReadingGroup" style="display: none;">
+                                                            <div class="form-group">
+                                                                <label>Meter Readings Unit</label>
+                                                                <select class="form-control"
+                                                                        name="warranties[meter_unit][]">
+                                                                    <option value="h">Hours (h)</option>
+                                                                    <option value="m">Minutes (m)</option>
+                                                                    <option value="km">Kilometers (km)</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Meter Reading Value Limit</label>
+                                                                <input type="number" class="form-control"
+                                                                       name="warranties[meter_limit][]" min="0">
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="form-group">
+                                                            <label>Certificate Number</label>
+                                                            <input type="text" class="form-control"
+                                                                   name="warranties[certificate][]">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Description</label>
+                                                            <textarea class="form-control"
+                                                                      name="warranties[description][]"></textarea>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">
+                                                            Cancel
+                                                        </button>
+                                                        <button type="submit" class="btn btn-outline-success">Save
+                                                        </button>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="modal fade" id="addStockModal" tabindex="-1"
-                                         aria-labelledby="addStockModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg">
+
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card-body ">
+                                                <div class="card-header">
+                                                    <div class="d-flex justify-content-between">
+                                                        <h6 class="text-lg fw-semibold mb-0">Warranties</h6>
+                                                        <!-- Tombol untuk membuka modal -->
+                                                        <button type="button" id="openModalButton"
+                                                                class="btn btn-outline-success">
+                                                            Add Warranty
+                                                        </button>
+
+                                                    </div>
+                                                </div>
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered basic-table table-warranties">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Warranty Type</th>
+                                                            <th hidden="true">Provider ID</th>
+                                                            <th>Provider</th>
+                                                            <th>Usage Term</th>
+                                                            <th>Meter Limit</th>
+                                                            <th>Expiry Date</th>
+                                                            <th>Certificate</th>
+                                                            <th>Description</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <!-- Data akan ditambahkan di sini -->
+                                                        </tbody>
+                                                    </table>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="bussiness" role="tabpanel"
+                                     aria-labelledby="bussiness-tab">
+
+                                    <div class="modal fade" id="addBusinessModal" tabindex="-1"
+                                         aria-labelledby="addBusinessModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="addStockModalLabel">Add Stock Log</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
+                                                    <h5 class="modal-title" id="addBusinessModalLabel">Add Business</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Facility</label>
-                                                            <select id="facility" class="form-select">
-                                                                <option value="Facility 1">Facility 1</option>
-                                                                <option value="Facility 2">Facility 2</option>
-                                                            </select>
+                                                    <form id="businessForm">
+                                                        <div id="businessContainer">
+                                                            <div class="business-group">
+                                                                <div class="form-group">
+                                                                    <label>Business Type</label>
+                                                                    <select class="form-control business-type"
+                                                                            name="business[0][type]" required>
+                                                                        <option value="">Pilih Business Type</option>
+                                                                        <option value="supplier">Supplier</option>
+                                                                        <option value="manufacturer">Manufacturer
+                                                                        </option>
+                                                                        <option value="service_provider">Service
+                                                                            Provider
+                                                                        </option>
+                                                                        <option value="owner">Owner</option>
+                                                                        <option value="customer">Customer</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Business Name</label>
+                                                                    <select class="form-control business-name"
+                                                                            name="business[0][name]" required>
+                                                                        <option value="">Loading...</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Business Asset Number</label>
+                                                                    <input type="text"
+                                                                           class="form-control business-asset-number"
+                                                                           name="business[0][asset_number]" required>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Catalog</label>
+                                                                    <input type="text"
+                                                                           class="form-control business-catalog"
+                                                                           name="business[0][catalog]" required>
+                                                                </div>
+                                                                <button type="button"
+                                                                        class="btn btn-outline-danger btn-sm remove-business">
+                                                                    Remove
+                                                                </button>
+                                                                <hr>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Qty On Hand</label>
-                                                            <input type="number" id="qtyOnHand" class="form-control">
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label class="form-label">Min Qty</label>
-                                                            <input type="number" id="minQty" class="form-control">
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label class="form-label">Max Qty</label>
-                                                            <input type="number" id="maxQty" class="form-control">
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label class="form-label">Aisle</label>
-                                                            <input type="text" id="aisle" class="form-control">
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label class="form-label">Row</label>
-                                                            <input type="text" id="row" class="form-control">
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label class="form-label">Bin</label>
-                                                            <input type="text" id="bin" class="form-control">
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label class="form-label">Status</label>
-                                                            <select id="status" class="form-select">
-                                                                <option value="Online">Online</option>
-                                                                <option value="Offline">Offline</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <button id="addStockBtn" class="btn btn-outline-success mt-3">Add</button>
+                                                        <button type="button" class="btn btn-outline-success"
+                                                                id="addMoreBusiness">+
+                                                            Add More
+                                                        </button>
+                                                        <button type="submit" id="saveBusinessBtn"
+                                                                class="btn btn-outline-success">Save Business
+                                                        </button>
+                                                    </form>
 
-                                                    <!-- Log Table -->
-                                                    <div class="mt-4">
-                                                        <h6>Stock Log</h6>
-                                                        <div class="table-responsive">
-                                                            <table class="table table-striped">
-                                                                <thead>
-                                                                <tr>
-                                                                    <th>Date</th>
-                                                                    <th>User</th>
-                                                                    <th>Description</th>
-                                                                    <th>Qty Before</th>
-                                                                    <th>Qty After</th>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody id="logTableBody">
-                                                                <!-- Data log akan ditambahkan di sini -->
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 border-1 radius-4 ">
-                                        <div class="card-header">
-                                            <div class="mb-4">
-                                                <h6>
-                                                    Receipt
-                                                </h6>
-                                            </div>
-                                        </div>
-                                        <div class="card-body ">
-                                            <div class="table-responsive">
-                                                <table class="table basic-table mb-0">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Qty Ordered</th>
-                                                        <th>Qty Received</th>
-                                                        <th>Date Received</th>
-                                                        <th>Receipt #</th>
-                                                        <th>Supplier</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
 
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 border-1 radius-4 ">
-                                        <div class="card-header">
-                                            <div class="mb-4">
-                                                <h6>
-                                                    Open POs
-                                                </h6>
-                                            </div>
-                                        </div>
-                                        <div class="card-body ">
-                                            <div class="table-responsive">
-                                                <table class="table basic-table mb-0">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card-body ">
+                                                <div class="card-header">
+                                                    <div class="d-flex justify-content-between">
+                                                        <h6 class="text-lg fw-semibold mb-0">Bussiness </h6>
+                                                        <button
+                                                            class="submitBusiness btn btn-outline-success">
+                                                            Add
+                                                            Bussiness
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="table-responsive">
+                                                    <table class="table basic-table mb-0 tableBusiness">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Business Type</th>
+                                                            <th>Business Name</th>
+                                                            <th>Business Asset Number</th>
+                                                            <th>Catalog</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody class="text-center tablevalueBusiness">
 
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Qty On Order</th>
-                                                        <th>Purchase Order Status</th>
-                                                        <th>Purchase Order Id</th>
-                                                        <th>Supplier</th>
-                                                    </tr>
-
-                                                    </thead>
-                                                    <tbody>
-
-                                                    </tbody>
-                                                </table>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
 
 
-                            </div>
-                            <div class="tab-pane fade" id="warranties" role="tabpanel" aria-labelledby="warranties-tab">
+                                <div class="tab-pane fade" id="personnel" role="tabpanel"
+                                     aria-labelledby="personnel-tab">
+                                    <div class="card-body">
+                                        <div class="mb-4">
+                                            <button id="addPersonnelBtn"
+                                                    class="btn btn-outline-success">Add
+                                                Personnel
+                                            </button>
+                                            <button id="addGroupBtn" class="btn btn-outline-success">
+                                                Add
+                                                Personnel Group
+                                            </button>
+                                        </div>
 
-                                <!-- Modal -->
-                                <div class="modal fade" id="addWarrantyModal" tabindex="-1"
-                                     aria-labelledby="addWarrantyModalLabel" aria-hidden="true">
+                                        <div class="table-responsive">
+                                            <table class="table basic-table mb-0" id="personnelTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Type</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal for Adding Personnel -->
+                                <div class="modal fade" id="addPersonnelModal" tabindex="-1"
+                                     aria-labelledby="addPersonnelModalLabel" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="addWarrantyModalLabel">Add Warranty</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
+                                                <h5 class="modal-title" id="addPersonnelModalLabel">Add Personnel</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <select class="form-select" id="selectUser" name="selectUser">
+                                                    <option selected>Open this select menu</option>
+                                                    @foreach($personelUser as $s)
+                                                        <option value="{{$s->id}}" data-name="{{ $s->name }}"
+                                                                data-type="User">{{ $s->name }}</option>
+                                                    @endforeach
+                                                </select>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button type="button" id="savePersonnelBtn"
+                                                        class="btn btn-outline-success">Save
                                                 </button>
                                             </div>
-                                            <form id="warrantyForm">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal for Adding Group -->
+                                <div class="modal fade" id="addGroupModal" tabindex="-1"
+                                     aria-labelledby="addGroupModalLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="addGroupModalLabel">Add Personnel Group</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <select class="form-select" id="selectGroup" name="selectGroup">
+                                                    <option selected>Open this select menu</option>
+                                                    @foreach($personelGroup as $g)
+                                                        <option value="{{$g->id}}" data-name="{{ $g->name }}"
+                                                                data-type="Group">{{ $g->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button type="button" id="saveGroupBtn" class="btn btn-outline-success">
+                                                    Save Group
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="files" role="tabpanel" aria-labelledby="files-tab">
+                                    <!-- Files content goes here -->
+
+
+                                    <!-- Modal -->
+                                    <div id="fileModal" class="modal fade" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Add New Item</h5>
+                                                    <button type="button" class="close" data-dismiss="modal">&times;
+                                                    </button>
+                                                </div>
                                                 <div class="modal-body">
-                                                    <h2 class="h5 mb-4">WARRANTY CERTIFICATE</h2>
-                                                    <div class="form-group">
-                                                        <label>Warranty Type</label>
-                                                        <select class="form-control" name="warranties[type][]">
-                                                            <option value="basic">Basic</option>
-                                                            <option value="extended">Extended</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>Provider</label>
-                                                        <select class="form-control" name="warranties[provider][]"
-                                                                id="providerSelect">
-                                                            <option value="">Loading...</option>
-
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label>Warranty Usage Term Type</label>
-                                                        <select class="form-control" name="warranties[usage_term][]"
-                                                                id="usageTerm">
-                                                            <option value="">Pilih Usage Term</option>
-                                                            <option value="date">Date</option>
-                                                            <option value="meter_reading">Meter Reading</option>
-                                                            <option value="production_time">Production Time</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <!-- Input untuk Expiry Date (Hanya muncul jika memilih "Date" atau lainnya) -->
-                                                    <div class="form-group" id="expiryDateGroup" style="display: none;">
-                                                        <label>Expiry Date</label>
-                                                        <input type="date" class="form-control"
-                                                               name="warranties[expiry][]">
-                                                    </div>
-
-                                                    <!-- Input tambahan untuk Meter Reading & Production Time -->
-                                                    <div id="meterReadingGroup" style="display: none;">
-                                                        <div class="form-group">
-                                                            <label>Meter Readings Unit</label>
-                                                            <select class="form-control"
-                                                                    name="warranties[meter_unit][]">
-                                                                <option value="h">Hours (h)</option>
-                                                                <option value="m">Minutes (m)</option>
-                                                                <option value="km">Kilometers (km)</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>Meter Reading Value Limit</label>
-                                                            <input type="number" class="form-control"
-                                                                   name="warranties[meter_limit][]" min="0">
-                                                        </div>
-                                                    </div>
-
-
-                                                    <div class="form-group">
-                                                        <label>Certificate Number</label>
-                                                        <input type="text" class="form-control"
-                                                               name="warranties[certificate][]">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>Description</label>
-                                                        <textarea class="form-control"
-                                                                  name="warranties[description][]"></textarea>
-                                                    </div>
+                                                    <form id="fileForm">
+                                                        <div id="modalContent"></div>
+                                                    </form>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
                                                             data-dismiss="modal">
-                                                        Cancel
+                                                        Close
                                                     </button>
-                                                    <button type="submit" class="btn btn-outline-success">Save</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="card-body ">
-                                            <div class="card-header">
-                                                <div class="d-flex justify-content-between">
-                                                    <h6 class="text-lg fw-semibold mb-0">Warranties</h6>
-                                                    <!-- Tombol untuk membuka modal -->
-                                                    <button type="button" id="openModalButton"
-                                                            class="btn btn-outline-success">
-                                                        Add Warranty
+                                                    <button type="button" class="btn btn-outline-success"
+                                                            onclick="saveData()">Save
                                                     </button>
-
                                                 </div>
                                             </div>
-                                            <div class="table-responsive">
-                                                <table class="table table-bordered basic-table table-warranties">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Warranty Type</th>
-                                                        <th hidden="true">Provider ID</th>
-                                                        <th>Provider</th>
-                                                        <th>Usage Term</th>
-                                                        <th>Meter Limit</th>
-                                                        <th>Expiry Date</th>
-                                                        <th>Certificate</th>
-                                                        <th>Description</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <!-- Data akan ditambahkan di sini -->
-                                                    </tbody>
-                                                </table>
-
-                                            </div>
-
                                         </div>
-
                                     </div>
-                                </div>
-                            </div>
 
-                            <div class="tab-pane fade" id="bussiness" role="tabpanel" aria-labelledby="bussiness-tab">
 
-                                <div class="modal fade" id="addBusinessModal" tabindex="-1"
-                                     aria-labelledby="addBusinessModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="addBusinessModalLabel">Add Business</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form id="businessForm">
-                                                    <div id="businessContainer">
-                                                        <div class="business-group">
-                                                            <div class="form-group">
-                                                                <label>Business Type</label>
-                                                                <select class="form-control business-type"
-                                                                        name="business[0][type]" required>
-                                                                    <option value="">Pilih Business Type</option>
-                                                                    <option value="supplier">Supplier</option>
-                                                                    <option value="manufacturer">Manufacturer</option>
-                                                                    <option value="service_provider">Service Provider
-                                                                    </option>
-                                                                    <option value="owner">Owner</option>
-                                                                    <option value="customer">Customer</option>
-                                                                </select>
+                                    <div class="card-body">
+                                        <div class="mb-4">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="typefile" class="font-weight-bold">Type</label>
+                                                        <div class="input-group">
+                                                            <select class="form-control" id="typefile" name="typefile">
+                                                                <option selected disabled>Pilih</option>
+                                                                <option value="file">File</option>
+                                                                <option value="note">Note</option>
+                                                                <option value="link">Link</option>
+                                                            </select>
+                                                            <div class="input-group-append">
+                                                                <button type="button" class="btn btn-outline-success"
+                                                                        onclick="showModal()">New
+                                                                </button>
                                                             </div>
-                                                            <div class="form-group">
-                                                                <label>Business Name</label>
-                                                                <select class="form-control business-name"
-                                                                        name="business[0][name]" required>
-                                                                    <option value="">Loading...</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label>Business Asset Number</label>
-                                                                <input type="text"
-                                                                       class="form-control business-asset-number"
-                                                                       name="business[0][asset_number]" required>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label>Catalog</label>
-                                                                <input type="text" class="form-control business-catalog"
-                                                                       name="business[0][catalog]" required>
-                                                            </div>
-                                                            <button type="button"
-                                                                    class="btn btn-outline-danger btn-sm remove-business">Remove
-                                                            </button>
-                                                            <hr>
                                                         </div>
                                                     </div>
-                                                    <button type="button" class="btn btn-outline-success" id="addMoreBusiness">+
-                                                        Add More
-                                                    </button>
-                                                    <button type="submit" id="saveBusinessBtn"
-                                                            class="btn btn-outline-success">Save Business
-                                                    </button>
-                                                </form>
-
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="card-body ">
-                                            <div class="card-header">
-                                                <div class="d-flex justify-content-between">
-                                                    <h6 class="text-lg fw-semibold mb-0">Bussiness </h6>
-                                                    <button
-                                                        class="submitBusiness btn btn-outline-success">
-                                                        Add
-                                                        Bussiness
-                                                    </button>
                                                 </div>
                                             </div>
-                                            <div class="table-responsive">
-                                                <table class="table basic-table mb-0 tableBusiness">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Business Type</th>
-                                                        <th>Business Name</th>
-                                                        <th>Business Asset Number</th>
-                                                        <th>Catalog</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody class="text-center tablevalueBusiness">
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
                                         </div>
 
+
                                     </div>
-                                </div>
-                            </div>
-
-
-                            <div class="tab-pane fade" id="personnel" role="tabpanel" aria-labelledby="personnel-tab">
-                                <div class="card-body">
-                                    <div class="mb-4">
-                                        <button id="addPersonnelBtn"
-                                                class="btn btn-outline-success">Add
-                                            Personnel
-                                        </button>
-                                        <button id="addGroupBtn" class="btn btn-outline-success">
-                                            Add
-                                            Personnel Group
-                                        </button>
-                                    </div>
-
                                     <div class="table-responsive">
-                                        <table class="table basic-table mb-0" id="personnelTable">
+                                        <table class="table basic-table mb-0">
                                             <thead>
                                             <tr>
                                                 <th>Name</th>
                                                 <th>Type</th>
+                                                <th>Size</th>
+                                                <th>Modified</th>
+                                                <th>Action</th>
                                             </tr>
                                             </thead>
-                                            <tbody>
-
+                                            <tbody id="fileTableBody">
                                             </tbody>
                                         </table>
                                     </div>
+
                                 </div>
+
                             </div>
 
-                            <!-- Modal for Adding Personnel -->
-                            <div class="modal fade" id="addPersonnelModal" tabindex="-1"
-                                 aria-labelledby="addPersonnelModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="addPersonnelModalLabel">Add Personnel</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <select class="form-select" id="selectUser" name="selectUser">
-                                                <option selected>Open this select menu</option>
-                                                @foreach($personelUser as $s)
-                                                    <option value="{{$s->id}}" data-name="{{ $s->name }}"
-                                                            data-type="User">{{ $s->name }}</option>
-                                                @endforeach
-                                            </select>
 
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                Close
-                                            </button>
-                                            <button type="button" id="savePersonnelBtn" class="btn btn-outline-success">Save
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Modal for Adding Group -->
-                            <div class="modal fade" id="addGroupModal" tabindex="-1"
-                                 aria-labelledby="addGroupModalLabel"
-                                 aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="addGroupModalLabel">Add Personnel Group</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <select class="form-select" id="selectGroup" name="selectGroup">
-                                                <option selected>Open this select menu</option>
-                                                @foreach($personelGroup as $g)
-                                                    <option value="{{$g->id}}" data-name="{{ $g->name }}"
-                                                            data-type="Group">{{ $g->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                Close
-                                            </button>
-                                            <button type="button" id="saveGroupBtn" class="btn btn-outline-success">Save Group
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="files" role="tabpanel" aria-labelledby="files-tab">
-                                <!-- Files content goes here -->
-
-
-                                <!-- Modal -->
-                                <div id="fileModal" class="modal fade" tabindex="-1" role="dialog">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Add New Item</h5>
-                                                <button type="button" class="close" data-dismiss="modal">&times;
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form id="fileForm">
-                                                    <div id="modalContent"></div>
-                                                </form>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                                                    Close
-                                                </button>
-                                                <button type="button" class="btn btn-outline-success" onclick="saveData()">Save
+                            <div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="log-tab">
+                                <!-- Log content goes here -->
+                                <div class="row">
+                                    <div class="col-md-12 border-1 radius-4 ">
+                                        <div class="card-header">
+                                            <div class="mb-4">
+                                                <h6>
+                                                    Schedule Maintenance
+                                                </h6>
+                                                <button class="btn btn-outline-success">Add
+                                                    Log
                                                 </button>
                                             </div>
                                         </div>
+                                        <div class="card-body ">
+                                            <div class="table-responsive">
+                                                <table class="table basic-table mb-0">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>When</th>
+                                                        <th>Code</th>
+                                                        <th>Description</th>
+                                                        <th>Shedule Status</th>
+                                                    </tr>
+
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>FEI - Forklift</td>
+                                                        <td>Feb 22, 2023 8:00 AM</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                    <div class="col-md-12 border-1 radius-4 ">
+                                        <div class="card-header">
+                                            <div class="mb-4">
+                                                <h6>
+                                                    Open Work Orders
+                                                </h6>
+                                            </div>
+                                        </div>
+                                        <div class="card-body ">
+                                            <div class="table-responsive">
+                                                <table class="table basic-table mb-0">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Code</th>
+                                                        <th>Description</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>WO-1</td>
+                                                        <td>Work Order 1</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 border-1 radius-4 ">
+                                        <div class="card-header">
+                                            <div class="mb-4">
+                                                <h6>
+                                                    Work Orders History
+                                                </h6>
+                                            </div>
+                                        </div>
+                                        <div class="card-body ">
+                                            <div class="table-responsive">
+                                                <table class="table basic-table mb-0">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Code</th>
+                                                        <th>Description</th>
+                                                        <th>Date Completed</th>
+                                                    </tr>
 
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>WO-2</td>
+                                                        <td>FEI - Forklift</td>
+                                                        <td>Feb 22, 2023 8:00 AM</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 border-1 radius-4 ">
+                                        <div class="card-header">
+                                            <div class="mb-4">
+                                                <h6>
+                                                    Part Supply Consummed
+                                                </h6>
 
-                                <div class="card-body">
-                                    <div class="mb-4">
-                                        <div class="row align-items-center">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="typefile" class="font-weight-bold">Type</label>
-                                                    <div class="input-group">
-                                                        <select class="form-control" id="typefile" name="typefile">
-                                                            <option selected disabled>Pilih</option>
-                                                            <option value="file">File</option>
-                                                            <option value="note">Note</option>
-                                                            <option value="link">Link</option>
-                                                        </select>
-                                                        <div class="input-group-append">
-                                                            <button type="button" class="btn btn-outline-success"
-                                                                    onclick="showModal()">New
+                                            </div>
+                                        </div>
+                                        <div class="card-body ">
+                                            <div class="table-responsive">
+                                                <table class="table basic-table mb-0">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Work Order</th>
+                                                        <th>Stock Item</th>
+                                                        <th>Qty</th>
+                                                    </tr>
+
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>WO-1</td>
+                                                        <td>FEI - Forklift</td>
+                                                        <td>1000</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 border-1 radius-4 ">
+                                        <div class="card-header">
+                                            <div class="mb-4">
+                                                <h6>
+                                                    Work Order Log
+                                                </h6>
+                                            </div>
+                                        </div>
+                                        <div class="card-body ">
+                                            <div class="table-responsive">
+                                                <table class="table basic-table mb-0">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Log Date</th>
+                                                        <th>Inventory Cost</th>
+                                                        <th>Completion Notes</th>
+                                                    </tr>
+
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            Feb 22, 2023 8:00 AM
+                                                        </td>
+                                                        <td>
+                                                            1000
+                                                        </td>
+                                                        <td>
+                                                            <button
+                                                                class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg mr-2">
+                                                                View
                                                             </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
-
-
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table basic-table mb-0">
-                                        <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Type</th>
-                                            <th>Size</th>
-                                            <th>Modified</th>
-                                            <th>Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody id="fileTableBody">
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="log-tab">
-                            <!-- Log content goes here -->
-                            <div class="row">
-                                <div class="col-md-4 border-1 radius-4 ">
-                                    <div class="card-header">
-                                        <div class="mb-4">
-                                            <h6>
-                                                Schedule Maintenance
-                                            </h6>
-                                            <button class="btn btn-outline-success">Add
-                                                Log
-                                            </button>
+                                    <div class="col-md-12 border-1 radius-4 ">
+                                        <div class="card-header">
+                                            <div class="mb-4">
+                                                <h6>
+                                                    Asset Offline Tracker
+                                                </h6>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="card-body ">
-                                        <div class="table-responsive">
-                                            <table class="table basic-table mb-0">
-                                                <thead>
-                                                <tr>
-                                                    <th>When</th>
-                                                    <th>Code</th>
-                                                    <th>Description</th>
-                                                    <th>Shedule Status</th>
-                                                </tr>
+                                        <div class="card-body ">
+                                            <div class="table-responsive">
+                                                <table class="table basic-table mb-0">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Offline From</th>
+                                                        <th>Offline By</th>
+                                                        <th>Offline To</th>
+                                                        <th>Online By</th>
+                                                        <th>Production Hours Affected</th>
+                                                    </tr>
 
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>FEI - Forklift</td>
-                                                    <td>Feb 22, 2023 8:00 AM</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 border-1 radius-4 ">
-                                    <div class="card-header">
-                                        <div class="mb-4">
-                                            <h6>
-                                                Open Work Orders
-                                            </h6>
-                                        </div>
-                                    </div>
-                                    <div class="card-body ">
-                                        <div class="table-responsive">
-                                            <table class="table basic-table mb-0">
-                                                <thead>
-                                                <tr>
-                                                    <th>Code</th>
-                                                    <th>Description</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>WO-1</td>
-                                                    <td>Work Order 1</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 border-1 radius-4 ">
-                                    <div class="card-header">
-                                        <div class="mb-4">
-                                            <h6>
-                                                Work Orders History
-                                            </h6>
-                                        </div>
-                                    </div>
-                                    <div class="card-body ">
-                                        <div class="table-responsive">
-                                            <table class="table basic-table mb-0">
-                                                <thead>
-                                                <tr>
-                                                    <th>Code</th>
-                                                    <th>Description</th>
-                                                    <th>Date Completed</th>
-                                                </tr>
-
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>WO-2</td>
-                                                    <td>FEI - Forklift</td>
-                                                    <td>Feb 22, 2023 8:00 AM</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 border-1 radius-4 ">
-                                    <div class="card-header">
-                                        <div class="mb-4">
-                                            <h6>
-                                                Part Supply Consummed
-                                            </h6>
-
-                                        </div>
-                                    </div>
-                                    <div class="card-body ">
-                                        <div class="table-responsive">
-                                            <table class="table basic-table mb-0">
-                                                <thead>
-                                                <tr>
-                                                    <th>Work Order</th>
-                                                    <th>Stock Item</th>
-                                                    <th>Qty</th>
-                                                </tr>
-
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>WO-1</td>
-                                                    <td>FEI - Forklift</td>
-                                                    <td>1000</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 border-1 radius-4 ">
-                                    <div class="card-header">
-                                        <div class="mb-4">
-                                            <h6>
-                                                Work Order Log
-                                            </h6>
-                                        </div>
-                                    </div>
-                                    <div class="card-body ">
-                                        <div class="table-responsive">
-                                            <table class="table basic-table mb-0">
-                                                <thead>
-                                                <tr>
-                                                    <th>Log Date</th>
-                                                    <th>Inventory Cost</th>
-                                                    <th>Completion Notes</th>
-                                                </tr>
-
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>
-                                                        Feb 22, 2023 8:00 AM
-                                                    </td>
-                                                    <td>
-                                                        1000
-                                                    </td>
-                                                    <td>
-                                                        <button
-                                                            class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg mr-2">
-                                                            View
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 border-1 radius-4 ">
-                                    <div class="card-header">
-                                        <div class="mb-4">
-                                            <h6>
-                                                Asset Offline Tracker
-                                            </h6>
-                                        </div>
-                                    </div>
-                                    <div class="card-body ">
-                                        <div class="table-responsive">
-                                            <table class="table basic-table mb-0">
-                                                <thead>
-                                                <tr>
-                                                    <th>Offline From</th>
-                                                    <th>Offline By</th>
-                                                    <th>Offline To</th>
-                                                    <th>Online By</th>
-                                                    <th>Production Hours Affected</th>
-                                                </tr>
-
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>
-                                                        Feb 22, 2023 8:00 AM
-                                                    </td>
-                                                    <td>
-                                                        Feb 23, 2023 8:00 AM
-                                                    </td>
-                                                    <td>
-                                                        Technisian
-                                                    </td>
-                                                    <td>
-                                                        Engineer
-                                                    </td>
-                                                    <td>
-                                                        8 hours
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            Feb 22, 2023 8:00 AM
+                                                        </td>
+                                                        <td>
+                                                            Feb 23, 2023 8:00 AM
+                                                        </td>
+                                                        <td>
+                                                            Technisian
+                                                        </td>
+                                                        <td>
+                                                            Engineer
+                                                        </td>
+                                                        <td>
+                                                            8 hours
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-            </div>
-        </div><!-- card end -->
-            <div class="col-lg-2">
+                </div>
+            </div><!-- card end -->
+            <div class="col-lg-3">
                 <div class="card">
                     <div class="card-body">
-
-
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Asset Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Stock</label>
+                                <input type="text" class="form-control" readonly value="{{$totalReceived ?? ''}}">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Price</label>
+                                <input type="text" class="form-control" readonly value="{{$totalAllReceipt ?? ''}}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-    </div>
     </div>
 
     <div class="modal fade" id="offline" tabindex="-1" aria-labelledby="offlineLabel" aria-hidden="true">
@@ -1367,6 +1489,9 @@
 </script>
 <script>
     $(document).ready(function () {
+        $('.select2').select2({
+            width: '100%',
+        });
 
 
         $("#submitformbutton").click(function () {
@@ -1961,6 +2086,7 @@
                 group.querySelector(".business-catalog").setAttribute("name", `business[${index}][catalog]`);
             });
         }
+
         document.getElementById("saveBusinessBtn").addEventListener("click", function () {
             let businessGroups = document.querySelectorAll(".business-group");
             let tableBody = document.querySelector(".tableBusiness tbody");
@@ -2215,7 +2341,7 @@
                 document.getElementById("editQtyOnHand").value = qtyOnHand;
 
                 if (!stockLogs[index]) {
-                    stockLogs[index] = { date: [], user: [], description: [], oldQty: [], newQty: [] };
+                    stockLogs[index] = {date: [], user: [], description: [], oldQty: [], newQty: []};
 
                     let now = new Date().toLocaleString();
                     let user = "Admin";
@@ -2409,7 +2535,7 @@
                     row.innerHTML = `
                     <td>${item.name}</td>
                     <td>${item.description ? item.description : "-"}</td>
-                    <td>${item.facility ? item.facility : "-"}</td>
+                    <td>${item.facility ? item.facility.name : "-"}</td>
                     <td>
                         <button class="btn btn-sm btn-outline-success" onclick="selectCharge('${item.code}', '${item.description}')">Pilih</button>
                         <button class="btn btn-sm btn-outline-danger" onclick="deleteCharge('${item.code}')">Delete</button>
@@ -2428,6 +2554,7 @@
         const chargeDescription = document.getElementById("chargeDescription").value.trim();
         const chargeFacility = document.getElementById("chargeFacility").value;
 
+        alert(chargeFacility)
         if (chargeCode === "" || chargeDescription === "") {
             alert("Semua field harus diisi!");
             return;

@@ -63,7 +63,7 @@
                         Print
                     </a>
                     @if($purchase->user_id == Auth::user()->id && $purchase->status == 1 && $purchase->sync == 0)
-                    <a href="javascript:void(0)"
+                        <a href="javascript:void(0)"
                        class="btn btn-sm btn-outline-info radius-8 d-inline-flex align-items-center gap-1"
                        data-bs-toggle="modal" data-bs-target="#exampleModal">
                         <iconify-icon icon="pepicons-pencil:paper-plane" class="text-xl"></iconify-icon>

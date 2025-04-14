@@ -15,13 +15,15 @@ class SocketController extends Controller
 {
     public function getData()
     {
-        $apis = Socket::where('status', 1)->get();
+        $apis = Socket::with('alarms')->where('status', 1)->get();
         return response()->json($apis);
     }
 
     public function updateRunningStatus(Request $request)
     {
-        $api = Socket::find($request->id);
+
+        $api = Socket::with('alarms')->find($request->id);
+
         if ($api) {
             $api->running_well = $request->running_well;
             $api->save();
@@ -61,17 +63,54 @@ class SocketController extends Controller
 
     public function updateErrorLog(Request $request)
     {
-        $api = Socket::find($request->id);
+//        return $request->all();
+        $api = Socket::with('alarms')->find($request->id);
         if (!$api) {
             return response()->json(['success' => false, 'message' => 'API not found'], 404);
         }
-        $api->error_log = $request->error_log;
-        $api->save();
+
+        if(!empty($request->value && !empty($request->alarms))){
+            if(floatval($request->value) > floatval($request->alarms)){
+                Log::info('data : '.$request->value.'> data2 :'.$request->alarms);
+                DB::table('sensor_data')->create([
+                    'name'=> $api->name,
+                    'value' => $request->value,
+                    'node_od'  => '0',
+                    'status_alarm' => 0,
+                    'count_over_temp' => 0
+                ]);
+
+                $this->sendWhatsAppMessage('6289522900800', 'Alarm! Sensor '.$request->name.' mendeteksi suhu '.$request->value.'°C pada default alarm value '.$request->alarms.'°C.');
+
+
+            }
+        }
+        if(!empty($api->error_log)){
+            $api->error_log = $request->error_log;
+            $api->save();
             $socketlog = SocketErrorLog::create([
                 'socket_id' => $api->id,
                 'error_message' => $request->error_log
             ]);
-        return response()->json(['success' => true, 'message' => 'Error log updated']);
+            return response()->json(['success' => true, 'message' => 'Error log updated']);
+        }else{
+            return response()->json(['success' => false, 'message' => 'Error log not found'], 404);
+        }
+    }
+    private function sendWhatsAppMessage($phoneNumber, $message)
+    {
+        $url = "http://localhost:5001/message/send-text?session=mysession&to=$phoneNumber&text=$message";
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            echo 'Error: ' . curl_error($ch);
+        } else {
+            echo 'Message sent successfully!';
+        }
+
     }
     public function rand(Request $request)
     {

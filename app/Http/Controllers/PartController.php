@@ -40,9 +40,9 @@ class PartController extends Controller
 
         $personelGroup = Organization::latest()->get();
 
+        $facility = Facility::latest()->get();
         $parts = Facility::latest()->get();
-        return view('part.create', compact('personelGroup', 'personelUser','parts'));
-
+        return view('part.create', compact('personelGroup', 'personelUser','parts','facility'));
     }
 
     public function store(Request $request)
@@ -56,6 +56,8 @@ class PartController extends Controller
             $part = Part::create([
                 'nameParts' => $request->namepart ?? '',
                 'category' => $request->categorypart ?? '',
+                'id_charge' => $request->id_charge ?? '',
+                'id_account' => $request->id_account ?? '',
                 'code' => $request->namepart.'-'.Str::random(10),
             ]);
             if (!empty($data['data'])) {
@@ -380,11 +382,12 @@ class PartController extends Controller
             ->get();
 
         $personelGroup = Organization::latest()->get();
-
         $parts = Facility::latest()->get();
-        $partdata = Part::with('categories')->findOrFail($id);
-
-        return view('part.show', compact('parts', 'personelUser', 'personelGroup','partdata'));
+        $partdata = Part::with(['categories', 'receiptbodies.receipt.business','purchasebodies.getpurchaseorder.business','charge','accounts'])->findOrFail($id);
+        $category = AssetCategory::with('children')->whereNull('parent_id')->get();
+//        return $partdata;
+        $facility = Facility::latest()->get();
+        return view('part.create', compact('parts', 'personelUser', 'personelGroup','partdata','facility','category'));
 
 
     }

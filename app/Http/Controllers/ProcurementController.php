@@ -65,13 +65,25 @@ class ProcurementController extends Controller
         $equipments = Equipment::select('id', 'name', DB::raw("'equipment' as type"))->get();
         $part = Part::select('id', DB::raw('"nameParts" as name'), DB::raw("'part' as type"))->get(); // Perbaikan kutip ganda
         $business = Business::latest()->get();
-        $data = $facilities->merge($tools)->merge($equipments)->merge($part);
+        $data = $part->merge($equipments)->merge($tools);
         $code = 'PR-' . date('Ymd') . '-' . str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
         $account = Account::latest()->get();
         $charge = ChargeDepartment::latest()->get();
         $facilities = Facility::with('children')->whereNull('parent_id')->latest()->get();
+        $wo = Work_orders::latest()->get();
 
-        return view('purchase.create', compact('business','account', 'charge', 'facilities','data','code'));
+        $groupedData = $data->groupBy('type')->map(function ($items, $key) {
+            return [
+                'text' => ucfirst($key), // Menjadikan nama grup lebih rapi
+                'children' => $items->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'text' => $item->name
+                    ];
+                })->values()
+            ];
+        })->values();
+        return view('purchase.create', compact('business','account', 'charge', 'facilities','data','code','wo','groupedData'));
     }
     public function store(Request $request)
     {
@@ -172,23 +184,24 @@ class ProcurementController extends Controller
                 }
             })
             ->addColumn('action', function ($purchase) {
-                return '
+                $actions = '
     <div class="btn-group">
         <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             Actions
         </button>
         <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="' . route('purchase.show', $purchase->id) . '">View</a></li>
+            <li><a class="dropdown-item" href="' . route('purchase.show', $purchase->id) . '">View</a></li>';
+
+                // Tambahkan Edit dan Delete jika status bukan Approved (1)
+                if ($purchase->status != 1 && $purchase->status != 2) {
+                    $actions .= '
             <li><a class="dropdown-item" href="' . route('purchase.edit', $purchase->id) . '">Edit</a></li>
-            <li>
-                <form action="' . route('purchase.destroy', $purchase->id) . '" method="POST" onsubmit="return confirm(\'Are you sure?\');">
-                    ' . csrf_field() . '
-                    ' . method_field('DELETE') . '
-                    <button type="submit" class="dropdown-item text-danger">Delete</button>
-                </form>
-            </li>
-        </ul>
-    </div>';
+          ';
+                }
+
+                $actions .= '</ul></div>';
+
+                return $actions;
             })
 
             ->rawColumns(['status', 'action'])
@@ -197,6 +210,7 @@ class ProcurementController extends Controller
     }
     public function show($id)
     {
+
         $purchase = Purchases::with([
             'purchaseBodies.part',
             'purchaseBodies.equipment',
@@ -204,6 +218,7 @@ class ProcurementController extends Controller
             'purchaseBodies.facility',
         ])->find($id);
 
+//        dd($purchase);
         $total = (int) $purchase->total;
 
         $approve = Approval_process::join('approval_layers', 'approval_process.process_id', '=', 'approval_layers.process_id')
@@ -556,9 +571,8 @@ class ProcurementController extends Controller
         $equipments = Equipment::select('id', 'name', DB::raw("'equipment' as type"))->get();
         $part = Part::select('id', DB::raw('"nameParts" as name'), DB::raw("'part' as type"))->get(); // Perbaikan kutip ganda
         $business = Business::latest()->get();
-        $data = $facilities->merge($equipments)->merge($tools);
-        $purchase = Purchases::with('business','purchaseAdditional.accounts','purchaseAdditional.charge_account','purchaseAdditional.wos','purchaseBodies.facility','purchaseBodies.equipment','purchaseBodies.tools')->find($id);
-//        dd($purchase);
+        $data = $part->merge($equipments)->merge($tools);
+        $purchase = Purchases::with('business','purchaseAdditional.accounts','purchaseAdditional.charge_account','purchaseAdditional.wos','purchaseBodies.facility','purchaseBodies.equipment','purchaseBodies.tools','purchaseBodies.part')->find($id);
         $business = Business::latest()->get();
         $account = Account::latest()->get();
         $charge = ChargeDepartment::latest()->get();
@@ -579,4 +593,84 @@ class ProcurementController extends Controller
 
         return view('purchase.create', compact('purchase','business','account','charge','facilities','data','groupedData','wo'));
     }
+    public function update(Request $request, $id)
+    {
+//        dd($request->all());
+        try {
+            $purchase = Purchases::findOrFail($id);
+
+            if ($request->hasFile('supporting_documents')) {
+                $data['doc'] = $request->file('supporting_documents')->store('purchase', 'public');
+            } else {
+                $data['doc'] = $purchase->doc; // Gunakan dokumen lama jika tidak diubah
+            }
+
+            // Update data utama purchase
+            $purchase->update([
+                'request_date' => $request->request_date,
+                'required_date' => $request->required_date,
+                'description' => $request->notes,
+                'total' => $request->totalAmount,
+                'doc' => $data['doc'],
+                'business_id' => $request->business,
+                'user_id' => auth()->user()->id
+            ]);
+
+            // Update atau create ulang purchaseAdditional
+            $purchase->purchaseAdditional()->updateOrCreate(
+                ['purchase_id' => $purchase->id],
+                [
+                    'account_id' => $request->account,
+                    'charge_department' => $request->chargemanagement,
+                    'wo_id' => $request->work_order,
+                    'facility_id' => $request->ship_to_location,
+                    'asset_id' => $request->impacted_asset,
+                    'impacted_production' => $request->production_impact
+                ]
+            );
+
+            // Hapus dulu item lama
+            PurchaseBodies::where('purchase_id', $purchase->id)->delete();
+
+            // Tambahkan ulang item
+            for ($i = 0; $i < count($request->item_code); $i++) {
+                PurchaseBodies::create([
+                    'purchase_id' => $purchase->id,
+                    'part_id' => $request->item_code[$i] == 'custom' ? $request->custom_item_name[$i] : $request->item_code[$i],
+                    'qty' => $request->quantity[$i],
+                    'unit_price' => $request->unit_price[$i],
+                    'total_price' => $request->total_price[$i],
+                    'model' => $request->model[$i]
+                ]);
+            }
+
+            // Optional: Reset approval jika perlu
+            Approvaluser::where('approve_id', $purchase->id)->delete();
+
+            $purchaseTotal = (float) $purchase->total;
+
+            $approve = Approval_layers::join('approval_process', 'approval_layers.process_id', '=', 'approval_process.process_id')
+                ->where('approval_process.process_name', 'PR')
+                ->whereRaw('? BETWEEN approval_process.budget AND approval_process.max_budget', [$purchaseTotal])
+                ->get();
+
+            foreach ($approve as $value) {
+                Approvaluser::create([
+                    'process_id' => $value->process_id,
+                    'user_id' => $value->role_id,
+                    'approval_required' => 'PENDING',
+                    'approve_id' => $purchase->id,
+                    'model' => 'App/Models/Purchases'
+                ]);
+            }
+
+            Alert::success('Success', 'Purchase Request Updated Successfully');
+            return redirect()->route('purchase.list');
+
+        } catch (\Exception $e) {
+            Alert::error('Error', $e->getMessage());
+            return redirect()->route('purchase.list');
+        }
+    }
+
 }

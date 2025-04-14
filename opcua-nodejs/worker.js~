@@ -39,6 +39,8 @@ dataQueue.process(async (job) => {
         `;
         const values = [name, value, node_id, status, count, datetime];
 
+        const query2 = `
+            INSERT INTO work_orders (
         await dbClient.query(query, values);
 
         if (status === 1) {

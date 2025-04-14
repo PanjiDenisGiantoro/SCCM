@@ -149,6 +149,7 @@
                                                 @foreach($account as $accounts)
                                                     <option
                                                         @if(!empty($purchase) && !empty($purchase->purchaseAdditional) &&$purchase->purchaseAdditional->account_id == $accounts->id) selected
+                                                        value="{{ $accounts->id }}"
                                                         @else
                                                         value="{{ $accounts->id }}"@endif>
                                                         @if(!empty($purchase) && !empty($purchase->purchaseAdditional) && $purchase->purchaseAdditional->account_id == $accounts->id)
@@ -203,12 +204,14 @@
                                         <div class="col-md-6">
                                             <label class="form-label">Associated / Impacted Work Order</label>
                                             <select class="form-select select2" name="work_order">
-                                                <option value="">-- Pilih Work Order --</option>
+                                                <option value="">-- select Work Order --</option>
                                                 @foreach($wo as $workorder)
                                                     <option
-                                                        @if(!empty($purchase) && $purchase->wo_id == $workorder->id) selected @else
+                                                        @if(!empty($purchase) && !empty($purchase->purchaseAdditional) && $purchase->purchaseAdditional->wo_id == $workorder->id) selected
+                                                        value="{{ $workorder->id }}"
+                                                        @else
                                                         value="{{ $workorder->id }}"@endif>
-                                                        @if(!empty($purchase) && $purchase->wo_id == $workorder->id)
+                                                        @if(!empty($purchase) &&  !empty($purchase->purchaseAdditional) && $purchase->purchaseAdditional->wo_id == $workorder->id)
                                                             {{ $purchase->purchaseAdditional->wos->code ?? '' }}
                                                         @else
                                                         {{ $workorder->code }}@endif</option>
@@ -218,6 +221,7 @@
                                         <div class="col-md-6">
                                             <label class="form-label">Associated / Impacted Asset</label>
                                             <select class="form-control select2" name="impacted_asset">
+                                                <option value="">-- select Asset --</option>
                                                 @foreach ($groupedData as $group)
                                                     <optgroup label="{{ $group['text'] }}">
                                                         @foreach ($group['children'] as $child)
@@ -233,7 +237,7 @@
                                     </div>
                                     <div class="form-check mb-3">
                                         <input class="form-check-input" type="checkbox" name="production_impact"
-                                               id="productionImpact">
+                                               id="productionImpact" @if(!empty($purchase) && !empty($purchase->purchaseAdditional) && $purchase->purchaseAdditional->impacted_production == true) checked @endif>
                                         <label class="form-check-label" for="productionImpact">
                                             Production equipment is impacted
                                         </label>
@@ -261,14 +265,48 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-
+                                @if(!empty($purchase->purchaseAdditional))
+                                @foreach ($purchase->purchaseBodies as $body)
+                                    @php
+                                        $item = null;
+                                        if ($body->model == 'part') {
+                                            $item = $body->part;
+                                        } elseif ($body->model == 'equipment') {
+                                            $item = $body->equipment;
+                                        } elseif ($body->model == 'tool') {
+                                            $item = $body->tools;
+                                        }
+                                    @endphp
+                                    <tr>
+                                        <td>
+                                            <select class="form-control item_code select2" name="item_code[]" required onchange="updateItemName(this)">
+                                                <option value="{{ $body->id }}" selected data-name="{{ $body->nameParts ?? $body->name }}" data-type="{{ $body->model }}">
+                                                    {{ $body->id }} - {{ $item->nameParts ?? $item->name }} ({{ $body->model }})
+                                                </option>
+                                                <option value="custom">-- Not in Inventory --</option>
+                                            </select>
+                                            <input type="text" class="form-control custom_item_name" name="custom_item_name[]" placeholder="Enter item name" style="display:none; margin-top:5px;">
+                                        </td>
+                                        <td><input type="text" class="form-control item_name" name="item_name[]" readonly value="{{ $item->nameParts ?? $item->name ?? '' }}"></td>
+                                        <td hidden><input type="text" class="form-control model" name="model[]" readonly value="{{ $body->model }}"></td>
+                                        <td><input type="number" class="form-control quantity" name="quantity[]" required value="{{ $body->qty }}" oninput="calculateTotal(this)"></td>
+                                        <td><input type="number" class="form-control unit_price" name="unit_price[]" required value="{{ $body->unit_price }}" oninput="calculateTotal(this)"></td>
+                                        <td><input type="text" class="form-control total_price" name="total_price[]" readonly value="{{ number_format($body->total_price, 0, '.', '') }}"></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeItem(this)">X</button></td>
+                                    </tr>
+                                @endforeach
+                                    @endif
                                 </tbody>
+
                             </table>
                             <button type="button" class="btn btn-outline-info" onclick="addItem()">+ Add Item</button>
                             <div class="row mt-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Total Amount</label>
-                                    <input type="text" class="form-control" name="totalAmount" id="totalAmount"
+                                    <input type="text" class="form-control" name="totalAmount" id="totalAmount" value="
+                                    @if(!empty($purchase))
+                                    {{ number_format($purchase->total, 0, '.', '') }}"
+                                    @endif
                                            readonly>
                                 </div>
                             </div>
@@ -297,11 +335,13 @@
 
                         let options = `<option value="">-- Select Item --</option>`;
                         items.forEach(item => {
+
                             options += `<option value="${item.id}" data-name="${item.name}" data-type="${item.type}">${item.id} - ${item.name} (${item.type})</option>`;
                         });
 
                         // Tambahkan opsi item tidak terdaftar
                         options += `<option value="custom">-- Not in Inventory --</option>`;
+
 
                         row.innerHTML = `
             <td>

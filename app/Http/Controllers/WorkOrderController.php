@@ -35,7 +35,7 @@ class WorkOrderController extends Controller
         $part = Part::select('id', DB::raw('"nameParts" as name'), DB::raw("'part' as type"))->get();
         $business = Business::latest()->get();
 
-        $data = $facilities->merge($tools)->merge($equipments)->merge($part);
+        $data = $facilities->merge($tools)->merge($equipments);
 
         $groupedData = $data->groupBy('type')->map(function ($items, $key) {
             return [
@@ -83,7 +83,6 @@ class WorkOrderController extends Controller
             if(!empty($request->work_order_code)){
                 $part = Part::where('code',$request->asset_id)->first();
 
-
                 $savedFiles = [];
 
                 // Simpan setiap file yang dikirim dalam Base64
@@ -124,7 +123,7 @@ class WorkOrderController extends Controller
 
 //                http://localhost:5001/message/send-text?session=mysession&to=6289522900800&text=testing
 //                62 877-5101-6188
-                $this->sendWhatsAppMessage('6287751016188', 'testing');
+                $this->sendWhatsAppMessage('6289522900800', 'work order created'.$wo->code);
             }else{
                 $wo = Work_orders::create([
                     'work_order_status' => $request->name,

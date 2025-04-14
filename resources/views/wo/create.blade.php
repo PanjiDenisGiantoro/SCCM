@@ -229,10 +229,11 @@
                             <span class="badge bg-gray-200 text-gray-700">2</span></button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="labor-tab" data-bs-toggle="tab" data-bs-target="#labor"
-                                type="button" role="tab" aria-controls="labor" aria-selected="false">Labor Task
+                        <button class="nav-link" id="labors-tab" data-bs-toggle="tab" data-bs-target="#labors"
+                                type="button" role="tab" aria-controls="labors" aria-selected="false">Labor Task
                             <span class="badge bg-gray-200 text-gray-700">2</span></button>
                     </li>
+
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="meterReading-tab" data-bs-toggle="tab"
                                 data-bs-target="#meterReading"
@@ -240,17 +241,17 @@
                             Reading <span
                                 class="badge bg-gray-200 text-gray-700">3</span></button>
                     </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="miscCost-tab" data-bs-toggle="tab" data-bs-target="#miscCost"
-                                type="button" role="tab" aria-controls="miscCost" aria-selected="false">Misc Cost Page
-                            <span
-                                class="badge bg-gray-200 text-gray-700">3</span></button>
-                    </li>{{--                        warranties--}}
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="notif-tab" data-bs-toggle="tab" data-bs-target="#notif"
-                                type="button" role="tab" aria-controls="notif" aria-selected="false">Notification <span
-                                class="badge bg-gray-200 text-gray-700">3</span></button>
-                    </li>
+{{--                    <li class="nav-item" role="presentation">--}}
+{{--                        <button class="nav-link" id="miscCost-tab" data-bs-toggle="tab" data-bs-target="#miscCost"--}}
+{{--                                type="button" role="tab" aria-controls="miscCost" aria-selected="false">Misc Cost Page--}}
+{{--                            <span--}}
+{{--                                class="badge bg-gray-200 text-gray-700">3</span></button>--}}
+{{--                    </li>--}}
+{{--                    <li class="nav-item" role="presentation">--}}
+{{--                        <button class="nav-link" id="notif-tab" data-bs-toggle="tab" data-bs-target="#notif"--}}
+{{--                                type="button" role="tab" aria-controls="notif" aria-selected="false">Notification <span--}}
+{{--                                class="badge bg-gray-200 text-gray-700">3</span></button>--}}
+{{--                    </li>--}}
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="files-tab" data-bs-toggle="tab" data-bs-target="#files"
                                 type="button"
@@ -393,7 +394,8 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="action_code">Action Code</label>
-                                                    <input type="text" class="form-control" name="action_code" id="action_code" readonly>
+                                                    <input type="text" class="form-control" name="action_code"
+                                                           id="action_code" readonly>
                                                 </div>
                                             </div>
 
@@ -418,7 +420,8 @@
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="name">Admin Notes</label>
-                                                    <textarea class="form-control" id="name" name="admin_note" rows="3"></textarea>
+                                                    <textarea class="form-control" id="name" name="admin_note"
+                                                              rows="3"></textarea>
                                                 </div>
                                             </div>
 
@@ -430,19 +433,108 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="labor" role="tabpanel" aria-labelledby="labor-tab">
+                    <div class="tab-pane fade" id="labors" role="tabpanel" aria-labelledby="labors-tab">
                         <div class="row m-3">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5 class="card-title mb-0">Work Order Labor</h5>
+                                    <h5 class="card-title mb-0">Work Order Task</h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="form-group">
-                                        
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="task">Choose Task Type</label>
+                                                <select class="form-select select2" id="task" name="task">
+                                                    <option>Pilih Task</option>
+                                                    <option value="general">General</option>
+                                                    <option value="text">Text</option>
+                                                    <option value="meter_reading">Meter Reading</option>
+                                                    <option value="inspection">Inspection</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name">Desctiption</label>
+                                                <textarea class="form-control" id="name" name="description"
+                                                          rows="3"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name">Assign To User</label>
+                                                <select class="form-select select2" id="name" name="assign">
+                                                    <option>Select User</option>
+
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name">Start Date</label>
+                                                <input type="date" class="form-control" id="start_date"
+                                                       name="start_date">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name">Time Estimate (Hours)</label>
+                                                <input type="date" class="form-control" id="time_estimate"
+                                                       name="time_estimate">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="name">Completed By User</label>
+                                                <select class="form-select select2" id="name" name="assign_complete">
+
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name">Completion Date</label>
+                                                <input type="date" class="form-control" id="completion_date"
+                                                       name="completion_date">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name">Time Spent (Hours)</label>
+                                                <input type="text" class="form-control" id="time_spent"
+                                                       name="time_spent">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name">Completion Notes</label>
+                                                <textarea class="form-control" id="completion" name="completion"
+                                                          rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 text-center">
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-outline-info" onclick="addTask()">
+                                                    Add
+                                                    Task
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Work Order Task List</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Task</th>
+                                                <th scope="col">Description</th>
+                                                <th scope="col">Start Date</th>
+                                                <th scope="col">Completion Date</th>
+                                                <th scope="col">Time Spent</th>
+                                                <th scope="col">Completion Notes</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="task_list">
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="tab-pane fade" id="parts" role="tabpanel" aria-labelledby="parts-tab">
                         <div class="row m-3">
@@ -469,7 +561,9 @@
                                         <input type="text" class="form-control" id="a_q" name="a_q">
                                     </div>
                                     <div class="form-group">
-                                        <button type="button" class="btn btn-outline-info" onclick="addPart()">Add Part</button>
+                                        <button type="button" class="btn btn-outline-info" onclick="addPart()">Add
+                                            Part
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -498,38 +592,28 @@
 
                     </div>
                     <div class="tab-pane fade" id="meterReading" role="tabpanel" aria-labelledby="meterReading-tab">
-                        <div class="row m-3">
-                            <div class="card">
 
+                        <div class="row">
+                            <div class="col-md-12">
                                 <div class="card-body">
-                                    <div class="mb-4">
-                                        <button class="btn btn-primary-600 px-4 py-2 rounded-lg mr-2">Add Part</button>
-                                        <button class="btn btn-primary-600 px-4 py-2 rounded-lg">Add BOM Group</button>
+                                    <div class="card-header d-flex justify-content-between">
+                                        <h6 class="h6 mb-0">Most Recent Meter Reading</h6>
+                                        <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#meterReadingModal">
+                                            Add Meter Reading
+                                        </button>
                                     </div>
                                     <div class="table-responsive">
-                                        <table class="table basic-table mb-0 ">
+                                        <table class=" vertical-striped-table mb-0 table">
                                             <thead>
                                             <tr>
-                                                <th>For the Asset</th>
                                                 <th>Last Reading</th>
-                                                <th>Date Submmited</th>
-                                                <th>Reading Added On This WO</th>
+                                                <th>Unit</th>
+                                                <th>Date Submitted</th>
+                                                <th>Submitted By</th>
+                                                <th>Submitted Date</th>
                                             </tr>
                                             </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td>
-                                                    Power Meter
-                                                </td>
-                                                <td>
-                                                    1000
-                                                </td>
-                                                <td>
-                                                    Sep 22, 2023 8:00 AM
-                                                </td>
-                                                <td></td>
-                                            </tr>
-
+                                            <tbody id="meterReadingTableBody">
                                             </tbody>
                                         </table>
                                     </div>
@@ -537,76 +621,108 @@
                             </div>
                         </div>
 
-
-                    </div>
-
-                    <div class="tab-pane fade" id="miscCost" role="tabpanel" aria-labelledby="miscCost-tab">
-                        <div class="row m-3">
-                            <div class="card">
-
-                                <div class="card-body">
-                                    <div class="mb-4">
-                                        <button class="btn btn-primary-600 px-4 py-2 rounded-lg mr-2">Misc Cost</button>
+                        <div class="modal fade" id="meterReadingModal" tabindex="-1" aria-labelledby="meterReadingModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="meterReadingModalLabel">Add Meter Reading</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-
-
-                                    <div class="table-responsive">
-                                        <table class="table basic-table mb-0 ">
-                                            <thead>
-                                            <tr>
-                                                <th>Type</th>
-                                                <th>Description</th>
-                                                <th>Est Quantity</th>
-                                                <th>Est Unit Cost</th>
-                                                <th>Est Total Cost</th>
-                                                <th>Quantity</th>
-                                                <th>Actual Unit Cost</th>
-                                                <th>Actual Total Cost</th>
-                                                <th>Action</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-
-
-                                            </tbody>
-                                        </table>
+                                    <div class="modal-body">
+                                        <form id="meterReadingForm">
+                                            <div class="mb-3">
+                                                <label for="meterReading" class="form-label">Meter Reading</label>
+                                                <input type="number" class="form-control" id="meterReadings" name="meterReading" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="meterReadingUnit" class="form-label">Unit</label>
+                                                <select class="form-select" id="meterReadingUnit" name="meterReadingUnit" required>
+                                                    <option value="Hours">Hours (h)</option>
+                                                    <option value="Kilowatt">Kilowatt (kW)</option>
+                                                    <option value="Liters">Liters (L)</option>
+                                                </select>
+                                            </div>
+                                            <input type="hidden" id="submittedBy" name="submittedBy" value="{{ \Illuminate\Support\Facades\Auth::user()->name  }}">
+                                            <input type="hidden" id="submittedDate" name="submittedDate" value="{{ date('Y-m-d') }}">
+                                            <button type="submit" class="btn btn-outline-success">Save</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
+{{--                        dssss--}}
                     </div>
-                    <div class="tab-pane fade" id="notif" role="tabpanel" aria-labelledby="notif-tab">
-                        <div class="row m-3">
-                            <div class="card">
 
-                                <div class="card-body">
-                                    <div class="mb-4">
-                                        <button class="btn btn-primary-600 px-4 py-2 rounded-lg mr-2">Misc Cost</button>
-                                    </div>
+{{--                    misccount--}}
+{{--                    <div class="tab-pane fade" id="miscCost" role="tabpanel" aria-labelledby="miscCost-tab">--}}
+{{--                        <div class="row m-3">--}}
+{{--                            <div class="card">--}}
 
-
-                                    <div class="table-responsive">
-                                        <table class="table basic-table mb-0 ">
-                                            <thead>
-                                            <tr>
-                                                <th>Technisian</th>
-                                                <th>Notify On Assignment</th>
-                                                <th>Notify On Status Change</th>
-                                                <th>Notify On Completion</th>
-                                                <th>Notify On Task Completed</th>
-                                                <th>Notify On Online Offline</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
+{{--                                <div class="card-body">--}}
+{{--                                    <div class="mb-4">--}}
+{{--                                        <button class="btn btn-primary-600 px-4 py-2 rounded-lg mr-2">Misc Cost</button>--}}
+{{--                                    </div>--}}
 
 
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+{{--                                    <div class="table-responsive">--}}
+{{--                                        <table class="table basic-table mb-0 ">--}}
+{{--                                            <thead>--}}
+{{--                                            <tr>--}}
+{{--                                                <th>Type</th>--}}
+{{--                                                <th>Description</th>--}}
+{{--                                                <th>Est Quantity</th>--}}
+{{--                                                <th>Est Unit Cost</th>--}}
+{{--                                                <th>Est Total Cost</th>--}}
+{{--                                                <th>Quantity</th>--}}
+{{--                                                <th>Actual Unit Cost</th>--}}
+{{--                                                <th>Actual Total Cost</th>--}}
+{{--                                                <th>Action</th>--}}
+{{--                                            </tr>--}}
+{{--                                            </thead>--}}
+{{--                                            <tbody>--}}
+
+
+{{--                                            </tbody>--}}
+{{--                                        </table>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+
+{{--               notif-tab--}}
+{{--                    <div class="tab-pane fade" id="notif" role="tabpanel" aria-labelledby="notif-tab">--}}
+{{--                        <div class="row m-3">--}}
+{{--                            <div class="card">--}}
+
+{{--                                <div class="card-body">--}}
+{{--                                    <div class="mb-4">--}}
+{{--                                        <button class="btn btn-primary-600 px-4 py-2 rounded-lg mr-2">Misc Cost</button>--}}
+{{--                                    </div>--}}
+
+
+{{--                                    <div class="table-responsive">--}}
+{{--                                        <table class="table basic-table mb-0 ">--}}
+{{--                                            <thead>--}}
+{{--                                            <tr>--}}
+{{--                                                <th>Technisian</th>--}}
+{{--                                                <th>Notify On Assignment</th>--}}
+{{--                                                <th>Notify On Status Change</th>--}}
+{{--                                                <th>Notify On Completion</th>--}}
+{{--                                                <th>Notify On Task Completed</th>--}}
+{{--                                                <th>Notify On Online Offline</th>--}}
+{{--                                            </tr>--}}
+{{--                                            </thead>--}}
+{{--                                            <tbody>--}}
+
+
+{{--                                            </tbody>--}}
+{{--                                        </table>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
                     <div class="tab-pane fade" id="files" role="tabpanel" aria-labelledby="files-tab">
 
                         <!-- Modal -->
@@ -776,8 +892,6 @@
     <script src="{{ asset('assets/js/lib/jquery-3.7.1.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Tambahkan di bagian head -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function () {
@@ -853,6 +967,48 @@
                 });
             });
         });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("meterReadingForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+                addMeterReading();
+            });
+        });
+
+        function addMeterReading() {
+            const meterReading = document.getElementById("meterReadings").value;
+            const meterReadingUnit = document.getElementById("meterReadingUnit").value;
+            const submittedBy = document.getElementById("submittedBy").value;
+            const submittedDate = new Date().toLocaleString();
+
+            if (meterReading === "") {
+                alert("Meter reading is required!");
+                return;
+            }
+
+            const tableBody = document.getElementById("meterReadingTableBody");
+            const index = tableBody.children.length; // Index untuk input hidden
+
+            const newRow = `
+            <tr>
+                <td>${meterReading} <input type="hidden" name="meterReading[${index}]" value="${meterReading}"></td>
+                <td>${meterReadingUnit} <input type="hidden" name="meterReadingUnit[${index}]" value="${meterReadingUnit}"></td>
+                <td>${submittedDate} <input type="hidden" name="submittedDate[${index}]" value="${submittedDate}"></td>
+                <td>${submittedBy} <input type="hidden" name="submittedBy[${index}]" value="${submittedBy}"></td>
+                <td>${submittedDate}</td>
+            </tr>
+        `;
+
+            // Menambahkan baris di posisi teratas (sebelum baris pertama)
+            tableBody.insertAdjacentHTML("afterbegin", newRow);
+
+            document.getElementById("meterReadingForm").reset();
+            document.getElementById("submittedDate").value = submittedDate;
+            $("#meterReadingModal").modal("hide");
+            $('.modal-backdrop').remove();
+        }
     </script>
     <script>
         function updateActionCode() {

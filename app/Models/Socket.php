@@ -11,5 +11,10 @@ class Socket extends Model
     public function errorLogs() {
         return $this->hasMany(SocketErrorLog::class);
     }
+    public function alarms()
+    {
+        return $this->hasOne(AlarmSensor::class, 'id_socket', 'id');
+    }
+
 
 }

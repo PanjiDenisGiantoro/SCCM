@@ -22,7 +22,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">New Purchase Request</h4>
+                    <h4 class="card-title">New Purchase Order</h4>
                 </div>
                 <div class="card-body">
                         @csrf
@@ -113,7 +113,7 @@
                                 <option value="">-- Pilih Charge Department --</option>
                                 @foreach($charge as $chargemanagement)
                                     <option value="{{ $chargemanagement->id }}"
-                                    @if(!empty($puchaseAdd) && $puchaseAdd->charge_management == $chargemanagement->id) selected @endif
+                                    @if(!empty($puchaseAdd) && $puchaseAdd->charge_department == $chargemanagement->id) selected @endif
                                     >{{ $chargemanagement->name }}</option>
                                 @endforeach
                             </select>
@@ -136,15 +136,41 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">Associated / Impacted Work Order</label>
-                            <input type="text" class="form-control" name="work_order" value="@if(!empty($puchaseAdd)){{ $puchaseAdd->wo_id }}@else{{ old('work_order') }}@endif">
+                            <select class="form-select select2" name="work_order">
+                                <option value="">-- select Work Order --</option>
+                                @foreach($wo as $workorder)
+                                    <option
+                                        @if(!empty($puchaseAdd) && !empty($puchaseAdd) && $puchaseAdd->wo_id == $workorder->id) selected
+                                        value="{{ $workorder->id }}"
+                                        @else
+                                            value="{{ $workorder->id }}"@endif>
+                                        @if(!empty($puchaseAdd) &&  !empty($puchaseAdd) && $puchaseAdd->wo_id == $workorder->id)
+                                            {{ $puchaseAdd->wos->code ?? '' }}
+                                        @else
+                                            {{ $workorder->code }}@endif</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Associated / Impacted Asset</label>
-                            <input type="text" class="form-control" name="impacted_asset" value="@if(!empty($puchaseAdd)){{ $puchaseAdd->asset_id }}@else{{ old('impacted_asset') }}@endif">
+                            <select class="form-control select2" name="impacted_asset">
+                                <option value="">-- select Asset --</option>
+                                @foreach ($groupedData as $group)
+                                    <optgroup label="{{ $group['text'] }}">
+                                        @foreach ($group['children'] as $child)
+                                            <option value="{{ $child['id'] }}"
+                                                    data-type="{{ $group['text'] }}">
+                                                {{ $child['text'] }} ({{ $group['text'] }})
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" name="production_impact" id="productionImpact" @if(!empty($puchaseAdd) && $puchaseAdd->production_impact == 1) checked @endif>
+                        <input class="form-check-input" type="checkbox" name="production_impact"
+                               id="productionImpact" @if(!empty($puchaseAdd) && !empty($puchaseAdd) && $puchaseAdd->impacted_production == true) checked @endif>
                         <label class="form-check-label" for="productionImpact">
                             Production equipment is impacted
                         </label>
@@ -172,6 +198,37 @@
                 </tr>
                 </thead>
                 <tbody>
+                @if(!empty($purchase->purchaseAdditional))
+                    @foreach ($purchase->purchaseBodies as $body)
+                        @php
+                            $item = null;
+                            if ($body->model == 'part') {
+                                $item = $body->part;
+                            } elseif ($body->model == 'equipment') {
+                                $item = $body->equipment;
+                            } elseif ($body->model == 'tool') {
+                                $item = $body->tools;
+                            }
+                        @endphp
+                        <tr>
+                            <td>
+                                <select class="form-control item_code select2" name="item_code[]" required onchange="updateItemName(this)">
+                                    <option value="{{ $body->id }}" selected data-name="{{ $body->nameParts ?? $body->name }}" data-type="{{ $body->model }}">
+                                        {{ $body->id }} - {{ $item->nameParts ?? $item->name }} ({{ $body->model }})
+                                    </option>
+                                    <option value="custom">-- Not in Inventory --</option>
+                                </select>
+                                <input type="text" class="form-control custom_item_name" name="custom_item_name[]" placeholder="Enter item name" style="display:none; margin-top:5px;">
+                            </td>
+                            <td><input type="text" class="form-control item_name" name="item_name[]" readonly value="{{ $item->nameParts ?? $item->name ?? '' }}"></td>
+                            <td hidden><input type="text" class="form-control model" name="model[]" readonly value="{{ $body->model }}"></td>
+                            <td><input type="number" class="form-control quantity" name="quantity[]" required value="{{ $body->qty }}" oninput="calculateTotal(this)"></td>
+                            <td><input type="number" class="form-control unit_price" name="unit_price[]" required value="{{ $body->unit_price }}" oninput="calculateTotal(this)"></td>
+                            <td><input type="text" class="form-control total_price" name="total_price[]" readonly value="{{ number_format($body->total_price, 0, '.', '') }}"></td>
+                            <td><button type="button" class="btn btn-danger btn-sm" onclick="removeItem(this)">X</button></td>
+                        </tr>
+                    @endforeach
+                @endif
 
                 </tbody>
             </table>
@@ -179,7 +236,9 @@
             <div class="row mt-3">
                 <div class="col-md-6">
                     <label class="form-label">Total Amount</label>
-                    <input type="text" class="form-control" name="totalAmount" id="totalAmount" readonly>
+                    <input type="text" class="form-control" name="totalAmount" id="totalAmount" readonly
+                    @if(!empty($purchase)) value="{{ number_format($purchase->total, 0, '.', '') }}" @endif
+                    >
                 </div>
             </div>
         </div>

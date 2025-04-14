@@ -13,12 +13,12 @@ class PurchaseOrder extends Model
         return $this->hasOne(Purchases::class, 'id', 'id_pr');
 
     }
-    public function purchaseOrderAdditional()
+    public function purchaseAdditional()
     {
         return $this->hasOne(PurchaseOrderAdditional::class, 'purchase_id');
     }
 
-    public function purchaseOrderBodies()
+    public function purchaseBodies()
     {
         return $this->hasMany(PurchaseOrderBodies::class, 'purchase_id');
     }

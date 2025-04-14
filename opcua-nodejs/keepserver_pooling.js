@@ -30,10 +30,11 @@ async function checkIfRunning(host, port, endpoint) {
         console.log(`Mengecek URL: ${url}`);
 
         const response = await axios.get(url, { timeout: 5000 });
-        return { running: response.status === 200, error_log: null };
+        return { running: response.status === 200, error_log: null, response_value: response.data // ambil nilai dari response
+        };
     } catch (error) {
         console.error(`Error cek running: ${error.message}`);
-        return { running: false, error_log: error.message };
+        return { running: false, error_log: error.message, response_value: null };
     }
 }
 
@@ -62,7 +63,7 @@ async function fetchDataFromLaravel() {
 
         latestData = await Promise.all(
             response.data.map(async (api) => {
-                const { running, error_log } = await checkIfRunning(api.host, api.port, api.endpoint);
+                const { running, error_log,response_value } = await checkIfRunning(api.host, api.port, api.endpoint);
 
                 if (error_log) {
                     await logErrorToLaravel(api.id, error_log);
@@ -72,7 +73,8 @@ async function fetchDataFromLaravel() {
                     ...api,
                     running,
                     running_well: running,
-                    error_log
+                    error_log,
+                    response_value
                 };
             })
         );

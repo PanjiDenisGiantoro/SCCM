@@ -14,9 +14,12 @@ use App\Models\Part;
 use App\Models\purchaseAdditional;
 use App\Models\PurchaseBodies;
 use App\Models\PurchaseOrder;
+use App\Models\PurchaseOrderAdditional;
+use App\Models\PurchaseOrderBodies;
 use App\Models\Purchases;
 use App\Models\Tools;
 use App\Models\User;
+use App\Models\Work_orders;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -75,10 +78,10 @@ class PurchaseOrderController extends Controller
     public function show($id)
     {
         $purchase = PurchaseOrder::with([
-            'purchaseOrderBodies.part',
-            'purchaseOrderBodies.equipment',
-            'purchaseOrderBodies.tools',
-            'purchaseOrderBodies.facility',
+            'purchaseBodies.part',
+            'purchaseBodies.equipment',
+            'purchaseBodies.tools',
+            'purchaseBodies.facility',
         ])->find($id);
         $total = (int) $purchase->total;
 
@@ -125,6 +128,7 @@ class PurchaseOrderController extends Controller
         return view('purchase_order.detail',compact('purchase','business','clients','approve','approveuser','approve_user'));
 
     }
+
     public function approve($id,Request $request)
     {
 //        dd($request->all());
@@ -162,20 +166,53 @@ class PurchaseOrderController extends Controller
     }
     public function edit($id)
     {
-        $purchase = PurchaseOrder::find($id);
-        $puchaseAdd = purchaseAdditional::where('purchase_id', $id)->get();
-        $purchaseBody = PurchaseBodies::where('purchase_id', $id)->get();
+
+        $purchase = PurchaseOrder::with('business','purchaseAdditional.accounts','purchaseAdditional.charge_account','purchaseAdditional.wos','purchaseBodies.facility','purchaseBodies.equipment','purchaseBodies.tools','purchaseBodies.part')->find($id);
+
+        $puchaseAdd = PurchaseOrderAdditional::with('wos','charge_account')->where('purchase_id', $id)->first();
+        $purchaseBody = PurchaseOrderBodies::where('purchase_id', $id)->get();
         $facilities = Facility::select('id', 'name', DB::raw("'facility' as type"))->get();
         $tools = Tools::select('id', 'name', DB::raw("'tool' as type"))->get();
         $equipments = Equipment::select('id', 'name', DB::raw("'equipment' as type"))->get();
         $part = Part::select('id', DB::raw('"nameParts" as name'), DB::raw("'part' as type"))->get(); // Perbaikan kutip ganda
         $business = Business::latest()->get();
-        $data = $facilities->merge($tools)->merge($equipments)->merge($part);
+        $data = $part->merge($tools)->merge($equipments);
+        $code = 'PR-' . date('Ymd') . '-' . str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
+        $account = Account::latest()->get();
+        $charge = ChargeDepartment::latest()->get();
+        $facilities = Facility::with('children')->whereNull('parent_id')->latest()->get();
+        $wo = Work_orders::latest()->get();
+        $groupedData = $data->groupBy('type')->map(function ($items, $key) {
+            return [
+                'text' => ucfirst($key), // Menjadikan nama grup lebih rapi
+                'children' => $items->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'text' => $item->name
+                    ];
+                })->values()
+            ];
+        })->values();
+        return view('purchase_order.create',compact('business','account', 'charge', 'facilities','data','code','purchase','puchaseAdd','purchaseBody','wo','groupedData'));
+    }
+    public function view($id)
+    {
+
+        $purchase = PurchaseOrder::find($id);
+        $puchaseAdd = PurchaseOrderAdditional::all();
+        $purchaseBody = PurchaseOrderBodies::all();
+        $facilities = Facility::select('id', 'name', DB::raw("'facility' as type"))->get();
+        $tools = Tools::select('id', 'name', DB::raw("'tool' as type"))->get();
+        $equipments = Equipment::select('id', 'name', DB::raw("'equipment' as type"))->get();
+        $part = Part::select('id', DB::raw('"nameParts" as name'), DB::raw("'part' as type"))->get(); // Perbaikan kutip ganda
+        $business = Business::latest()->get();
+        $data = $part->merge($tools)->merge($equipments);
         $code = 'PR-' . date('Ymd') . '-' . str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
         $account = Account::latest()->get();
         $charge = ChargeDepartment::latest()->get();
         $facilities = Facility::with('children')->whereNull('parent_id')->latest()->get();
 
         return view('purchase_order.create',compact('business','account', 'charge', 'facilities','data','code','purchase','puchaseAdd','purchaseBody'));
+
     }
 }

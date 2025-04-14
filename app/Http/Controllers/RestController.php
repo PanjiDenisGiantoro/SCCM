@@ -68,7 +68,6 @@ class RestController extends Controller
             'status' => $request->status ?? 0,
             'post_data' => $request->post_data ?? null,
             'error_log' => $request->error_log ?? '-'
-
         ]);
 
         Alert::success('Success', 'API berhasil diperbarui.');
@@ -91,6 +90,8 @@ class RestController extends Controller
         $data = [];
         $isEdit = false;
         $existingData = null;
+        $value = null;
+
 
         if ($id) {
             $api = Socket::find($id);
@@ -99,9 +100,10 @@ class RestController extends Controller
             }
 
             $alarm = AlarmSensor::where('id_socket', $api->id)->first();
-            if ($alarm) {
+            if (!empty($alarm)) {
                 $value = $alarm->json;
             }
+
             $isEdit = true;
             $existingData = json_decode($value, true); // Ambil data dari kolom `json`
 
@@ -115,7 +117,7 @@ class RestController extends Controller
             }
         }
 
-        return view('socket.test', compact('api', 'data', 'isEdit', 'existingData', 'value'));
+        return view('socket.test', compact('api', 'data', 'isEdit', 'existingData','value'));
     }
 
 
@@ -241,7 +243,6 @@ class RestController extends Controller
     {
         $data = sensor_motor::orderBy('created_at', 'desc')
             ->paginate(20);
-
 
         return response()->json([
             'data' => $data->items(),
