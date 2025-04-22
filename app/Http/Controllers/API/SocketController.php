@@ -136,10 +136,12 @@ class SocketController extends Controller
     public function sensor(Request $request)
     {
         // Ambil data dari request query (bukan JSON)
-        $data = $request->only(['rpm', 'temperature', 'vibration', 'voltage','axis']);
+        $dataArray = $request->input('data'); // Assuming 'data' is the key holding the array of records
 
-        Log::info('Data dari ESP8266:', $data);
-        // Cek jika ada salah satu nilai yang lebih dari 0.01
+        foreach ($dataArray as $data) {
+            Log::info('Data dari ESP8266:', $data);
+
+            // Insert each sensor reading into the database
             sensor_motor::create([
                 'suhu' => $data['temperature'] ?? 0,
                 'listrik' => $data['voltage'],
@@ -147,15 +149,15 @@ class SocketController extends Controller
                 'rpm' => $data['rpm'],
                 'axis' => $data['axis'],
             ]);
+        }
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Data received successfully',
-                'data' => $data
-            ], 200);
-
-
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data received successfully',
+            'data' => $dataArray
+        ], 200);
     }
+
     public function getdatacsv()
     {
         $data = sensor_motor::latest()->get();
