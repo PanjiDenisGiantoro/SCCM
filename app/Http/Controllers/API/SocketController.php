@@ -198,9 +198,9 @@ class SocketController extends Controller
     }
     public function testingdata(Request $request)
     {
-        $data = $request->only(['rpm', 'temperature', 'vibration', 'voltage','axis']);
-
-        Log::info('Data dari ESP8266 baru:', $data);
+//        $data = $request->only(['rpm', 'temperature', 'vibration', 'voltage','axis']);
+//
+//        Log::info('Data dari ESP8266 baru:', $data);
 
         $dataArray = $request->input('data'); // Assuming 'data' is the key holding the array of records
 
