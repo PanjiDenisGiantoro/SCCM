@@ -136,6 +136,7 @@ class SocketController extends Controller
     public function sensor(Request $request)
     {
         $dataArray = $request->input('data'); // Assuming 'data' is the key holding the array of records
+        Log::info('Data dari ESP8266:', $dataArray);
 
         foreach ($dataArray as $data) {
             Log::info('Data dari ESP8266:', $data);
@@ -199,10 +200,10 @@ class SocketController extends Controller
     public function testingdata(Request $request)
     {
 //        $data = $request->only(['rpm', 'temperature', 'vibration', 'voltage','axis']);
-//
-//        Log::info('Data dari ESP8266 baru:', $data);
-
         $dataArray = $request->input('data'); // Assuming 'data' is the key holding the array of records
+//
+        Log::info('Data dari ESP8266 baru:', $dataArray);
+
 
         foreach ($dataArray as $data) {
             Log::info('Data dari ESP8266:', $data);
