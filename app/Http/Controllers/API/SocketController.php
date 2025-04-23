@@ -135,13 +135,11 @@ class SocketController extends Controller
     }
     public function sensor(Request $request)
     {
-        // Ambil data dari request query (bukan JSON)
         $dataArray = $request->input('data'); // Assuming 'data' is the key holding the array of records
 
         foreach ($dataArray as $data) {
             Log::info('Data dari ESP8266:', $data);
 
-            // Insert each sensor reading into the database
             sensor_motor::create([
                 'suhu' => $data['temperature'] ?? 0,
                 'listrik' => $data['voltage'],
@@ -204,29 +202,25 @@ class SocketController extends Controller
 
         Log::info('Data dari ESP8266 baru:', $data);
 
-        // Ubah nama field ke format Laravel-mu
-//        $data = [
-//            'rpm' => floatval($data['rpm'] ?? 0),
-//            'temperature' => floatval($data['temperature'] ?? 0),
-//            'vibration' => floatval($data['vibration'] ?? 0),
-//            'voltage' => floatval($data['voltage'] ?? 0),
-//        ];
+        $dataArray = $request->input('data'); // Assuming 'data' is the key holding the array of records
 
-        // Cek jika ada salah satu nilai yang lebih dari 0.01
-        sensor_motor::create([
-            'suhu' => $data['temperature'] ?? 0,
-            'listrik' => $data['voltage'],
-            'vibrasi' => $data['vibration'],
-            'rpm' => $data['rpm'],
-            'axis' => $data['axis'],
-        ]);
+        foreach ($dataArray as $data) {
+            Log::info('Data dari ESP8266:', $data);
+
+            sensor_motor::create([
+                'suhu' => $data['temperature'] ?? 0,
+                'listrik' => $data['voltage'],
+                'vibrasi' => $data['vibration'],
+                'rpm' => $data['rpm'],
+                'axis' => $data['axis'],
+            ]);
+        }
 
         return response()->json([
             'status' => 'success',
             'message' => 'Data received successfully',
-            'data' => $data
+            'data' => $dataArray
         ], 200);
-
     }
 
 
