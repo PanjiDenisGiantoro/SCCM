@@ -1,0 +1,11 @@
+BEGIN
+-- Menyimpan data
+INSERT INTO trainingPanji ( NAMA_KARYAWAN, JABATAN, GAJI)
+VALUES ( :NAMA_KARYAWAN, :JABATAN, :GAJI);
+COMMIT; -- Pastikan perubahan disimpan
+MESSAGE('Data berhasil disimpan.');
+CLEAR_FORM;
+EXCEPTION
+WHEN OTHERS THEN
+RAISE FORM_TRIGGER_FAILURE;
+END;

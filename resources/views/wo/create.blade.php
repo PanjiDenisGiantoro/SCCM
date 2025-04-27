@@ -86,6 +86,7 @@
                                 <div class="form-group">
                                     <label for="name">Asset</label>
                                     <select class="form-control select2" name="asset_id">
+                                        <option value="">Select Asset</option>
                                         @foreach ($groupedData as $group)
                                             <optgroup label="{{ $group['text'] }}">
                                                 @foreach ($group['children'] as $child)
@@ -190,7 +191,7 @@
                                 <div class="form-group">
                                     <label for="assign">Completed By User</label>
                                     <select class="form-select select2" id="assign_complete" name="assign_complete">
-                                        <option></option>
+                                        <option value="">Select User</option>
                                         @foreach ($users as $user)
                                             <option value="{{ $user['id'] }}">{{ $user['name'] }}
                                                 - {{ $user->roles[0]->name ?? '' }}</option>
@@ -211,7 +212,7 @@
 
         <div class="card mt-3">
             <div class="card-body">
-                <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                <ul class="nav nav-tabs mb-4 bg-body-secondary" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general"
                                 type="button" role="tab" aria-controls="general" aria-selected="true">General
@@ -220,62 +221,67 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="completion-tab" data-bs-toggle="tab" data-bs-target="#completion"
                                 type="button"
-                                role="tab" aria-controls="completion" aria-selected="false">Completion <span
-                                class="badge bg-gray-200 text-gray-700">3</span></button>
+                                role="tab" aria-controls="completion" aria-selected="false">Completion
+                        </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="parts-tab" data-bs-toggle="tab" data-bs-target="#parts"
                                 type="button" role="tab" aria-controls="parts" aria-selected="false">Parts
-                            <span class="badge bg-gray-200 text-gray-700">2</span></button>
+                        </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="labors-tab" data-bs-toggle="tab" data-bs-target="#labors"
                                 type="button" role="tab" aria-controls="labors" aria-selected="false">Labor Task
-                            <span class="badge bg-gray-200 text-gray-700">2</span></button>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="misc-tab" data-bs-toggle="tab" data-bs-target="#misc"
+                                type="button" role="tab" aria-controls="misc" aria-selected="false">Misc. Costs Page
+                        </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="meterReading-tab" data-bs-toggle="tab"
                                 data-bs-target="#meterReading"
                                 type="button" role="tab" aria-controls="meterReading" aria-selected="false">Meter
-                            Reading <span
-                                class="badge bg-gray-200 text-gray-700">3</span></button>
+                            Reading
+                        </button>
                     </li>
-{{--                    <li class="nav-item" role="presentation">--}}
-{{--                        <button class="nav-link" id="miscCost-tab" data-bs-toggle="tab" data-bs-target="#miscCost"--}}
-{{--                                type="button" role="tab" aria-controls="miscCost" aria-selected="false">Misc Cost Page--}}
-{{--                            <span--}}
-{{--                                class="badge bg-gray-200 text-gray-700">3</span></button>--}}
-{{--                    </li>--}}
-{{--                    <li class="nav-item" role="presentation">--}}
-{{--                        <button class="nav-link" id="notif-tab" data-bs-toggle="tab" data-bs-target="#notif"--}}
-{{--                                type="button" role="tab" aria-controls="notif" aria-selected="false">Notification <span--}}
-{{--                                class="badge bg-gray-200 text-gray-700">3</span></button>--}}
-{{--                    </li>--}}
+                    {{--                    <li class="nav-item" role="presentation">--}}
+                    {{--                        <button class="nav-link" id="miscCost-tab" data-bs-toggle="tab" data-bs-target="#miscCost"--}}
+                    {{--                                type="button" role="tab" aria-controls="miscCost" aria-selected="false">Misc Cost Page--}}
+                    {{--                            <span--}}
+                    {{--                                class="badge bg-gray-200 text-gray-700">3</span></button>--}}
+                    {{--                    </li>--}}
+                    {{--                    <li class="nav-item" role="presentation">--}}
+                    {{--                        <button class="nav-link" id="notif-tab" data-bs-toggle="tab" data-bs-target="#notif"--}}
+                    {{--                                type="button" role="tab" aria-controls="notif" aria-selected="false">Notification <span--}}
+                    {{--                                class="badge bg-gray-200 text-gray-700">3</span></button>--}}
+                    {{--                    </li>--}}
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="files-tab" data-bs-toggle="tab" data-bs-target="#files"
                                 type="button"
-                                role="tab" aria-controls="files" aria-selected="false">Files <span
-                                class="badge bg-gray-200 text-gray-700">3</span></button>
+                                role="tab" aria-controls="files" aria-selected="false">Files
+                        </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="purchased-tab" data-bs-toggle="tab" data-bs-target="#purchased"
                                 type="button"
-                                role="tab" aria-controls="purchased" aria-selected="false">Purchase <span
-                                class="badge bg-gray-200 text-gray-700">3</span></button>
+                                role="tab" aria-controls="purchased" aria-selected="false">Purchase
+                        </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="parent-tab" data-bs-toggle="tab" data-bs-target="#parent"
                                 type="button"
-                                role="tab" aria-controls="parent" aria-selected="false">Include Incident <span
-                                class="badge bg-gray-200 text-gray-700">3</span></button>
+                                role="tab" aria-controls="parent" aria-selected="false">Include Incident
+                        </button>
                     </li>
 
 
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="log-tab" data-bs-toggle="tab" data-bs-target="#log" type="button"
-                                role="tab" aria-controls="log" aria-selected="false">Log <span
-                                class="badge bg-gray-200 text-gray-700">6</span></button>
+                                role="tab" aria-controls="log" aria-selected="false">Log
+                        </button>
                     </li>
                 </ul>
 
@@ -444,7 +450,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="task">Choose Task Type</label>
-                                                <select class="form-select select2" id="task" name="task">
+                                                <select class="form-select select2" id="task_type" name="task_type">
                                                     <option>Pilih Task</option>
                                                     <option value="general">General</option>
                                                     <option value="text">Text</option>
@@ -454,50 +460,61 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Desctiption</label>
-                                                <textarea class="form-control" id="name" name="description"
+                                                <textarea class="form-control" id="task_deskription"
+                                                          name="task_deskription"
                                                           rows="3"></textarea>
                                             </div>
                                             <div class="form-group">
-                                                <label for="name">Assign To User</label>
-                                                <select class="form-select select2" id="name" name="assign">
+                                                <label for="labor_assign">Assign To User</label>
+                                                <select class="form-select select2" id="labor_assign"
+                                                        name="labor_assign">
                                                     <option>Select User</option>
-
+                                                    @foreach($users as $user)
+                                                        <option value="{{$user->id}}">{{$user->name}}
+                                                            - {{$user->roles[0]->name ?? ''}}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Start Date</label>
-                                                <input type="date" class="form-control" id="start_date"
-                                                       name="start_date">
+                                                <input type="date" class="form-control" id="task_start_date"
+                                                       name="task_start_date">
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Time Estimate (Hours)</label>
-                                                <input type="date" class="form-control" id="time_estimate"
-                                                       name="time_estimate">
+                                                <input type="date" class="form-control" id="task_time_estimate"
+                                                       name="task_time_estimate">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="name">Completed By User</label>
-                                                <select class="form-select select2" id="name" name="assign_complete">
+                                                <select class="form-select select2" id="task_assign_complete"
+                                                        name="task_assign_complete">
 
+                                                    @foreach($users as $user)
+                                                        <option value="{{$user->id}}">{{$user->name}}
+                                                            - {{$user->roles[0]->name ?? ''}}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Completion Date</label>
-                                                <input type="date" class="form-control" id="completion_date"
-                                                       name="completion_date">
+                                                <input type="date" class="form-control" id="task_completion_date"
+                                                       name="task_completion_date">
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Time Spent (Hours)</label>
-                                                <input type="text" class="form-control" id="time_spent"
-                                                       name="time_spent">
+                                                <input type="text" class="form-control" id="tank_time_spent"
+                                                       name="tank_time_spent">
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Completion Notes</label>
-                                                <textarea class="form-control" id="completion" name="completion"
+                                                <textarea class="form-control" id="taskcompletion" name="taskcompletion"
                                                           rows="3"></textarea>
                                             </div>
                                         </div>
+
                                         <div class="col-md-12 text-center">
                                             <div class="form-group">
                                                 <button type="button" class="btn btn-outline-info" onclick="addTask()">
@@ -510,6 +527,8 @@
 
                                 </div>
                             </div>
+                            <input type="hidden" id="task_data" name="task_data" value="[]">
+
                             <div class="card mt-4">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0">Work Order Task List</h5>
@@ -519,371 +538,520 @@
                                         <table class="table table-bordered">
                                             <thead>
                                             <tr>
-                                                <th scope="col">Task</th>
-                                                <th scope="col">Description</th>
-                                                <th scope="col">Start Date</th>
-                                                <th scope="col">Completion Date</th>
-                                                <th scope="col">Time Spent</th>
-                                                <th scope="col">Completion Notes</th>
-                                                <th scope="col">Action</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody id="task_list">
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="parts" role="tabpanel" aria-labelledby="parts-tab">
-                        <div class="row m-3">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="card-title mb-0">Work Order Parts</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="form-group">
-                                        <label for="parts">Parts</label>
-                                        <select class="form-select select2" id="parts_data" name="parts_data">
-                                            <option value="" disabled selected>Pilih Part</option>
-                                            @foreach ($parts as $part)
-                                                <option value="{{ $part['id'] }}">{{ $part['nameParts'] }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="p_q">Planned Quantity</label>
-                                        <input type="text" class="form-control" id="p_q" name="p_q">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="a_q">Actual Quantity</label>
-                                        <input type="text" class="form-control" id="a_q" name="a_q">
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="button" class="btn btn-outline-info" onclick="addPart()">Add
-                                            Part
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table basic-table mb-0" id="parts_table">
-                                            <thead>
-                                            <tr>
-                                                <th>Part/Supply</th>
-                                                <th>Planned Quantity</th>
-                                                <th>Actual Quantity Used</th>
+                                                <th>Task</th>
+                                                <th>Description</th>
+                                                <th>Start Date</th>
+                                                <th>Completion Date</th>
+                                                <th>Time Spent</th>
+                                                <th>Completion Notes</th>
+                                                <th>Assign Labor</th>
+                                                <th>Completed Assign</th>
                                                 <th>Action</th>
                                             </tr>
                                             </thead>
-                                            <tbody></tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Container untuk menyimpan input hidden -->
-                        <div id="hidden_inputs"></div>
-
-                    </div>
-                    <div class="tab-pane fade" id="meterReading" role="tabpanel" aria-labelledby="meterReading-tab">
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card-body">
-                                    <div class="card-header d-flex justify-content-between">
-                                        <h6 class="h6 mb-0">Most Recent Meter Reading</h6>
-                                        <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#meterReadingModal">
-                                            Add Meter Reading
-                                        </button>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class=" vertical-striped-table mb-0 table">
-                                            <thead>
-                                            <tr>
-                                                <th>Last Reading</th>
-                                                <th>Unit</th>
-                                                <th>Date Submitted</th>
-                                                <th>Submitted By</th>
-                                                <th>Submitted Date</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody id="meterReadingTableBody">
+                                            <tbody id="task_list">
+                                            <!-- Dynamic rows will be added here -->
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="modal fade" id="meterReadingModal" tabindex="-1" aria-labelledby="meterReadingModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="meterReadingModalLabel">Add Meter Reading</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form id="meterReadingForm">
-                                            <div class="mb-3">
-                                                <label for="meterReading" class="form-label">Meter Reading</label>
-                                                <input type="number" class="form-control" id="meterReadings" name="meterReading" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="meterReadingUnit" class="form-label">Unit</label>
-                                                <select class="form-select" id="meterReadingUnit" name="meterReadingUnit" required>
-                                                    <option value="Hours">Hours (h)</option>
-                                                    <option value="Kilowatt">Kilowatt (kW)</option>
-                                                    <option value="Liters">Liters (L)</option>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="misc" role="tabpanel" aria-labelledby="misc-tab">
+                        <div class="row">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Work Order Misc Cost</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="misc_type">Type</label>
+                                                <select class="form-select select2" id="misc_type" name="misc_type[]">
+                                                    <option value="">Select Type</option>
+                                                    @foreach($business as $bus)
+                                                        <option value="{{$bus->id}}"
+                                                                data-name="{{$bus->business_name}}">{{$bus->business_name}}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
-                                            <input type="hidden" id="submittedBy" name="submittedBy" value="{{ \Illuminate\Support\Facades\Auth::user()->name  }}">
-                                            <input type="hidden" id="submittedDate" name="submittedDate" value="{{ date('Y-m-d') }}">
-                                            <button type="submit" class="btn btn-outline-success">Save</button>
-                                        </form>
+                                            <div class="form-group">
+                                                <label for="misc_description">Description</label>
+                                                <input type="text" class="form-control" id="misc_description"
+                                                       name="misc_description[]">
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="misc_est_quantity">Est Quantity</label>
+                                                <input type="number" class="form-control" id="misc_est_quantity"
+                                                       name="misc_est_quantity[]">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="misc_est_unit_cost">Est Unit Cost</label>
+                                                <input type="number" class="form-control" id="misc_est_unit_cost"
+                                                       name="misc_est_unit_cost[]">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="misc_est_total_cost">Est Total Cost</label>
+                                                <input readonly type="text" class="form-control" id="misc_est_total_cost"
+                                                       name="misc_est_total_cost[]">
+                                            </div>
+                                        </div>
                                     </div>
+
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="misc_quantity">Quantity</label>
+                                                <input type="number" class="form-control" id="misc_quantity"
+                                                       name="misc_quantity[]">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="misc_actual_unit_cost">Actual Unit Cost</label>
+                                                <input type="number" class="form-control" id="misc_actual_unit_cost"
+                                                       name="misc_actual_unit_cost[]">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+
+                                            <div class="form-group">
+                                                <label for="misc_actual_total_cost">Actual Total Cost</label>
+                                                <input readonly type="number" class="form-control" id="misc_actual_total_cost"
+                                                       name="misc_actual_total_cost[]">
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
+
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-outline-info" onclick="addMiscCostRow()">
+                                    Add
+                                </button>
+                            </div>
+
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered mb-0 mt-3 ">
+                                    <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th>Est Quantity</th>
+                                        <th>Est Unit Cost</th>
+                                        <th>Est Total Cost</th>
+                                        <th>Quantity</th>
+                                        <th>Actual Unit Cost</th>
+                                        <th>Actual Total Cost</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="misc-table-body">
+                                    <!-- Dynamic rows will be added here -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-{{--                        dssss--}}
+                    </div>
+            <div class="tab-pane fade" id="parts" role="tabpanel" aria-labelledby="parts-tab">
+                <div class="row m-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Work Order Parts</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="parts">Parts</label>
+                                <select class="form-select select2" id="parts_data" name="parts_data">
+                                    <option value="" disabled selected>Pilih Part</option>
+                                    @foreach ($parts as $part)
+                                        <option value="{{ $part['id'] }}">{{ $part['nameParts'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="p_q">Planned Quantity</label>
+                                <input type="text" class="form-control" id="p_q" name="p_q">
+                            </div>
+                            <div class="form-group">
+                                <label for="a_q">Actual Quantity</label>
+                                <input type="text" class="form-control" id="a_q" name="a_q">
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-outline-info" onclick="addPart()">Add
+                                    Part
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
-{{--                    misccount--}}
-{{--                    <div class="tab-pane fade" id="miscCost" role="tabpanel" aria-labelledby="miscCost-tab">--}}
-{{--                        <div class="row m-3">--}}
-{{--                            <div class="card">--}}
-
-{{--                                <div class="card-body">--}}
-{{--                                    <div class="mb-4">--}}
-{{--                                        <button class="btn btn-primary-600 px-4 py-2 rounded-lg mr-2">Misc Cost</button>--}}
-{{--                                    </div>--}}
-
-
-{{--                                    <div class="table-responsive">--}}
-{{--                                        <table class="table basic-table mb-0 ">--}}
-{{--                                            <thead>--}}
-{{--                                            <tr>--}}
-{{--                                                <th>Type</th>--}}
-{{--                                                <th>Description</th>--}}
-{{--                                                <th>Est Quantity</th>--}}
-{{--                                                <th>Est Unit Cost</th>--}}
-{{--                                                <th>Est Total Cost</th>--}}
-{{--                                                <th>Quantity</th>--}}
-{{--                                                <th>Actual Unit Cost</th>--}}
-{{--                                                <th>Actual Total Cost</th>--}}
-{{--                                                <th>Action</th>--}}
-{{--                                            </tr>--}}
-{{--                                            </thead>--}}
-{{--                                            <tbody>--}}
-
-
-{{--                                            </tbody>--}}
-{{--                                        </table>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-
-{{--               notif-tab--}}
-{{--                    <div class="tab-pane fade" id="notif" role="tabpanel" aria-labelledby="notif-tab">--}}
-{{--                        <div class="row m-3">--}}
-{{--                            <div class="card">--}}
-
-{{--                                <div class="card-body">--}}
-{{--                                    <div class="mb-4">--}}
-{{--                                        <button class="btn btn-primary-600 px-4 py-2 rounded-lg mr-2">Misc Cost</button>--}}
-{{--                                    </div>--}}
-
-
-{{--                                    <div class="table-responsive">--}}
-{{--                                        <table class="table basic-table mb-0 ">--}}
-{{--                                            <thead>--}}
-{{--                                            <tr>--}}
-{{--                                                <th>Technisian</th>--}}
-{{--                                                <th>Notify On Assignment</th>--}}
-{{--                                                <th>Notify On Status Change</th>--}}
-{{--                                                <th>Notify On Completion</th>--}}
-{{--                                                <th>Notify On Task Completed</th>--}}
-{{--                                                <th>Notify On Online Offline</th>--}}
-{{--                                            </tr>--}}
-{{--                                            </thead>--}}
-{{--                                            <tbody>--}}
-
-
-{{--                                            </tbody>--}}
-{{--                                        </table>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-                    <div class="tab-pane fade" id="files" role="tabpanel" aria-labelledby="files-tab">
-
-                        <!-- Modal -->
-                        <div id="fileModal" class="modal fade" tabindex="-1" role="dialog">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Add New Item</h5>
-                                        <button type="button" class="close" data-dismiss="modal">&times;
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form id="fileForm">
-                                            <div id="modalContent"></div>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                                            Close
-                                        </button>
-                                        <button type="button" class="btn btn-outline-success" onclick="saveData()">Save
-                                        </button>
-                                    </div>
-                                </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table basic-table mb-0" id="parts_table">
+                                    <thead>
+                                    <tr>
+                                        <th>Part/Supply</th>
+                                        <th>Planned Quantity</th>
+                                        <th>Actual Quantity Used</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div>
+                    </div>
+                </div>
 
+                <!-- Container untuk menyimpan input hidden -->
+                <div id="hidden_inputs"></div>
 
+            </div>
+            <div class="tab-pane fade" id="meterReading" role="tabpanel" aria-labelledby="meterReading-tab">
+
+                <div class="row">
+                    <div class="col-md-12">
                         <div class="card-body">
-                            <div class="mb-4">
-                                <div class="row align-items-center">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="typefile" class="font-weight-bold">Type</label>
-                                            <div class="input-group">
-                                                <select class="form-control" id="typefile" name="typefile">
-                                                    <option selected disabled>Pilih</option>
-                                                    <option value="file">File</option>
-                                                    <option value="note">Note</option>
-                                                    <option value="link">Link</option>
-                                                </select>
-                                                <div class="input-group-append">
-                                                    <button type="button" class="btn btn-outline-success"
-                                                            onclick="showModal()">New
-                                                    </button>
-                                                </div>
-                                            </div>
+                            <div class="card-header d-flex justify-content-between">
+                                <h6 class="h6 mb-0">Most Recent Meter Reading</h6>
+                                <button class="btn btn-outline-success" data-bs-toggle="modal"
+                                        data-bs-target="#meterReadingModal">
+                                    Add Meter Reading
+                                </button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class=" vertical-striped-table mb-0 table">
+                                    <thead>
+                                    <tr>
+                                        <th>Last Reading</th>
+                                        <th>Unit</th>
+                                        <th>Date Submitted</th>
+                                        <th>Submitted By</th>
+                                        <th>Submitted Date</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="meterReadingTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="meterReadingModal" tabindex="-1"
+                     aria-labelledby="meterReadingModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="meterReadingModalLabel">Add Meter Reading</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="meterReadingForm">
+                                    <div class="mb-3">
+                                        <label for="meterReading" class="form-label">Meter Reading</label>
+                                        <input type="number" class="form-control" id="meterReadings"
+                                               name="meterReading" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="meterReadingUnit" class="form-label">Unit</label>
+                                        <select class="form-select" id="meterReadingUnit" name="meterReadingUnit"
+                                                required>
+                                            <option value="Hours">Hours (h)</option>
+                                            <option value="Kilowatt">Kilowatt (kW)</option>
+                                            <option value="Liters">Liters (L)</option>
+                                        </select>
+                                    </div>
+                                    <input type="hidden" id="submittedBy" name="submittedBy"
+                                           value="{{ \Illuminate\Support\Facades\Auth::user()->name  }}">
+                                    <input type="hidden" id="submittedDate" name="submittedDate"
+                                           value="{{ date('Y-m-d') }}">
+                                    <button type="submit" class="btn btn-outline-success">Save</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{--                        dssss--}}
+            </div>
+
+            {{--                    misccount--}}
+            {{--                    <div class="tab-pane fade" id="miscCost" role="tabpanel" aria-labelledby="miscCost-tab">--}}
+            {{--                        <div class="row m-3">--}}
+            {{--                            <div class="card">--}}
+
+            {{--                                <div class="card-body">--}}
+            {{--                                    <div class="mb-4">--}}
+            {{--                                        <button class="btn btn-primary-600 px-4 py-2 rounded-lg mr-2">Misc Cost</button>--}}
+            {{--                                    </div>--}}
+
+
+            {{--                                    <div class="table-responsive">--}}
+            {{--                                        <table class="table basic-table mb-0 ">--}}
+            {{--                                            <thead>--}}
+            {{--                                            <tr>--}}
+            {{--                                                <th>Type</th>--}}
+            {{--                                                <th>Description</th>--}}
+            {{--                                                <th>Est Quantity</th>--}}
+            {{--                                                <th>Est Unit Cost</th>--}}
+            {{--                                                <th>Est Total Cost</th>--}}
+            {{--                                                <th>Quantity</th>--}}
+            {{--                                                <th>Actual Unit Cost</th>--}}
+            {{--                                                <th>Actual Total Cost</th>--}}
+            {{--                                                <th>Action</th>--}}
+            {{--                                            </tr>--}}
+            {{--                                            </thead>--}}
+            {{--                                            <tbody>--}}
+
+
+            {{--                                            </tbody>--}}
+            {{--                                        </table>--}}
+            {{--                                    </div>--}}
+            {{--                                </div>--}}
+            {{--                            </div>--}}
+            {{--                        </div>--}}
+            {{--                    </div>--}}
+
+            {{--               notif-tab--}}
+            {{--                    <div class="tab-pane fade" id="notif" role="tabpanel" aria-labelledby="notif-tab">--}}
+            {{--                        <div class="row m-3">--}}
+            {{--                            <div class="card">--}}
+
+            {{--                                <div class="card-body">--}}
+            {{--                                    <div class="mb-4">--}}
+            {{--                                        <button class="btn btn-primary-600 px-4 py-2 rounded-lg mr-2">Misc Cost</button>--}}
+            {{--                                    </div>--}}
+
+
+            {{--                                    <div class="table-responsive">--}}
+            {{--                                        <table class="table basic-table mb-0 ">--}}
+            {{--                                            <thead>--}}
+            {{--                                            <tr>--}}
+            {{--                                                <th>Technisian</th>--}}
+            {{--                                                <th>Notify On Assignment</th>--}}
+            {{--                                                <th>Notify On Status Change</th>--}}
+            {{--                                                <th>Notify On Completion</th>--}}
+            {{--                                                <th>Notify On Task Completed</th>--}}
+            {{--                                                <th>Notify On Online Offline</th>--}}
+            {{--                                            </tr>--}}
+            {{--                                            </thead>--}}
+            {{--                                            <tbody>--}}
+
+
+            {{--                                            </tbody>--}}
+            {{--                                        </table>--}}
+            {{--                                    </div>--}}
+            {{--                                </div>--}}
+            {{--                            </div>--}}
+            {{--                        </div>--}}
+            {{--                    </div>--}}
+            <div class="tab-pane fade" id="files" role="tabpanel" aria-labelledby="files-tab">
+
+                <!-- Modal -->
+                <div id="fileModal" class="modal fade" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add New Item</h5>
+                                <button type="button" class="close" data-dismiss="modal">&times;
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="fileForm">
+                                    <div id="modalContent"></div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                    Close
+                                </button>
+                                <button type="button" class="btn btn-outline-success" onclick="saveData()">Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="card-body">
+                    <div class="mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="typefile" class="font-weight-bold">Type</label>
+                                    <div class="input-group">
+                                        <select class="form-control" id="typefile" name="typefile">
+                                            <option selected disabled>Pilih</option>
+                                            <option value="file">File</option>
+                                            <option value="note">Note</option>
+                                            <option value="link">Link</option>
+                                        </select>
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-outline-success"
+                                                    onclick="showModal()">New
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
+                    </div>
+
+
+                </div>
+                <div class="table-responsive">
+                    <table class="table basic-table mb-0">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Size</th>
+                            <th>Modified</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="fileTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="log-tab">
+                <div class="row m-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table basic-table mb-0 ">
+                                    <thead>
+                                    <tr>
+                                        <th>
+                                            User
+                                        </th>
+                                        <th>
+                                            Hours Taken
+                                        </th>
+                                        <th>
+                                            Inventory Cost
+                                        </th>
+                                        <th>
+                                            Completion Notes
+                                        </th>
+                                        <th>
+                                            Log Date
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="parent" role="tabpanel" aria-labelledby="parent-tab">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="parent">Parent Work Order</label>
+                            <select class="form-select select2" id="childparentwo" name="childparentwo">
+                                <option value="">Select Parent Work Order</option>
+                                @foreach($workOrders as $workOrder)
+                                    <option value="{{ $workOrder->id }}"
+                                            data-status="{{ $workOrder->work_order_status }}"
+
+                                    >{{ $workOrder->code }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" id="parentdescription"
+                                      name="parentdescription"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-outline-info" onclick="childaddWorkOrder()">Add
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Hidden input to store the array of work orders -->
+                <input type="hidden" id="hidden_work_orders" name="work_orders" value="[]">
+
+                <div class="card">
+                    <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table basic-table mb-0">
+                            <table class="table basic-table mb-0" id="include_wo">
                                 <thead>
                                 <tr>
-                                    <th>Name</th>
+                                    <th>Include Work Order</th>
                                     <th>Type</th>
-                                    <th>Size</th>
-                                    <th>Modified</th>
-                                    <th>Action</th>
+                                    <th>Status</th>
                                 </tr>
                                 </thead>
-                                <tbody id="fileTableBody">
+                                <tbody>
+                                <!-- Dynamic rows will be added here -->
                                 </tbody>
                             </table>
                         </div>
-
                     </div>
-                    <div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="log-tab">
-                        <div class="row m-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table basic-table mb-0 ">
-                                            <thead>
-                                            <tr>
-                                                <th>
-                                                    User
-                                                </th>
-                                                <th>
-                                                    Hours Taken
-                                                </th>
-                                                <th>
-                                                    Inventory Cost
-                                                </th>
-                                                <th>
-                                                    Completion Notes
-                                                </th>
-                                                <th>
-                                                    Log Date
-                                                </th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="parent" role="tabpanel" aria-labelledby="parent-tab">
-
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table basic-table mb-0">
-                                        <thead>
-                                        <tr>
-                                            <th>Include Work Order</th>
-                                            <th>Type</th>
-                                            <th>Status</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="purchased" role="tabpanel" aria-labelledby="purchased-tab">
-                        <div class="row m-3">
-                            <div class="card">
-
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table basic-table mb-0 ">
-                                            <thead>
-                                            <tr>
-                                                <th>Requested Item</th>
-                                                <th>Description</th>
-                                                <th>Req Qty</th>
-                                                <th>Purchase Order</th>
-                                                <th>Supplier</th>
-                                                <th>Status</th>
-                                                <th>Need By</th>
-                                                <th>Qty Received</th>
-                                                <th>Unit Price</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
                 </div>
+
             </div>
+            <div class="tab-pane fade" id="purchased" role="tabpanel" aria-labelledby="purchased-tab">
+                <div class="row m-3">
+                    <div class="card">
+
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table basic-table mb-0 ">
+                                    <thead>
+                                    <tr>
+                                        <th>Requested Item</th>
+                                        <th>Description</th>
+                                        <th>Req Qty</th>
+                                        <th>Purchase Order</th>
+                                        <th>Supplier</th>
+                                        <th>Status</th>
+                                        <th>Need By</th>
+                                        <th>Qty Received</th>
+                                        <th>Unit Price</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
+    </div>
+    </div>
     </div>
 
 
@@ -1193,7 +1361,239 @@
             document.getElementById(`${rowId}_actual`).remove();
         }
     </script>
+    <script>
+        // Function to add work order
+        function childaddWorkOrder() {
+            // Get values from the form
+            const parentWorkOrder = document.getElementById('childparentwo').value;
+            const description = document.getElementById('parentdescription').value;
+            const selectedOption = document.getElementById('childparentwo').options[document.getElementById('childparentwo').selectedIndex];
+            const status = selectedOption.getAttribute('data-status');
 
+            // Validate if the fields are not empty
+            if (!parentWorkOrder) {
+                alert("Please fill in both fields.");
+                return;
+            }
+
+            // Create a new row in the table
+            const table = document.getElementById('include_wo').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow(table.rows.length);
+
+            // Add data to the new row
+            newRow.insertCell(0).textContent = parentWorkOrder;
+            newRow.insertCell(1).textContent = description;
+            newRow.insertCell(2).textContent = status;  // You can modify the status dynamically if needed
+
+            // Create a new object for the work order
+            const workOrder = {
+                parent: parentWorkOrder,
+                description: description,
+                status: status  // You can modify this if necessary
+            };
+
+            // Get the current array of work orders from the hidden input
+            const hiddenWorkOrders = JSON.parse(document.getElementById('hidden_work_orders').value);
+
+            // Add the new work order to the array
+            hiddenWorkOrders.push(workOrder);
+
+            // Update the hidden input with the new array
+            document.getElementById('hidden_work_orders').value = JSON.stringify(hiddenWorkOrders);
+
+            // Clear the form fields
+            document.getElementById('parent').value = '';
+            document.getElementById('description').value = '';
+        }
+
+    </script>
+
+    <script>
+        function addTask() {
+            // Get values from the form
+            const taskType = document.getElementById('task_type').value;
+            const description = document.getElementById('task_deskription').value;
+            const laborAssign = document.getElementById('labor_assign').value;
+            const startDate = document.getElementById('task_start_date').value;
+            const timeEstimate = document.getElementById('task_time_estimate').value;
+            const assignComplete = document.getElementById('task_assign_complete').value;
+            const completionDate = document.getElementById('task_completion_date').value;
+            const timeSpent = document.getElementById('tank_time_spent').value;
+            const completionNotes = document.getElementById('taskcompletion').value;
+
+            // Validate if the fields are not empty
+            if (!taskType || !description || !laborAssign || !startDate || !timeEstimate || !assignComplete || !completionDate || !timeSpent) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            // Create a new row in the table
+            const tableBody = document.getElementById('task_list');
+            const newRow = tableBody.insertRow(tableBody.rows.length);
+
+            // Add the task data to the new row
+            newRow.insertCell(0).textContent = taskType;
+            newRow.insertCell(1).textContent = description;
+            newRow.insertCell(2).textContent = startDate;
+            newRow.insertCell(3).textContent = completionDate;
+            newRow.insertCell(4).textContent = timeSpent;
+            newRow.insertCell(5).textContent = completionNotes;
+
+            // Add the "Assign Labor" and "Completed Assign" to the new row
+            const laborAssignCell = newRow.insertCell(6);
+            const assignCompleteCell = newRow.insertCell(7);
+
+            // Find the names of the users based on their IDs
+            const laborAssignName = document.getElementById('labor_assign').options[document.getElementById('labor_assign').selectedIndex].text;
+            const assignCompleteName = document.getElementById('task_assign_complete').options[document.getElementById('task_assign_complete').selectedIndex].text;
+
+            laborAssignCell.textContent = laborAssignName; // Display the selected labor assign user's name
+            assignCompleteCell.textContent = assignCompleteName; // Display the selected completed assign user's name
+
+            // Create an action column (e.g., Delete button)
+            const actionCell = newRow.insertCell(8);
+            actionCell.innerHTML = `<button type="button" class="btn btn-outline-danger" onclick="deleteTask(this)">Delete</button>`;
+
+            // Create a task object to store in the hidden input field
+            const taskData = {
+                taskType: taskType,
+                description: description,
+                laborAssign: laborAssign,
+                laborAssignName: laborAssignName, // Store the name for future reference
+                startDate: startDate,
+                timeEstimate: timeEstimate,
+                assignComplete: assignComplete,
+                assignCompleteName: assignCompleteName, // Store the name for future reference
+                completionDate: completionDate,
+                timeSpent: timeSpent,
+                completionNotes: completionNotes
+            };
+
+            // Get the current task data array from the hidden input
+            const taskArray = JSON.parse(document.getElementById('task_data').value);
+
+            // Add the new task to the array
+            taskArray.push(taskData);
+
+            // Update the hidden input with the new array (as a JSON string)
+            document.getElementById('task_data').value = JSON.stringify(taskArray);
+
+            // Clear the form fields
+            document.getElementById('task_type').value = '';
+            document.getElementById('task_deskription').value = '';
+            document.getElementById('labor_assign').value = '';
+            document.getElementById('task_start_date').value = '';
+            document.getElementById('task_time_estimate').value = '';
+            document.getElementById('task_assign_complete').value = '';
+            document.getElementById('task_completion_date').value = '';
+            document.getElementById('tank_time_spent').value = '';
+            document.getElementById('taskcompletion').value = '';
+        }
+
+        // Function to delete a task row
+        function deleteTask(button) {
+            // Remove the row from the table
+            const row = button.closest('tr');
+            row.remove();
+
+            // Update the hidden input to remove the deleted task
+            const taskArray = JSON.parse(document.getElementById('task_data').value);
+            const index = Array.from(row.parentNode.children).indexOf(row);
+
+            // Remove the task from the array
+            taskArray.splice(index, 1);
+
+            // Update the hidden input with the new array
+            document.getElementById('task_data').value = JSON.stringify(taskArray);
+        }
+
+    </script>
+
+
+    <script>
+        document.getElementById('misc_est_quantity').addEventListener('input', function () {
+            var quantity = parseFloat(this.value) || 0; // Convert to number (default to 0 if invalid)
+            var unitCost = parseFloat(document.getElementById('misc_est_unit_cost').value) || 0;
+            var totalCost = quantity * unitCost;
+            document.getElementById('misc_est_total_cost').value = totalCost.toFixed(2); // Optional: set to 2 decimal places
+        });
+
+        document.getElementById('misc_est_unit_cost').addEventListener('input', function () {
+            var quantity = parseFloat(document.getElementById('misc_est_quantity').value) || 0;
+            var unitCost = parseFloat(this.value) || 0; // Convert to number (default to 0 if invalid)
+            var totalCost = quantity * unitCost;
+            document.getElementById('misc_est_total_cost').value = totalCost.toFixed(2); // Optional: set to 2 decimal places
+        });
+
+        document.getElementById('misc_quantity').addEventListener('input', function () {
+            var quantity = parseFloat(this.value) || 0; // Convert to number (default to 0 if invalid)
+            var unitCost = parseFloat(document.getElementById('misc_actual_unit_cost').value) || 0;
+            var totalCost = quantity * unitCost;
+            document.getElementById('misc_actual_total_cost').value = totalCost.toFixed(2); // Optional: set to 2 decimal places
+        });
+
+        document.getElementById('misc_actual_unit_cost').addEventListener('input', function () {
+            var quantity = parseFloat(document.getElementById('misc_quantity').value) || 0;
+            var unitCost = parseFloat(this.value) || 0; // Convert to number (default to 0 if invalid)
+            var totalCost = quantity * unitCost;
+            document.getElementById('misc_actual_total_cost').value = totalCost.toFixed(2); // Optional: set to 2 decimal places
+        });
+
+
+        // Add Row to Table
+        function addMiscCostRow() {
+            // Get values from input fields
+            var type = document.getElementById('misc_type').value;
+            const selectedOption = document.getElementById('misc_type').options[document.getElementById('misc_type').selectedIndex];
+            const name = selectedOption.getAttribute('data-name');
+
+            var description = document.getElementById('misc_description').value;
+            var estQuantity = document.getElementById('misc_est_quantity').value;
+            var estUnitCost = document.getElementById('misc_est_unit_cost').value;
+            var estTotalCost = document.getElementById('misc_est_total_cost').value;
+            var quantity = document.getElementById('misc_quantity').value;
+            var actualUnitCost = document.getElementById('misc_actual_unit_cost').value;
+            var actualTotalCost = document.getElementById('misc_actual_total_cost').value;
+
+
+            // Create a new row
+            var row = document.createElement('tr');
+
+            // Create table cells with input values
+            row.innerHTML = `
+            <td><input type="text" value="${type}" hidden />${name}</td>
+            <td><input type="text" value="${description}" readonly /></td>
+            <td><input type="number" value="${estQuantity}" readonly /></td>
+            <td><input type="number" value="${estUnitCost}" readonly /></td>
+            <td><input type="number" value="${estTotalCost}" readonly /></td>
+            <td><input type="number" value="${quantity}" readonly /></td>
+            <td><input type="number" value="${actualUnitCost}" readonly /></td>
+            <td><input type="number" value="${actualTotalCost}" readonly /></td>
+            <td><button type="button" class="btn btn-danger btn-sm delete-row">Delete</button></td>
+        `;
+
+            // Append the new row to the table body
+            document.getElementById('misc-table-body').appendChild(row);
+
+            // Clear the form inputs
+            document.getElementById('misc_type').value = '';
+            document.getElementById('misc_description').value = '';
+            document.getElementById('misc_est_quantity').value = '';
+            document.getElementById('misc_est_unit_cost').value = '';
+            document.getElementById('misc_est_total_cost').value = '';
+            document.getElementById('misc_quantity').value = '';
+            document.getElementById('misc_actual_unit_cost').value = '';
+            document.getElementById('misc_actual_total_cost').value = '';
+        }
+
+        // Delete Row from Table
+        document.getElementById('misc-table-body').addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('delete-row')) {
+                // Remove the row
+                e.target.closest('tr').remove();
+            }
+        });
+    </script>
 
 @endsection
 

@@ -136,7 +136,6 @@ class SocketController extends Controller
     public function sensor(Request $request)
     {
         $dataArray = $request->input('data'); // Assuming 'data' is the key holding the array of records
-        Log::info('Data dari ESP8266:', $dataArray);
 
         foreach ($dataArray as $data) {
             Log::info('Data dari ESP8266:', $data);
@@ -199,29 +198,33 @@ class SocketController extends Controller
     }
     public function testingdata(Request $request)
     {
-//        $data = $request->only(['rpm', 'temperature', 'vibration', 'voltage','axis']);
-        $dataArray = $request->input('data'); // Assuming 'data' is the key holding the array of records
-//
-        Log::info('Data dari ESP8266 baru:', $dataArray);
+        $data = $request->only(['rpm', 'temperature', 'vibration', 'voltage','axis']);
 
+        Log::info('Data dari ESP8266 baru:', $data);
 
-        foreach ($dataArray as $data) {
-            Log::info('Data dari ESP8266:', $data);
+        // Ubah nama field ke format Laravel-mu
+//        $data = [
+//            'rpm' => floatval($data['rpm'] ?? 0),
+//            'temperature' => floatval($data['temperature'] ?? 0),
+//            'vibration' => floatval($data['vibration'] ?? 0),
+//            'voltage' => floatval($data['voltage'] ?? 0),
+//        ];
 
-            sensor_motor::create([
-                'suhu' => $data['temperature'] ?? 0,
-                'listrik' => $data['voltage'],
-                'vibrasi' => $data['vibration'],
-                'rpm' => $data['rpm'],
-                'axis' => $data['axis'],
-            ]);
-        }
+        // Cek jika ada salah satu nilai yang lebih dari 0.01
+        sensor_motor::create([
+            'suhu' => $data['temperature'] ?? 0,
+            'listrik' => $data['voltage'],
+            'vibrasi' => $data['vibration'],
+            'rpm' => $data['rpm'],
+            'axis' => $data['axis'],
+        ]);
 
         return response()->json([
             'status' => 'success',
             'message' => 'Data received successfully',
-            'data' => $dataArray
+            'data' => $data
         ], 200);
+
     }
 
 

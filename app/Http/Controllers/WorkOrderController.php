@@ -29,13 +29,18 @@ class WorkOrderController extends Controller
     }
     public function create()
     {
+
+        $business = Business::latest()->get();
+        $workOrders = Work_orders::whereNotIn('work_order_status', ['complete', 'cancel'])
+            ->get();
         $facilities = Facility::select('id', 'name', DB::raw("'facility' as type"))->get();
         $tools = Tools::select('id', 'name', DB::raw("'tool' as type"))->get();
         $equipments = Equipment::select('id', 'name', DB::raw("'equipment' as type"))->get();
         $part = Part::select('id', DB::raw('"nameParts" as name'), DB::raw("'part' as type"))->get();
         $business = Business::latest()->get();
 
-        $data = $facilities->merge($tools)->merge($equipments);
+
+        $data = $facilities->merge($equipments)->merge($tools);
 
         $groupedData = $data->groupBy('type')->map(function ($items, $key) {
             return [
@@ -61,7 +66,7 @@ class WorkOrderController extends Controller
         $account = Account::latest()->get();
         $charge_account = ChargeDepartment::latest()->get();
         $parts = Part::with('categories')->latest()->get();
-        return view('wo.create',compact('groupedData','users','account','charge_account','parts'));
+        return view('wo.create',compact('groupedData','users','account','charge_account','parts','workOrders','business'));
 
     }
     public function getData()
@@ -78,10 +83,10 @@ class WorkOrderController extends Controller
     }
     public function store(Request $request)
     {
-
+//        dd($request->all());
         try {
-            if(!empty($request->work_order_code)){
-                $part = Part::where('code',$request->asset_id)->first();
+            if(!empty($request->work_order_code)) {
+                $part = Part::where('code', $request->asset_id)->first();
 
                 $savedFiles = [];
 
@@ -96,12 +101,15 @@ class WorkOrderController extends Controller
 
                         // Simpan ke storage Laravel (storage/app/public/wo)
                         Storage::disk('public')->put("wo/$fileName", $imageData);
+
                         // Simpan path file ke dalam array
                         $savedFiles[] = "wo/$fileName";
                     } catch (\Exception $e) {
                         Log::error('Gagal menyimpan file: ' . $e->getMessage());
                     }
                 }
+
+                // Insert Work Order into the database
                 $wo = Work_orders::create([
                     'work_order_status' => $request->work_order_status,
                     'code' => $request->work_order_code,
@@ -117,17 +125,20 @@ class WorkOrderController extends Controller
                     'estimate_hours' => $request->labor,
                     'actual_hours' => $request->actual_labor,
                     'problem_code' => $request->problem_code,
-                    'file' => json_encode($savedFiles),
+                    'file' => json_encode($savedFiles),  // Store as JSON string
                     'description' => $request->description,
+                    'id_account' => $request->account,
+                    'id_charge' => $request->change_department,
                 ]);
 
-//                http://localhost:5001/message/send-text?session=mysession&to=6289522900800&text=testing
-//                62 877-5101-6188
-                $this->sendWhatsAppMessage('6289522900800', 'work order created'.$wo->code);
-            }else{
+                // Optionally, send a WhatsApp message (using a service)
+                $this->sendWhatsAppMessage('6289522900800', 'Work order created: ' . $wo->code);
+
+            } else {
+                // Default creation if work_order_code is empty
                 $wo = Work_orders::create([
                     'work_order_status' => $request->name,
-                    'code' => 'WO-'.date('Y').'-'.date('m').'-'.date('d').'-'.rand('0000', '9999'),
+                    'code' => 'WO-' . date('Y') . '-' . date('m') . '-' . date('d') . '-' . rand(1000, 9999),
                     'parent_id' => $request->parent_id,
                     'asset_id' => $request->asset_id,
                     'maintenance_id' => $request->maintenance,
@@ -140,27 +151,31 @@ class WorkOrderController extends Controller
                     'estimate_hours' => $request->labor,
                     'actual_hours' => $request->actual_labor,
                     'problem_code' => $request->problem_code,
-                    'file' => [],
+                    'file' => json_encode([]),  // Empty array as JSON string
                     'description' => $request->description,
+                    'id_account' => $request->account,
+                    'id_charge' => $request->change_department,
                 ]);
             }
+
+
+
+//            parent data
+
 
             return response()->json([
                 'success' => true,
                 'code' => 200,
                 'message' => 'Data saved successfully!',
             ]);
-        }catch (\Exception $e) {
-
+        } catch (\Exception $e) {
             Log::error('Error saving data: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'code' => 500,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ]);
         }
-
-
     }
     public function show($id)
     {
@@ -211,5 +226,11 @@ class WorkOrderController extends Controller
             echo 'Message sent successfully!';
         }
 
+    }
+    public function getWorkOrders(){
+        $workOrders = Work_orders::whereNotIn('status', ['complete', 'cancel'])
+            ->get();
+        // Kembalikan data dalam format JSON
+        return response()->json($workOrders);
     }
 }
